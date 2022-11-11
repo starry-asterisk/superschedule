@@ -1,0 +1,29 @@
+* {
+    alignment: center;
+    align-content: center;
+    text-align: center;
+    color: var(--font-default-color);
+}
+body {
+    background-color: var(--bg-color);
+}
+.detail {
+    display: none;
+    width: fit-content;
+    text-align: left;
+}
+.folding_btn.on + .detail{
+    display: block;
+}
+.folding_btn::after{
+    cursor: pointer;
+    content: "show detail";
+    color: var(--font-minor-color);
+}
+.folding_btn.on::after{
+    content: "close detail";
+}
+a, a:visited {
+    text-decoration: none;
+    color: var(--font-default-color);
+}

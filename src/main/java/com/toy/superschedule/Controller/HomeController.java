@@ -20,13 +20,6 @@ public class HomeController {
         return mov;
     }
 
-    @RequestMapping("/main")
-    public ModelAndView main(HttpServletRequest req, HttpServletResponse res){
-        ModelAndView mov = new ModelAndView("main");
-        mov.addObject("title", "it was a joke");
-        return mov;
-    }
-
     @GetMapping("/error")
     public ModelAndView error(HttpServletRequest req, HttpServletResponse res){
         ModelAndView mov = new ModelAndView("error");
