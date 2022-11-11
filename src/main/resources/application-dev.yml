@@ -1,0 +1,17 @@
+# 개발 설정
+spring:
+  devtools:
+    remote:
+      restart:
+        enabled: true
+    restart:
+      enabled: true
+    livereload:
+      enabled: true
+  freemarker:
+    cache: false
+  config:
+    activate:
+      on-profile: dev
+  thymeleaf:
+    cache: false

@@ -1,0 +1,21 @@
+application:
+  title: SuperScheduler
+  version: 0.1
+server:
+  port: 8080
+  servlet:
+    context-path: /
+  error:
+    include-exception: true
+    include-stacktrace: always
+spring:
+  profiles:
+    active: dev
+  mvc:
+    view:
+      prefix: /WEB-INF/jsp/
+      suffix: .jsp
+    static-path-pattern: /**
+  web:
+    resources:
+      static-locations: classpath:/static/
