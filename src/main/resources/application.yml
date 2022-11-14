@@ -2,7 +2,7 @@ application:
   title: SuperScheduler
   version: 0.1
 server:
-  port: 8080
+  port: 80
   servlet:
     context-path: /
   error:

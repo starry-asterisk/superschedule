@@ -13,7 +13,7 @@ import java.net.http.HttpResponse;
 @Controller
 public class HomeController {
 
-    @RequestMapping("/index")
+    @RequestMapping(value= {"/index", "/"})
     public ModelAndView index(HttpServletRequest req, HttpServletResponse res){
         ModelAndView mov = new ModelAndView("index");
         mov.addObject("title_added", "it was a joke");

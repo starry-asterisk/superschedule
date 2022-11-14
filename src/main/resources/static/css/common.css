@@ -3,6 +3,7 @@
     align-content: center;
     text-align: center;
     color: var(--font-default-color);
+    outline: none;
 }
 body {
     background-color: var(--bg-color);
@@ -26,4 +27,9 @@ body {
 a, a:visited {
     text-decoration: none;
     color: var(--font-default-color);
+}
+button {
+    border: 1px solid var(--font-minor-color);
+    border-radius: 2px;
+    line-height: 100%;
 }
