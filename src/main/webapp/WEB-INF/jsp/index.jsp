@@ -16,13 +16,12 @@
     <script src="https://code.jquery.com/jquery-3.6.1.slim.js" integrity="sha256-tXm+sa1uzsbFnbXt8GJqsgi2Tw+m4BLGDof6eUPjbtk=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
     <script type="text/javascript" src="${rootPath}/js/util/math.js"></script>
+    <script type="text/javascript" src="${rootPath}/js/util/net.js"></script>
     <style>
-        .go_btn, .apply_btn {
-
-        }
         .go_btn.on,
         .apply_btn,
-        .go_btn.on + .hint {
+        .upload_btn,
+        .go_btn.on ~ .list_btn{
             display: none;
         }
         .apply_btn.on{
@@ -31,25 +30,48 @@
         .input_title, .input_description {
             display: block;
             width: 0;
+            max-width: 45em;
+            padding: 10px;
+            height: 50px;
+            min-height: 50px;
             transition: 1s width;
             margin: 0 auto;
             visibility: hidden;
         }
         .input_description {
-            transition: width 0.5s, height 0.5s ease 0.5s;
-            height: 0px;
+            margin-top: 10px;
+            text-align: left;
+        }
+        @keyframes description_appear {
+            0% {
+                height: 30px;
+                width: 0;
+            }
+            50% {
+                height: 30px;
+                width: 100%;
+            }
+            100% {
+                height: 200px;
+                width: 100%;
+            }
         }
         .go_btn.on ~ .input_title,
         .apply_btn.on ~ .input_description {
             width: 100%;
             visibility: visible;
         }
-        .go_btn.on ~ .input_description {
+        .apply_btn.on ~ .input_description {
+            animation: description_appear 1s linear;
             height: 200px;
         }
-        .go_btn.on ~ .apply_btn {
+        .go_btn.on ~ .apply_btn,
+        .apply_btn.on ~ .upload_btn {
             display: block;
             margin: 0 auto;
+        }
+        * + button[class*=_btn] {
+            margin-top: 10px !important;
         }
     </style>
     <script>
@@ -61,11 +83,51 @@
             $('.apply_btn').toggleClass('on');
             $('.input_title').prop('disabled', true);
         }
+        function upload(){
+            $('.input_description').prop('disabled', true);
+            $('.upload_btn').prop('disabled',true);
+            $('.loading').show();
+            postData('/upload', {
+                title: $('.input_title').val(),
+                description: $('.input_description').val(),
+            }).then((data) => {
+                console.log(data); // JSON 데이터가 `data.json()` 호출에 의해 파싱됨
+                $('.loading').hide();
+            });
+        }
+        function list(){
+        }
+        function validate(type = 'default'){
+            let v, r = false;
+            switch(type){
+                case 'default':
+                case 'title':
+                    v = $('.input_title').val();
+                    r = v ? false : true;
+                    $('.apply_btn').prop('disabled',r);
+                    if(type == 'title'){break;}
+                case 'description':
+                    v = $('.input_description').val();
+                    r = v ? false : true;
+                    $('.upload_btn').prop('disabled',r);
+                    if(type == 'description'){break;}
+            }
+            return !r;
+        }
 
+        $(document).on('click','.go_btn', go);
+        $(document).on('click','.list_btn', list);
+        $(document).on('click','.apply_btn', apply);
+        $(document).on('click','.upload_btn', upload);
+
+        $(document).on('input','.input_title', e => {validate('title')});
+        $(document).on('input','.input_description', e => {validate('description')});
+
+        $(document).on('keypress','.input_title', e => {if(event.key == 'Enter' && validate('title')){apply();}});
     </script>
 </head>
 <body>
-
+<div class="loading"></div>
 <div class="wrap">
     <header>
         <a href="/index" class="logo">SuperScheduler</a>
@@ -73,12 +135,12 @@
     </header>
     <main>
         <div>
-            <button onclick="javascript:go();" class="go_btn">go</button>
-            <p class="hint">click this to write a article</p>
-            <input type="text" class="input_title">
-            <button onclick="javascript:apply();" class="apply_btn">apply</button>
-            <textarea class="input_description">
-            </textarea>
+            <button class="go_btn">write</button>
+            <button class="list_btn">list</button>
+            <input type="text" class="input_title" placeholder="제목을 입력해 주세요.">
+            <button class="apply_btn" disabled>apply title</button>
+            <textarea class="input_description" placeholder="내용을 입력해 주세요."></textarea>
+            <button class="upload_btn" disabled>upload</button>
         </div>
     </main>
     <footer>by <a href="https://github.com/starry-asterisk" style="color:cornflowerblue">@starry-asterisk</a></footer>

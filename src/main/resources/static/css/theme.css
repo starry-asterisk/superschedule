@@ -1,15 +1,35 @@
 :root {
+    --default-color: rgb(0, 0, 0);
+    --default-color-half: rgba(0, 0, 0, 0.5);
+    --default-color-1of10: rgba(0, 0, 0, 0.1);
     --bg-color: white;
     --font-default-color: black;
     --font-minor-color: grey;
+    --disabled-bg: rgba(239, 239, 239, 0.3);
+    --disabled-border: rgba(118, 118, 118, 0.3);
     --shadow-bg: inset 0 0 5rem rgb(0 0 0 / 10%);
 }
 @media (prefers-color-scheme: dark) {
-    /* 라이트 모드에 적용할 스타일 정의 */
+    /* 다크 모드에 적용할 스타일 정의 */
     :root {
+        --default-color: rgb(232, 234, 237);
+        --default-color-half: rgba(232, 234, 237, 0.5);
+        --default-color-1of10: rgba(232, 234, 237, 0.1);
         --bg-color: rgba(53,54,58,1);
         --font-default-color: rgb(232, 234, 237);
         --font-minor-color: grey;
         --shadow-bg: inset 0 0 5rem rgb(0 0 0 / 50%);
+    }
+    body {
+        background-color: var(--bg-color);
+    }
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
     }
 }

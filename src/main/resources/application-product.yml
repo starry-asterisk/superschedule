@@ -1,0 +1,8 @@
+# 개발 설정
+spring:
+  error:
+    include-exception: false
+    include-stacktrace: never
+  config:
+    activate:
+      on-profile: product
