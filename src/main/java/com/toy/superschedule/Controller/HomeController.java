@@ -1,9 +1,12 @@
 package com.toy.superschedule.Controller;
 
+import com.toy.superschedule.db.BaseDBA;
 import com.toy.superschedule.db.BoardDBA;
 import com.toy.superschedule.db.FileDBA;
 import com.toy.superschedule.db.UsersDBA;
+import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpRequest;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -15,7 +18,10 @@ import java.net.http.HttpResponse;
 import java.util.Map;
 
 @RestController
+@RequiredArgsConstructor
 public class HomeController {
+
+    BoardDBA b;
 
     @RequestMapping(method={RequestMethod.GET}, value={"/index", "/"})
     public ModelAndView index(HttpServletRequest req, HttpServletResponse res){
@@ -32,9 +38,7 @@ public class HomeController {
     @RequestMapping(method={RequestMethod.POST}, value="/upload")
     public JSONObject upload(HttpServletRequest req, @RequestBody Map<String, String> param){
         JSONObject r = new JSONObject();
-        UsersDBA u = new UsersDBA();
-        BoardDBA b = new BoardDBA();
-        FileDBA f = new FileDBA();
+
         System.out.println(param);
         r.put("result", "it was success");
         return r;

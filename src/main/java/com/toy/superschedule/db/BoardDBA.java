@@ -1,5 +1,28 @@
 package com.toy.superschedule.db;
 
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+import javax.annotation.PostConstruct;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
+@Component
 public class BoardDBA extends BaseDBA {
-    String FILE_NAME = "BoardDBA.txt";
+
+    @PostConstruct
+    public void init(){
+        FILE_NAME = "board";
+        COLUMN = new String[]{"id", "title", "contents", "author", "cleared", "danger_level", "due_date", "created", "updated"};
+        initFolder();
+        initFile();
+    }
+
+
+    @Override
+    public void initFile(){
+        super.initFile();
+    }
 }
