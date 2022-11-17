@@ -16,6 +16,7 @@ public class BoardDBA extends BaseDBA {
     public void init(){
         FILE_NAME = "board";
         COLUMN = new String[]{"id", "title", "contents", "author", "cleared", "danger_level", "due_date", "created", "updated"};
+        COLUMN_TYPE = new String[]{"int", "string", "string", "string", "boolean", "int", "date", "date", "date"};
         initFolder();
         initFile();
     }

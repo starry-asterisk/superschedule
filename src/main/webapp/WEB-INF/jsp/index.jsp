@@ -90,10 +90,45 @@
             postData('/upload', {
                 title: $('.input_title').val(),
                 description: $('.input_description').val(),
+                created: new Date().getTime(),
             }).then((data) => {
                 console.log(data); // JSON 데이터가 `data.json()` 호출에 의해 파싱됨
                 $('.loading').hide();
             });
+        }
+        function login(isAuto = false, token){
+            console.log(isAuto, token);
+            let data = {}
+            if(isAuto){
+                data.token = token;
+            }else{
+                data.id = prompt("아이디(ID)를 입력해 주세요");
+                data.pw = prompt("비밀번호를 입력해 주세요");
+                if(!data.id || !data.pw){
+                   return alert("로그인 정보를 입력해 주세요!");
+                }
+            }
+            $('.loading').show();
+            postData('/login', data).then((data) => {
+                $('.loading').hide();
+                switch (data.status){
+                    case 404:
+                        console.warn("wrong login token or url is incorrect");
+                        localStorage.removeItem('login_token');
+                        if(!isAuto){
+                            alert("로그인 실패!");
+                        }
+                        break;
+                    case 200:
+                        console.log("OK, login success");
+                        if(!isAuto){
+                            location.reload();
+                        }
+                }
+            });
+        }
+        function load_loginData(){
+
         }
         function list(){
         }
@@ -119,11 +154,22 @@
         $(document).on('click','.list_btn', list);
         $(document).on('click','.apply_btn', apply);
         $(document).on('click','.upload_btn', upload);
+        $(document).on('click','.to_project', login);
 
         $(document).on('input','.input_title', e => {validate('title')});
         $(document).on('input','.input_description', e => {validate('description')});
 
         $(document).on('keypress','.input_title', e => {if(event.key == 'Enter' && validate('title')){apply();}});
+
+        let loginData = ${user};
+        if(loginData){
+
+        }else{
+            let login_token = localStorage.getItem('login_token');
+            if(login_token){
+                login(true, login_token);
+            }
+        }
     </script>
 </head>
 <body>
@@ -131,7 +177,7 @@
 <div class="wrap">
     <header>
         <a href="/index" class="logo">SuperScheduler</a>
-        <a href="https://github.com/starry-asterisk/superschedule" class="to_project">project Page</a>
+        <a href="javascript:void(0);" class="to_project">Sign in</a>
     </header>
     <main>
         <div>
