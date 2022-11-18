@@ -6,10 +6,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 
 import java.io.*;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.file.StandardOpenOption;
 import java.sql.Timestamp;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static com.toy.superschedule.Util.util.*;
 
@@ -30,6 +31,7 @@ public class BaseDBA {
     public String[] COLUMN_TYPE;
     public JSONArray table;
     public int table_cnt = 0;
+    public int table_increment = 0;
 
     public void initFolder(){
         try {
@@ -48,7 +50,6 @@ public class BaseDBA {
             File file = new File(PATH + FILE_NAME + EXTENSION);
 
             if (file.exists()) {
-                file.createNewFile();
 
                 BufferedReader reader = getReader(file);
 
@@ -58,12 +59,6 @@ public class BaseDBA {
                 reader.close();
             } else {
                 file.createNewFile();
-
-                BufferedWriter writer = getWriter(file);
-
-                writer.write(getLine(COLUMN));
-
-                writer.close();
             }
 
 
@@ -73,8 +68,26 @@ public class BaseDBA {
         }
     }
 
-    public String getLine(String[] column){
-        return String.join(DELIMITER, column) + "\r\n";
+    public String getLine(JSONObject data){
+        String insert_string = "";
+        Object v;
+        for(int i=0;i < COLUMN.length - 1;i++){
+            v = data.get(COLUMN[i]);
+            if(v != null){
+                insert_string += v;
+            }else{
+                data.put(COLUMN[i], null);
+            }
+            insert_string +=  DELIMITER;
+        }
+        v = data.get(COLUMN[COLUMN.length - 1]);
+        if(v != null){
+            insert_string += v + "\r\n";
+        }else{
+            data.put(COLUMN[COLUMN.length - 1], null);
+        }
+        insert_string += "\r\n";
+        return insert_string;
     }
 
     public JSONArray setLine(BufferedReader r) throws IOException {
@@ -84,7 +97,11 @@ public class BaseDBA {
     public JSONArray setLine(BufferedReader r, JSONArray data) throws IOException {
         String line = r.readLine();
         if (line != null) {
-            String[] values = line.split(DELIMITER);
+            String[] values = line.split(DELIMITER, -1);
+            int id = Integer.parseInt(values[0]);
+            if(id > table_increment){
+                table_increment = id;
+            }
             JSONObject json = new JSONObject();
             for(int i=0;i < COLUMN.length;i++){
                 if(empty(values[i])){
@@ -112,12 +129,13 @@ public class BaseDBA {
             data.add(json);
             return setLine(r, data);
         } else {
+            table_increment++;
             return data;
         }
     }
 
     public BufferedWriter getWriter(File file) throws IOException {
-        return new BufferedWriter(new FileWriter(file));
+        return new BufferedWriter(new FileWriter(file, true));
     }
 
     public BufferedReader getReader(File file) throws IOException {
@@ -150,27 +168,71 @@ public class BaseDBA {
         }
         return result;
     }
-    public boolean insert(Map<String, Object> data) {
-        return false;
+
+    public boolean insert(BufferedWriter writer, JSONObject data) throws IOException {
+        data.put("id", table_increment);
+        writer.write(getLine(data));
+        table_increment++;
+        table_cnt++;
+        table.add(data);
+        return true;
     }
 
-    public int insert(List<Map<String, Object>> data) {
-        Iterator<Map<String, Object>> i = data.iterator();
-        int total_cnt = 0;
-        while(i.hasNext()){
-            if(insert(i.next())){
-                total_cnt++;
+    public boolean insert(JSONObject data) {
+        try {
+            File file = new File(PATH + FILE_NAME + EXTENSION);
+            if (file.exists()) {
+                BufferedWriter writer = getWriter(file);
+                insert(writer, data);
+                writer.close();
             }
+            return true;
+        } catch(Exception e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public int insert(List<JSONObject> data) {
+        Iterator<JSONObject> i = data.iterator();
+        int total_cnt = 0;
+        try {
+            File file = new File(PATH + FILE_NAME + EXTENSION);
+            if (file.exists()) {
+                BufferedWriter writer = getWriter(file);
+                while(i.hasNext()){
+                    if(insert(writer, i.next())){
+                        total_cnt++;
+                    }
+                }
+                writer.close();
+            }
+
+        } catch(Exception e) {
+            e.printStackTrace();
         }
         return total_cnt;
     }
 
-    public int delete(Map<String, Object> condition) {
+    public int delete(JSONObject condition) {
         return delete(condition, 0);
     }
 
-    public int delete(Map<String, Object> condition, int limit) {
-        return 0;
+    public int delete(JSONObject condition, int limit) {
+        condition.put("limit", limit);
+        JSONArray delete_arr = find(condition);
+        String delete = "";
+        int cnt = delete_arr.size();
+        Iterator<JSONObject> i = delete_arr.iterator();
+        while(i.hasNext()){
+            delete += getLine(i.next());
+        }
+        try {
+            replaceText(delete, "", new File(PATH + FILE_NAME + EXTENSION));
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        return cnt;
     }
 
     public int update(Map<String, Object> condition, Map<String, Object> data) {
@@ -179,5 +241,52 @@ public class BaseDBA {
 
     public int update(Map<String, Object> condition, Map<String, Object> data, int limit) {
         return 0;
+    }
+
+
+    public static long scanForString(String text, File file) throws IOException {
+        if (text.isEmpty())
+            return file.exists() ? 0 : -1;
+        // First of all, get a byte array off of this string:
+        byte[] bytes = text.getBytes(/* StandardCharsets.your_charset */);
+
+        // Next, search the file for the byte array.
+        try (DataInputStream dis = new DataInputStream(new FileInputStream(file))) {
+
+            List<Integer> matches = new LinkedList<>();
+
+            for (long pos = 0; pos < file.length(); pos++) {
+                byte bite = dis.readByte();
+
+                for (int i = 0; i < matches.size(); i++) {
+                    Integer m = matches.get(i);
+                    if (bytes[m] != bite)
+                        matches.remove(i--);
+                    else if (++m == bytes.length)
+                        return pos - m + 1;
+                    else
+                        matches.set(i, m);
+                }
+
+                if (bytes[0] == bite)
+                    matches.add(1);
+            }
+        }
+        return -1;
+    }
+
+    public static void replaceText(String text, String replacement, File file) throws IOException {
+        // Open a FileChannel with writing ability. You don't really need the read
+        // ability for this specific case, but there it is in case you need it for
+        // something else.
+        try (FileChannel channel = FileChannel.open(file.toPath(), StandardOpenOption.WRITE, StandardOpenOption.READ)) {
+            long scanForString = scanForString(text, file);
+            if (scanForString == -1) {
+                System.out.println("String not found.");
+                return;
+            }
+            channel.position(scanForString);
+            channel.write(ByteBuffer.wrap(replacement.getBytes(/* StandardCharsets.your_charset */)));
+        }
     }
 }

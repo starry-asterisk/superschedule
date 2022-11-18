@@ -1,45 +1,55 @@
-
-body {
-    box-shadow: var(--shadow-bg);
+.go_btn.on,
+.apply_btn,
+.upload_btn,
+.go_btn.on ~ .list_btn{
+    display: none;
 }
-
-.wrap {
-    display: flex;
-    flex-direction: column;
-    position: relative;
-    padding: 16px;
-    max-width: 80vw;
+.apply_btn.on{
+    display: none !important;
+}
+.input_title, .input_description {
+    display: block;
+    width: 0;
+    max-width: 45em;
+    padding: 10px;
+    height: 50px;
+    min-height: 50px;
+    transition: 1s width;
+    margin: 0 auto;
+    visibility: hidden;
+}
+.input_description {
+    margin-top: 10px;
+    text-align: left;
+}
+@keyframes description_appear {
+    0% {
+        height: 30px;
+        width: 0;
+    }
+    50% {
+        height: 30px;
+        width: 100%;
+    }
+    100% {
+        height: 200px;
+        width: 100%;
+    }
+}
+.go_btn.on ~ .input_title,
+.apply_btn.on ~ .input_description {
     width: 100%;
-    height: 100vh;
+    visibility: visible;
+}
+.apply_btn.on ~ .input_description {
+    animation: description_appear 1s linear;
+    height: 200px;
+}
+.go_btn.on ~ .apply_btn,
+.apply_btn.on ~ .upload_btn {
+    display: block;
     margin: 0 auto;
 }
-
-header{
-    height: 50px;
-    line-height: 50px;
-    margin-bottom: auto;
-}
-.logo {
-    float: left;
-    font-size: 2em;
-}
-.to_project {
-    float: right;
-    color: var(--font-default-color);
-    font-size: 1em;
-}
-.logo:hover {
-    cursor: pointer;
-}
-
-main {
-}
-h3 {
-    display: inline-block;
-    margin: 0;
-}
-
-footer{
-    height: 50px;
-    margin-top: auto;
+* + button[class*=_btn] {
+    margin-top: 10px !important;
 }

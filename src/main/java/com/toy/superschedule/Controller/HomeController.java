@@ -38,10 +38,6 @@ public class HomeController {
         return mov;
     }
 
-    @RequestMapping(method={RequestMethod.POST}, value="/login")
-    public JSONObject login(HttpServletRequest req, @RequestBody Map<String, String> param){
-        return loginSvc.login(req, param);
-    }
 
     @RequestMapping(method={RequestMethod.POST}, value="/upload")
     public JSONObject upload(HttpServletRequest req, @RequestBody Map<String, String> param){

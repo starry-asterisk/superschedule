@@ -11,69 +11,19 @@
     <link href="${rootPath}/css/common.css" rel="stylesheet">
     <link href="${rootPath}/css/index.css" rel="stylesheet">
 
-    <title>첫 페이지</title>
+    <title>SuperScheduler :: main</title>
 
+    <script>
+        /*
+        기본 변수 선언 부
+        */
+        let loginData = ${user!=null?user:'undefined'};
+    </script>
     <script src="https://code.jquery.com/jquery-3.6.1.slim.js" integrity="sha256-tXm+sa1uzsbFnbXt8GJqsgi2Tw+m4BLGDof6eUPjbtk=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
-    <script type="text/javascript" src="${rootPath}/js/util/math.js"></script>
+    <script type="text/javascript" src="${rootPath}/js/util/default.js"></script>
     <script type="text/javascript" src="${rootPath}/js/util/net.js"></script>
-    <style>
-        .go_btn.on,
-        .apply_btn,
-        .upload_btn,
-        .go_btn.on ~ .list_btn{
-            display: none;
-        }
-        .apply_btn.on{
-            display: none !important;
-        }
-        .input_title, .input_description {
-            display: block;
-            width: 0;
-            max-width: 45em;
-            padding: 10px;
-            height: 50px;
-            min-height: 50px;
-            transition: 1s width;
-            margin: 0 auto;
-            visibility: hidden;
-        }
-        .input_description {
-            margin-top: 10px;
-            text-align: left;
-        }
-        @keyframes description_appear {
-            0% {
-                height: 30px;
-                width: 0;
-            }
-            50% {
-                height: 30px;
-                width: 100%;
-            }
-            100% {
-                height: 200px;
-                width: 100%;
-            }
-        }
-        .go_btn.on ~ .input_title,
-        .apply_btn.on ~ .input_description {
-            width: 100%;
-            visibility: visible;
-        }
-        .apply_btn.on ~ .input_description {
-            animation: description_appear 1s linear;
-            height: 200px;
-        }
-        .go_btn.on ~ .apply_btn,
-        .apply_btn.on ~ .upload_btn {
-            display: block;
-            margin: 0 auto;
-        }
-        * + button[class*=_btn] {
-            margin-top: 10px !important;
-        }
-    </style>
+    <script type="text/javascript" src="${rootPath}/js/util/user.js"></script>
     <script>
         function go(){
             $('.go_btn').toggleClass('on');
@@ -95,40 +45,6 @@
                 console.log(data); // JSON 데이터가 `data.json()` 호출에 의해 파싱됨
                 $('.loading').hide();
             });
-        }
-        function login(isAuto = false, token){
-            console.log(isAuto, token);
-            let data = {}
-            if(isAuto){
-                data.token = token;
-            }else{
-                data.id = prompt("아이디(ID)를 입력해 주세요");
-                data.pw = prompt("비밀번호를 입력해 주세요");
-                if(!data.id || !data.pw){
-                   return alert("로그인 정보를 입력해 주세요!");
-                }
-            }
-            $('.loading').show();
-            postData('/login', data).then((data) => {
-                $('.loading').hide();
-                switch (data.status){
-                    case 404:
-                        console.warn("wrong login token or url is incorrect");
-                        localStorage.removeItem('login_token');
-                        if(!isAuto){
-                            alert("로그인 실패!");
-                        }
-                        break;
-                    case 200:
-                        console.log("OK, login success");
-                        if(!isAuto){
-                            location.reload();
-                        }
-                }
-            });
-        }
-        function load_loginData(){
-
         }
         function list(){
         }
@@ -154,30 +70,29 @@
         $(document).on('click','.list_btn', list);
         $(document).on('click','.apply_btn', apply);
         $(document).on('click','.upload_btn', upload);
-        $(document).on('click','.to_project', login);
+        $(document).on('click','.header_sub', e => {if(loginData){logout();}else{modal(template.login);}});
 
         $(document).on('input','.input_title', e => {validate('title')});
         $(document).on('input','.input_description', e => {validate('description')});
 
         $(document).on('keypress','.input_title', e => {if(event.key == 'Enter' && validate('title')){apply();}});
 
-        let loginData = ${user};
-        if(loginData){
 
-        }else{
-            let login_token = localStorage.getItem('login_token');
-            if(login_token){
-                login(true, login_token);
-            }
-        }
+
+
     </script>
 </head>
 <body>
+<div class="modal_wrap">
+    <div class="modal_window">
+        <button class="modal_close"></button>
+    </div>
+</div>
 <div class="loading"></div>
 <div class="wrap">
     <header>
         <a href="/index" class="logo">SuperScheduler</a>
-        <a href="javascript:void(0);" class="to_project">Sign in</a>
+        <a href="javascript:void(0);" class="header_sub">Sign in</a>
     </header>
     <main>
         <div>

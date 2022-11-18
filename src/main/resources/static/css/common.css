@@ -5,6 +5,38 @@
     color: var(--font-default-color);
     outline: none;
 }
+body {
+    box-shadow: var(--shadow-bg);
+}
+
+.wrap {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding: 16px;
+    max-width: 80vw;
+    width: 100%;
+    height: 100vh;
+    margin: 0 auto;
+}
+header{
+    height: 50px;
+    line-height: 50px;
+    margin-bottom: auto;
+}
+.logo {
+    float: left;
+    font-size: 2em;
+}
+.header_sub {
+    float: right;
+    font-size: 1em;
+}
+footer{
+    height: 50px;
+    line-height: 50px;
+    margin-top: auto;
+}
 .detail {
     display: none;
     width: fit-content;
@@ -39,6 +71,10 @@ button:disabled {
     border-color: var(--disabled-border);
     background-color: var(--disabled-bg);
 }
+button.invert {
+    background-color: var(--font-minor-color);
+    color: var(--bg-color);
+}
 
 
 .loading {
@@ -65,4 +101,84 @@ button:disabled {
 }
 .loading::before {
     animation-delay: 0.5s;
+}
+.modal_wrap {
+    position: fixed;
+    display: none;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    backdrop-filter: blur(3px);
+    z-index: 99999;
+    background-color: var(--default-color-1of10);
+}
+.modal_wrap.on {
+    display: flex !important;
+}
+.modal_window {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 32em;
+    min-height: 20em;
+    margin: auto;
+    background: var(--bg-color);
+    border: 1px solid var(--font-minor-color2);
+    border-radius: 4px;
+    padding: 10px;
+    box-shadow: 0 0 8px 1px var(--default-color-1of10);
+}
+.modal_wrap.on.cancel-not > .modal_window > button {
+    display: none;
+}
+.modal_window > button{
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    width: 19px;
+    height: 19px;
+    display: inline-block;
+    padding: 0;
+}
+.modal_window > button:after,
+.modal_window > button:before{
+    content: "";
+    position: absolute;
+    top: 2px;
+    left: 8px;
+    width: 1px;
+    height: 13px;
+    background-color: var(--font-minor-color);
+    transform: rotate(45deg);
+}
+.modal_window > button:before{
+    transform: rotate(-45deg);
+}
+.modal_window > div {
+    margin-left: auto;
+    margin-right: auto;
+    color: var(--font-minor-color);
+}
+.modal_window .modal_title {
+    margin-left: auto;
+    margin-right: auto;
+    color: var(--font-default-color);
+    font-size: 1.3em;
+}
+.modal_window > div:first-of-type {
+    margin-top: auto;
+}
+.modal_window > div:last-of-type {
+    margin-bottom: auto;
+}
+.modal_window > div > *{
+    margin: 2px;
+}
+
+input, textarea {
+    color: var(--grey);
+    padding: 10px;
+    height: 50px;
+    min-height: 50px;
 }

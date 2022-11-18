@@ -18,12 +18,12 @@ public class LoginSVC {
     public JSONObject login(HttpServletRequest req, Map<String, String> param){
         JSONObject json = new JSONObject();
         json.put("limit", 0);
-        Object[][] where = {{"token",'=',param.get("token")}};
+        Object[][] where = {{"token",'!',null},{"token",'=',param.get("token")}};
         json.put("where",where);
         String[] orderBy = {};
         json.put("orderBy",orderBy);
         JSONArray r = u.find(json);
-        if(r.get(0) == null){
+        if(r.toArray().length < 1){
             where = new Object[][]{
                     {"name", '=', param.get("id")},
                     {"pw", '=', param.get("pw")}
@@ -32,15 +32,13 @@ public class LoginSVC {
             r = u.find(json);
         }
         json = new JSONObject();
-        if(r.get(0) == null){
+        if(r.toArray().length < 1){
             json.put("status", 404);
         }else{
             json.put("status", 200);
-            //json.put("user", r.get(0));
+            HttpSession session = req.getSession();
+            session.setAttribute("user", r.get(0));
         }
-
-        HttpSession session = req.getSession();
-        session.setAttribute("user", r.get(0));
 
         return json;
     }

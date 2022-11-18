@@ -22,7 +22,7 @@
 <div class="wrap">
     <header>
         <a href="/index" class="logo">SuperScheduler</a>
-        <a href="https://github.com/starry-asterisk/superschedule" class="to_project">project Page</a>
+        <a href="https://github.com/starry-asterisk/superschedule" class="header_sub">project Page</a>
     </header>
     <main>
         <span class="error_code" code="${status}"></span><br>
