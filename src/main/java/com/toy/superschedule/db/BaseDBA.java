@@ -151,7 +151,7 @@ public class BaseDBA {
         Object[][] where = (Object[][]) condition.getOrDefault("where", DEFAULT_WHERE);
         String[] orderBy = (String[]) condition.getOrDefault("orderBy", DEFAULT_ORDER);
         int idx = 0;
-        Iterator i = table.iterator();
+        ListIterator i = table.listIterator();
         while(i.hasNext() && (limit == 0 || limit > idx)){
             JSONObject json = (JSONObject) i.next();
             Boolean isPassed = true;
@@ -162,6 +162,7 @@ public class BaseDBA {
                 }
             }
             if(isPassed){
+                json.put("rownum", i.previousIndex());
                 result.add(json);
                 idx++;
             }
@@ -218,18 +219,29 @@ public class BaseDBA {
         return delete(condition, 0);
     }
 
+
     public int delete(JSONObject condition, int limit) {
         condition.put("limit", limit);
         JSONArray delete_arr = find(condition);
-        String delete = "";
+        return delete(delete_arr);
+    }
+
+    public int delete(JSONArray delete_arr) {
         int cnt = delete_arr.size();
         Iterator<JSONObject> i = delete_arr.iterator();
         while(i.hasNext()){
-            delete += getLine(i.next());
+            table.remove(Integer.parseInt(i.next().get("rownum").toString()));
         }
+        i = table.iterator();
+        File file = new File(PATH + FILE_NAME + EXTENSION);
         try {
-            replaceText(delete, "", new File(PATH + FILE_NAME + EXTENSION));
-        } catch(Exception e) {
+            PrintWriter out = new PrintWriter(new FileWriter(file));
+            while(i.hasNext()){
+                out.print(getLine(i.next()));
+            }
+            out.flush();
+            out.close();
+        } catch(Exception e){
             e.printStackTrace();
         }
         return cnt;
@@ -282,7 +294,7 @@ public class BaseDBA {
         try (FileChannel channel = FileChannel.open(file.toPath(), StandardOpenOption.WRITE, StandardOpenOption.READ)) {
             long scanForString = scanForString(text, file);
             if (scanForString == -1) {
-                System.out.println("String not found.");
+                // String not found.
                 return;
             }
             channel.position(scanForString);
