@@ -4,12 +4,7 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-
 import java.io.*;
-import java.nio.ByteBuffer;
-import java.nio.channels.FileChannel;
-import java.nio.file.StandardOpenOption;
-import java.sql.Timestamp;
 import java.util.*;
 
 import static com.toy.superschedule.Util.util.*;
@@ -22,7 +17,7 @@ public class BaseDBA {
     public String PATH;
     public String FILE_NAME;
     public String EXTENSION = ".txt";
-    public String NEW_LINE = "\n";
+    public String NEW_LINE_DELIMITER = "\r\n";
     public String DELIMITER = ",";
     public String[] DEFAULT_ORDER = {};
     public Object[][] DEFAULT_WHERE = {};
@@ -38,7 +33,9 @@ public class BaseDBA {
             File dir = new File(PATH);
 
             if(!dir.exists()){
-                dir.mkdirs();
+                if(!dir.mkdirs()){
+                    throw new Exception();
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -57,37 +54,34 @@ public class BaseDBA {
                 table_cnt = table.size();
 
                 reader.close();
-            } else {
-                file.createNewFile();
+            } else if(!file.createNewFile()){
+                throw new IOException();
             }
-
-
-
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
     public String getLine(JSONObject data){
-        String insert_string = "";
         Object v;
+        StringBuilder insert_string = new StringBuilder();
         for(int i=0;i < COLUMN.length - 1;i++){
             v = data.get(COLUMN[i]);
             if(v != null){
-                insert_string += v;
+                insert_string.append(v);
             }else{
                 data.put(COLUMN[i], null);
             }
-            insert_string +=  DELIMITER;
+            insert_string.append(DELIMITER);
         }
         v = data.get(COLUMN[COLUMN.length - 1]);
         if(v != null){
-            insert_string += v + "\r\n";
+            insert_string.append(v);
         }else{
             data.put(COLUMN[COLUMN.length - 1], null);
         }
-        insert_string += "\r\n";
-        return insert_string;
+        insert_string.append(NEW_LINE_DELIMITER);
+        return insert_string.toString();
     }
 
     public JSONArray setLine(BufferedReader r) throws IOException {
@@ -154,15 +148,15 @@ public class BaseDBA {
         ListIterator i = table.listIterator();
         while(i.hasNext() && (limit == 0 || limit > idx)){
             JSONObject json = (JSONObject) i.next();
-            Boolean isPassed = true;
-            for(int j = 0;j < where.length;j++){
-                isPassed = evalBoolean((Character) where[j][1], json.get(where[j][0]), where[j][2]);
-                if(!isPassed){
+            boolean isPassed = true;
+            for (Object[] evalCondition : where) {
+                isPassed = evalBoolean((Character) evalCondition[1], json.get(evalCondition[0]), evalCondition[2]);
+                if (!isPassed) {
                     break;
                 }
             }
             if(isPassed){
-                json.put("rownum", i.previousIndex());
+                json.put("row_num", i.previousIndex());
                 result.add(json);
                 idx++;
             }
@@ -219,7 +213,6 @@ public class BaseDBA {
         return delete(condition, 0);
     }
 
-
     public int delete(JSONObject condition, int limit) {
         condition.put("limit", limit);
         JSONArray delete_arr = find(condition);
@@ -230,7 +223,7 @@ public class BaseDBA {
         int cnt = delete_arr.size();
         Iterator<JSONObject> i = delete_arr.iterator();
         while(i.hasNext()){
-            table.remove(Integer.parseInt(i.next().get("rownum").toString()));
+            table.remove(Integer.parseInt(i.next().get("row_num").toString()));
         }
         i = table.iterator();
         File file = new File(PATH + FILE_NAME + EXTENSION);
@@ -247,58 +240,20 @@ public class BaseDBA {
         return cnt;
     }
 
-    public int update(Map<String, Object> condition, Map<String, Object> data) {
+    public int update(JSONObject condition, JSONObject data) {
         return update(condition, data, 0);
     }
 
-    public int update(Map<String, Object> condition, Map<String, Object> data, int limit) {
+    public int update(JSONObject condition, JSONObject data, int limit) {
+        condition.put("limit", limit);
+        JSONArray update_arr = find(condition);
+        if(delete(update_arr) > 0){
+            for(int i = update_arr.size() ; i > 0 ; i--){
+                JSONObject json = (JSONObject) update_arr.get(i - 1);
+                json.putAll(data);
+            }
+            insert(update_arr);
+        }
         return 0;
-    }
-
-
-    public static long scanForString(String text, File file) throws IOException {
-        if (text.isEmpty())
-            return file.exists() ? 0 : -1;
-        // First of all, get a byte array off of this string:
-        byte[] bytes = text.getBytes(/* StandardCharsets.your_charset */);
-
-        // Next, search the file for the byte array.
-        try (DataInputStream dis = new DataInputStream(new FileInputStream(file))) {
-
-            List<Integer> matches = new LinkedList<>();
-
-            for (long pos = 0; pos < file.length(); pos++) {
-                byte bite = dis.readByte();
-
-                for (int i = 0; i < matches.size(); i++) {
-                    Integer m = matches.get(i);
-                    if (bytes[m] != bite)
-                        matches.remove(i--);
-                    else if (++m == bytes.length)
-                        return pos - m + 1;
-                    else
-                        matches.set(i, m);
-                }
-
-                if (bytes[0] == bite)
-                    matches.add(1);
-            }
-        }
-        return -1;
-    }
-
-    public static void replaceText(String text, String replacement, File file) throws IOException {
-        // Open a FileChannel with writing ability. You don't really need the read
-        // ability for this specific case, but there it is in case you need it for
-        // something else.
-        try (FileChannel channel = FileChannel.open(file.toPath(), StandardOpenOption.WRITE, StandardOpenOption.READ)) {
-            long scanForString = scanForString(text, file);
-            if (scanForString == -1) {
-                // String not found.
-                return;
-            }
-            channel.position(scanForString);
-            channel.write(ByteBuffer.wrap(replacement.getBytes(/* StandardCharsets.your_charset */)));
-        }
     }
 }
