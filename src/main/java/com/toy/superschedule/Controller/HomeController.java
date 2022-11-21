@@ -14,9 +14,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class HomeController {
 
-    @Autowired
-    LoginSVC loginSvc;
-
     @RequestMapping(method={RequestMethod.GET}, value={"/index", "/"})
     public ModelAndView index(){
         System.out.println(new Date().getTime());

@@ -11,6 +11,9 @@ public class util {
             long compared_value;
             long standard_value;
             if(args1.getClass().getName().equals("java.lang.String")){
+                if(operation == '%'){
+                    return args1.toString().contains(args2.toString());
+                }
                 compared_value = args1.toString().compareTo(args2.toString());
                 standard_value = 0;
             }else{

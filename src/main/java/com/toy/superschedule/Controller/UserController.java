@@ -19,13 +19,13 @@ public class UserController {
     @Autowired
     LoginSVC loginSvc;
 
-    @RequestMapping(method={RequestMethod.POST}, value="/login")
+    @RequestMapping(method={RequestMethod.POST}, value="/users/login")
     public JSONObject login(HttpServletRequest req, @RequestBody Map<String, String> param){
         return loginSvc.login(req, param);
     }
 
 
-    @RequestMapping(method={RequestMethod.POST, RequestMethod.GET}, value="/logout")
+    @RequestMapping(method={RequestMethod.POST, RequestMethod.GET}, value="/users/logout")
     public JSONObject logout(HttpServletRequest req){
         JSONObject json = new JSONObject();
         json.put("status", 200);

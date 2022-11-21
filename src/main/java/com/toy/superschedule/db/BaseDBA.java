@@ -19,7 +19,7 @@ public class BaseDBA {
     public String EXTENSION = ".txt";
     public String NEW_LINE_DELIMITER = "\r\n";
     public String DELIMITER = ",";
-    public String[] DEFAULT_ORDER = {"id"};
+    public String[] DEFAULT_ORDER = {};
     public Object[][] DEFAULT_WHERE = {};
     public int DEFAULT_LIMIT = 0;
     public String[] COLUMN;
@@ -27,6 +27,8 @@ public class BaseDBA {
     public JSONArray table;
     public int table_cnt = 0;
     public int table_increment = 0;
+
+    public int DEFAULT_PAGINATION = 20;
 
     public void initFolder(){
         try {
@@ -143,11 +145,17 @@ public class BaseDBA {
         JSONArray result = new JSONArray();
         int limit = (int) condition.getOrDefault("limit", DEFAULT_LIMIT);
         Object[][] where = (Object[][]) condition.getOrDefault("where", DEFAULT_WHERE);
-        String[] orderBy = (String[]) condition.getOrDefault("orderBy", DEFAULT_ORDER);
+        String orderBy = (String) condition.get("orderBy");
+        int orderASC = (int) condition.getOrDefault("orderASC", 1);
+        int page = (int) condition.getOrDefault("page", 0);
 
         int idx = 0;
-        if(orderBy.length > 0){
-            table.sort(Comparator.comparing((JSONObject a) -> a.get(orderBy[0]).toString()));
+        if(orderBy!=null){
+            Comparator c = Comparator.comparing((JSONObject a) -> a.get(orderBy).toString());
+            if(orderASC < 0){
+                c = c.reversed();
+            }
+            table.sort(c);
         }
 
         ListIterator i = table.listIterator();
@@ -161,9 +169,21 @@ public class BaseDBA {
                 }
             }
             if(isPassed){
-                json.put("row_num", i.previousIndex());
-                result.add(json);
-                idx++;
+                if(page > 0){
+                    if((page - 1) * DEFAULT_PAGINATION <= i.previousIndex()){
+                        if(i.previousIndex() < page * DEFAULT_PAGINATION){
+                            json.put("row_num", i.previousIndex());
+                            result.add(json);
+                            idx++;
+                        }else{
+                            break;
+                        }
+                    }
+                } else {
+                    json.put("row_num", i.previousIndex());
+                    result.add(json);
+                    idx++;
+                }
             }
         }
         return result;

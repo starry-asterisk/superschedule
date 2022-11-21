@@ -61,7 +61,7 @@ main {
 .board_list {
     display: none;
 }
-.board_list {
+.board_list.on {
     display: block !important;
     max-height: 100%;
     overflow-y: auto;
@@ -88,6 +88,7 @@ main {
 }
 .board_list .li {
     display: flex;
+    position: relative;
     margin: 0 auto 5px auto;
     max-width: 45em;
     width: 100%;
@@ -97,8 +98,37 @@ main {
     padding: 5px;
     border-radius: 3px;
 }
+.board_list .li svg {
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    height: 100%;
+    width: 100%;
+    pointer-events: none;
+}
 .board_list .li rect {
+    stroke-dasharray: 100em;
+    stroke-dashoffset: 100em;
+    rx: 3px;
+    ry: 3px;
+    stroke: var(--font-default-color);
+    filter: drop-shadow(0px 0px 5px rgba(0,0,0,0.5));
+    fill: transparent;
+}
+@media (prefers-color-scheme: dark) {
+    /* 다크 모드에 적용할 스타일 정의 */
+    rect {
+        filter: drop-shadow(0px 0px 5px rgba(255,255,255,0.5));
+    }
+}
+.board_list .li:hover rect {
+    animation: 2.5s normal stroke-appear forwards;
+}
 
+@keyframes stroke-appear {
+    to {
+        stroke-dashoffset: 0;
+    }
 }
 .board_list .li:first-child {
     margin-top: 20vh;

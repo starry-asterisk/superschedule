@@ -16,28 +16,28 @@ public class LoginSVC {
     UsersDBA u;
 
     public JSONObject login(HttpServletRequest req, Map<String, String> param){
-        JSONObject json = new JSONObject();
-        json.put("limit", 1);
+        JSONObject condition = new JSONObject();
+        condition.put("limit", 1);
         Object[][] where = {{"token",'!',null},{"token",'=',param.get("token")}};
-        json.put("where",where);
-        JSONArray r = u.find(json);
+        condition.put("where",where);
+        JSONArray r = u.find(condition);
         if(r.toArray().length < 1){
             where = new Object[][]{
                     {"name", '=', param.get("id")},
                     {"pw", '=', param.get("pw")}
             };
-            json.put("where",where);
-            r = u.find(json);
+            condition.put("where",where);
+            r = u.find(condition);
         }
-        json = new JSONObject();
+        condition = new JSONObject();
         if(r.toArray().length < 1){
-            json.put("status", 404);
+            condition.put("status", 404);
         }else{
-            json.put("status", 200);
+            condition.put("status", 200);
             HttpSession session = req.getSession();
             session.setAttribute("user", r.get(0));
         }
 
-        return json;
+        return condition;
     }
 }

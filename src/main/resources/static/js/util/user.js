@@ -9,7 +9,7 @@ function login(isAuto = false, token){
         }
     }
     $('.loading').show();
-    postData('/login', data).then((result) => {
+    ajax('/users/login', data).then((result) => {
         $('.loading').hide();
         switch (result.status){
             case 404:
@@ -30,7 +30,7 @@ function login(isAuto = false, token){
 
 function logout(){
     $('.loading').show();
-    postData('/logout', {}).then((result) => {
+    ajax('/users/logout', {}).then((result) => {
         $('.loading').hide();
         switch (result.status){
             case 200:

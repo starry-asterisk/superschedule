@@ -37,7 +37,7 @@
             $('.input_description').prop('disabled', true);
             $('.upload_btn').prop('disabled',true);
             $('.loading').show();
-            postData('/upload', {
+            ajax('/upload', {
                 title: $('.input_title').val(),
                 description: $('.input_description').val(),
                 created: new Date().getTime(),
@@ -47,6 +47,27 @@
             });
         }
         function list(){
+            $('.loading').show();
+            ajaxGet('/boards', {}).then((data) => {
+                console.log(data); // JSON 데이터가 `data.json()` 호출에 의해 파싱됨
+                let wrap = document.createElement("div");
+                data.result.forEach(
+                    li => {
+                        wrap.innerHTML =
+                            `<div class="li" data-id="\${li.id}">`+
+                            `<svg>`+
+                            `<rect height="100%" width="100%"/>`+
+                            `</svg>`+
+                            `<div class="level" value="low"></div>`+
+                            `<div class="title">\${li.title}</div>`+
+                            `<div class="view_cnt">0</div>`+
+                            `</div>`;
+                        $('.board_list').append($(wrap).children());
+                    }
+                );
+                $('.board_list').addClass("on");
+                $('.loading').hide();
+            });
         }
         function validate(type = 'default'){
             let v, r = false;
@@ -95,16 +116,7 @@
         <a href="javascript:void(0);" class="header_sub">Sign in</a>
     </header>
     <main>
-        <div class="board_list on">
-            <div class="li">
-                <svg>
-                    <rect width="100%" height="100%" stroke-dasharray="16 1 0" stroke-dashoffset="16px" stroke="black" fill="transparent" />
-                </svg>
-                <div class="level" value="높음"></div>
-                <div class="title">테스트 제목입니다</div>
-                <div class="view_cnt">32</div>
-            </div>
-        </div>
+        <div class="board_list"></div>
         <div>
             <button class="go_btn">write</button>
             <button class="list_btn">list</button>

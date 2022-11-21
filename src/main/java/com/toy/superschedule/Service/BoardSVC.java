@@ -1,53 +1,27 @@
 package com.toy.superschedule.Service;
 
+import com.toy.superschedule.db.BoardDBA;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
-
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+@Service
 public class BoardSVC {
-    @RequestMapping(method={RequestMethod.GET}, value="/boards")
-    public JSONObject list(HttpServletRequest req, @RequestBody Map<String, String> param){
-        JSONObject r = new JSONObject();
+    @Autowired
+    BoardDBA d;
 
-        System.out.println(param);
-        r.put("result", "it was success");
-        return r;
-    }
-    @RequestMapping(method={RequestMethod.POST}, value="/boards")
-    public JSONObject add(HttpServletRequest req, @RequestBody Map<String, String> param){
-        JSONObject r = new JSONObject();
 
-        System.out.println(param);
-        r.put("result", "it was success");
-        return r;
-    }
-    @RequestMapping(method={RequestMethod.PUT}, value="/boards/{id}")
-    public JSONObject edit(@PathVariable int id, @RequestBody Map<String, String> param){
-        JSONObject r = new JSONObject();
+    public JSONArray searchList(int page, String title, String author_nickname, String order, int orderASC){
 
-        System.out.println(param);
-        r.put("result", "it was success");
-        return r;
-    }
-    @RequestMapping(method={RequestMethod.GET}, value="/boards/{id}")
-    public JSONObject detail(@PathVariable int id){
-        JSONObject r = new JSONObject();
+        JSONObject condition = new JSONObject();
+        condition.put("limit", d.DEFAULT_PAGINATION);
+        Object[][] where = {{"author_nickname",'%',author_nickname},{"title",'%',title}};
+        condition.put("where",where);
+        condition.put("page",page);
+        condition.put("orderBy",order);
+        condition.put("orderASC",orderASC);
 
-        System.out.println(id);
-        r.put("result", "it was success");
-        return r;
+        return d.find(condition);
     }
-    @RequestMapping(method={RequestMethod.DELETE}, value="/boards/{id}")
-    public JSONObject delete(@PathVariable int id){
-        JSONObject r = new JSONObject();
 
-        System.out.println(id);
-        r.put("result", "it was success");
-        return r;
-    }
 }
