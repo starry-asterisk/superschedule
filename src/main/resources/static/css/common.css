@@ -6,9 +6,9 @@
     outline: none;
 }
 body {
+    background-color: var(--bg-color);
     box-shadow: var(--shadow-bg);
 }
-
 .wrap {
     display: flex;
     flex-direction: column;

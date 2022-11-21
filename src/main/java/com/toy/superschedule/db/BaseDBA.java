@@ -19,7 +19,7 @@ public class BaseDBA {
     public String EXTENSION = ".txt";
     public String NEW_LINE_DELIMITER = "\r\n";
     public String DELIMITER = ",";
-    public String[] DEFAULT_ORDER = {};
+    public String[] DEFAULT_ORDER = {"id"};
     public Object[][] DEFAULT_WHERE = {};
     public int DEFAULT_LIMIT = 0;
     public String[] COLUMN;
@@ -144,7 +144,12 @@ public class BaseDBA {
         int limit = (int) condition.getOrDefault("limit", DEFAULT_LIMIT);
         Object[][] where = (Object[][]) condition.getOrDefault("where", DEFAULT_WHERE);
         String[] orderBy = (String[]) condition.getOrDefault("orderBy", DEFAULT_ORDER);
+
         int idx = 0;
+        if(orderBy.length > 0){
+            table.sort(Comparator.comparing((JSONObject a) -> a.get(orderBy[0]).toString()));
+        }
+
         ListIterator i = table.listIterator();
         while(i.hasNext() && (limit == 0 || limit > idx)){
             JSONObject json = (JSONObject) i.next();
@@ -173,7 +178,13 @@ public class BaseDBA {
         return true;
     }
 
-    public boolean insert(JSONObject data) {
+    public boolean insertWithId(BufferedWriter writer, JSONObject data) throws IOException {
+        writer.write(getLine(data));
+        table.add(data);
+        return true;
+    }
+
+    public boolean insertOne(JSONObject data) {
         try {
             File file = new File(PATH + FILE_NAME + EXTENSION);
             if (file.exists()) {
@@ -188,7 +199,10 @@ public class BaseDBA {
         }
     }
 
-    public int insert(List<JSONObject> data) {
+    public int insertAll(List<JSONObject> data) {
+        return insertAll(data, false);
+    }
+    public int insertAll(List<JSONObject> data, boolean withId) {
         Iterator<JSONObject> i = data.iterator();
         int total_cnt = 0;
         try {
@@ -196,7 +210,7 @@ public class BaseDBA {
             if (file.exists()) {
                 BufferedWriter writer = getWriter(file);
                 while(i.hasNext()){
-                    if(insert(writer, i.next())){
+                    if(withId?insertWithId(writer, i.next()):insert(writer, i.next())){
                         total_cnt++;
                     }
                 }
@@ -216,7 +230,9 @@ public class BaseDBA {
     public int delete(JSONObject condition, int limit) {
         condition.put("limit", limit);
         JSONArray delete_arr = find(condition);
-        return delete(delete_arr);
+        int cnt = delete(delete_arr);
+        table_cnt -= cnt;
+        return cnt;
     }
 
     public int delete(JSONArray delete_arr) {
@@ -252,7 +268,7 @@ public class BaseDBA {
                 JSONObject json = (JSONObject) update_arr.get(i - 1);
                 json.putAll(data);
             }
-            insert(update_arr);
+            insertAll(update_arr, true);
         }
         return 0;
     }

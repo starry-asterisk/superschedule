@@ -2,7 +2,8 @@
     --default-color: rgb(0, 0, 0);
     --default-color-half: rgba(0, 0, 0, 0.5);
     --default-color-1of10: rgba(0, 0, 0, 0.1);
-    --bg-color: white;
+    --bg-color: rgb(236, 237, 243);
+    --bg-color2: rgb(255, 255, 255);
     --font-default-color: black;
     --font-minor-color: grey;
     --font-minor-color2: lightgrey;
@@ -17,14 +18,12 @@
         --default-color: rgb(232, 234, 237);
         --default-color-half: rgba(232, 234, 237, 0.5);
         --default-color-1of10: rgba(232, 234, 237, 0.1);
-        --bg-color: rgba(53,54,58,1);
+        --bg-color: rgb(53,54,58);
+        --bg-color2: rgb(47,47,49);
         --font-default-color: rgb(232, 234, 237);
         --font-minor-color: grey;
         --font-minor-color2: grey;
         --shadow-bg: inset 0 0 5rem rgb(0 0 0 / 50%);
-    }
-    body {
-        background-color: var(--bg-color);
     }
 }
 

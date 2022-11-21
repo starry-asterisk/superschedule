@@ -95,6 +95,16 @@
         <a href="javascript:void(0);" class="header_sub">Sign in</a>
     </header>
     <main>
+        <div class="board_list on">
+            <div class="li">
+                <svg>
+                    <rect width="100%" height="100%" stroke-dasharray="16 1 0" stroke-dashoffset="16px" stroke="black" fill="transparent" />
+                </svg>
+                <div class="level" value="높음"></div>
+                <div class="title">테스트 제목입니다</div>
+                <div class="view_cnt">32</div>
+            </div>
+        </div>
         <div>
             <button class="go_btn">write</button>
             <button class="list_btn">list</button>

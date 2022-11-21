@@ -17,11 +17,9 @@ public class LoginSVC {
 
     public JSONObject login(HttpServletRequest req, Map<String, String> param){
         JSONObject json = new JSONObject();
-        json.put("limit", 0);
+        json.put("limit", 1);
         Object[][] where = {{"token",'!',null},{"token",'=',param.get("token")}};
         json.put("where",where);
-        String[] orderBy = {};
-        json.put("orderBy",orderBy);
         JSONArray r = u.find(json);
         if(r.toArray().length < 1){
             where = new Object[][]{
