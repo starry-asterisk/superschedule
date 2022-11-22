@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.Map;
 
 
@@ -20,15 +21,13 @@ public class BoardController {
     @RequestMapping(method={RequestMethod.GET}, value="/boards")
     public JSONObject list(@RequestParam(required = false) Map<String, String> param){
         JSONObject r = new JSONObject();
-        r.put("result", boardSvc.searchList(Integer.parseInt(param.getOrDefault("page", "0")), param.getOrDefault("title",""), param.getOrDefault("author_nickname",""), param.getOrDefault("order","created"),Integer.parseInt(param.getOrDefault("orderASC", "1"))));
+        r.put("result", boardSvc.searchList(Integer.parseInt(param.getOrDefault("page", "0")), param.getOrDefault("title",""), param.getOrDefault("author_nickname",""), param.getOrDefault("order","created"),Integer.parseInt(param.getOrDefault("orderASC", "-1"))));
         return r;
     }
     @RequestMapping(method={RequestMethod.POST}, value="/boards")
     public JSONObject add(HttpServletRequest req, @RequestBody Map<String, String> param){
         JSONObject r = new JSONObject();
-
-        System.out.println(param);
-        r.put("result", "it was success");
+        r.put("result", boardSvc.newBoard(param.get("title"), param.get("description"), req));
         return r;
     }
     @RequestMapping(method={RequestMethod.PUT}, value="/boards/{id}")

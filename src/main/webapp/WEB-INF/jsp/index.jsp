@@ -26,8 +26,12 @@
     <script type="text/javascript" src="${rootPath}/js/util/user.js"></script>
     <script>
         function go(){
-            $('.go_btn').toggleClass('on');
-            $('.input_title').focus();
+            if(loginData){
+                $('.go_btn').toggleClass('on');
+                $('.input_title').focus();
+            }else{
+                toast('로그인을 진행 해주셔야 진행 가능한 기능입니다',TOAST_LONG);
+            }
         }
         function apply(){
             $('.apply_btn').toggleClass('on');
@@ -37,35 +41,50 @@
             $('.input_description').prop('disabled', true);
             $('.upload_btn').prop('disabled',true);
             $('.loading').show();
-            ajax('/upload', {
-                title: $('.input_title').val(),
-                description: $('.input_description').val(),
-                created: new Date().getTime(),
-            }).then((data) => {
-                console.log(data); // JSON 데이터가 `data.json()` 호출에 의해 파싱됨
+            ajax('/boards', {
+                title: getDbStr($('.input_title').val()),
+                description: getDbStr($('.input_description').val())
+            },'POST').then((data) => {
                 $('.loading').hide();
+                if(data.result){
+                    location.reload()
+                }else{
+                    toast('게시글 작성에 실패했습니다.',TOAST_LONG);
+                }
             });
         }
         function list(){
             $('.loading').show();
             ajaxGet('/boards', {}).then((data) => {
-                console.log(data); // JSON 데이터가 `data.json()` 호출에 의해 파싱됨
                 let wrap = document.createElement("div");
+                let user_name = loginData!=null?loginData.name:null;
                 data.result.forEach(
                     li => {
                         wrap.innerHTML =
-                            `<div class="li" data-id="\${li.id}">`+
+                            `<div class="li\${li.author==user_name?' my':''}" data-id="\${li.id}">`+
                             `<svg>`+
                             `<rect height="100%" width="100%"/>`+
                             `</svg>`+
-                            `<div class="level" value="low"></div>`+
-                            `<div class="title">\${li.title}</div>`+
-                            `<div class="view_cnt">0</div>`+
+                            `<div class="level" value="\${li.danger_level}"></div>`+
+                            `<div class="title">\${getDbStr(li.title, false)}</div>`+
+                            `<div class="author_nickname">\${li.author_nickname}</div>`+
+                            `<div class="li_detail">`+
+                            `<div class="info_bar">`+
+                            `<button data-id="\${li.id}" class="board_del" icon="🔥" title="삭제"></button>`+
+                            `<button data-id="\${li.id}" class="board_edit" icon="🔧" title="수정"></button>`+
+                            `<button data-id="\${li.id}" class="board_reply" icon="💬" title="댓글로 이동"></button>`+
+                            `<div class="created">\${new Date(li.created).toLocaleString()}</div>`+
+                            `</div>`+
+                            `<pre class="contents">\${getDbStr(li.contents, false)}</pre>`+
+                            `</div>`+
                             `</div>`;
                         $('.board_list').append($(wrap).children());
                     }
                 );
                 $('.board_list').addClass("on");
+                if(data.result.length < 1){
+                    $('.board_list').addClass("empty");
+                }
                 $('.loading').hide();
             });
         }
@@ -92,15 +111,12 @@
         $(document).on('click','.apply_btn', apply);
         $(document).on('click','.upload_btn', upload);
         $(document).on('click','.header_sub', e => {if(loginData){logout();}else{modal(template.login);}});
+        $(document).on('click','.board_list .li .title', e => {$(e.target).parent().toggleClass("on");});
 
         $(document).on('input','.input_title', e => {validate('title')});
         $(document).on('input','.input_description', e => {validate('description')});
 
         $(document).on('keypress','.input_title', e => {if(event.key == 'Enter' && validate('title')){apply();}});
-
-
-
-
     </script>
 </head>
 <body>

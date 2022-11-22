@@ -74,7 +74,7 @@ main {
     left: 0;
     right: 0;
     background: linear-gradient(var(--bg-color) , transparent);
-    height: 20vh;
+    height: 12vh;
 }
 .board_list::before {
     content: '';
@@ -84,7 +84,26 @@ main {
     left: 0;
     right: 0;
     background: linear-gradient(transparent , var(--bg-color));
-    height: 20vh;
+    height: 12vh;
+    z-index: 1;
+}
+.board_list.empty::after {
+    content: 'there is no article yet.';
+    font-size: 2em;
+    position: relative;
+    display: block;
+    background: none;
+    height: auto;
+    color: var(--font-minor-color);
+}
+.board_list.empty::before {
+    content: 'No List';
+    font-size: 6em;
+    position: relative;
+    display: block;
+    background: none;
+    height: auto;
+    font-weight: bold;
 }
 .board_list .li {
     display: flex;
@@ -97,6 +116,7 @@ main {
     background-color: var(--bg-color2);
     padding: 5px;
     border-radius: 3px;
+    transition: 0.5s height;
 }
 .board_list .li svg {
     position: absolute;
@@ -138,7 +158,7 @@ main {
 }
 .board_list .li .level,
 .board_list .li .title,
-.board_list .li .view_cnt {
+.board_list .li .author_nickname {
     display: inline-block;
     height: 100%;
 }
@@ -146,21 +166,105 @@ main {
     width: 3px;
     margin-right: 77px;
 }
-.board_list .li .level[value=high] {
+.board_list .li .level[value="3"] {
     background-color: red;
 }
-.board_list .li .level[value=middle] {
+.board_list .li .level[value="2"] {
     background-color: orange;
 }
-.board_list .li .level[value=low] {
+.board_list .li .level[value="1"] {
     background-color: yellow;
 }
-.board_list .li .level[value=none] {
+.board_list .li .level[value="0"] {
     background-color: green;
 }
 .board_list .li .title {
-    flex: 1
+    flex: 1;
+    cursor: pointer;
 }
-.board_list .li .view_cnt {
+.board_list .li .author_nickname {
     width: 80px;
+}
+.board_list .li .li_detail {
+    position: absolute;
+    height: 0px;
+    width: 100%;
+    left: 0;
+    padding: 0;
+    margin-top: 40px;
+    background: var(--bg-color2);
+    border-radius: 3px;
+    transition: 0.5s height;
+    overflow: hidden;
+}
+.board_list .li .li_detail .info_bar{
+    position: relative;
+    padding: 0 10px;
+    width: calc(100% + 10px);
+    left: -5px;
+    height: 40px;
+    border-top: 1px solid var(--default-color-1of10);
+    border-bottom: 1px solid var(--default-color-1of10);
+    color: 1px solid var(--default-color-1of10);
+}
+.board_list .li .li_detail .info_bar .created {
+    float: left;
+    height: 38px;
+    line-height: 38px;
+    font-size: 0.8em;
+    color: var(--default-color-half);
+}
+.board_list .li .li_detail .info_bar button {
+    position: relative;
+    float: right;
+    height: 38px;
+    padding: 0 5px;
+    width: auto;
+    border: none;
+}
+.board_list .li .li_detail .info_bar button::before {
+    content: '';
+    line-height: 0;
+    display: inline-block;
+    margin: 15px 0;
+    height: 8px;
+    width: 8px;
+    border: 1px solid var(--default-color-half);
+    padding: 0;
+    border-radius: 50%;
+    transition: 0.5s all;
+}
+.board_list .li .li_detail .info_bar button:hover::before {
+    margin: 5px 0;
+    height: 28px;
+    width: 28px;
+}
+.board_list .li .li_detail .info_bar button::after {
+    content: '1';
+    display: inline-block;
+    position: absolute;
+    line-height: 38px;
+    width: 18px;
+    font-size: 0px;
+    left: 0;
+}
+.board_list .li .li_detail .info_bar button:hover::after {
+    content: attr(icon);
+    display: inline-block;
+    position: absolute;
+    width: 38px;
+    font-size: inherit;
+    transition: 0.5s all;
+}
+.board_list .li.on {
+    height: 445px;
+}
+.board_list .li.on .li_detail {
+    height: 400px;
+    transition: 0.5s height;
+    padding: 5px;
+    overflow-y: auto;
+}
+.board_list .li.on svg {
+    display: none;
 }

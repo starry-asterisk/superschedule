@@ -2,7 +2,7 @@ package com.toy.superschedule.Util;
 
 public class util {
     public static boolean empty(Object v) {
-        return (v == null || "".equals(v) || "0".equals(v));
+        return (v == null || "".equals(v));
     }
 
     public static boolean evalBoolean(char operation, Object args1, Object args2) {

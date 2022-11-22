@@ -9,13 +9,13 @@ function login(isAuto = false, token){
         }
     }
     $('.loading').show();
-    ajax('/users/login', data).then((result) => {
+    ajax('/users/login', data, 'PUT').then((result) => {
         $('.loading').hide();
         switch (result.status){
             case 404:
                 localStorage.removeItem('login_token');
                 if(isAuto !== true){
-                    toast("로그인 실패!", TOAST_SHORT);
+                    toast("아이디 또는 패스워드가 일치하지 않습니다.", TOAST_SHORT);
                 }
                 break;
             case 200:
@@ -30,7 +30,7 @@ function login(isAuto = false, token){
 
 function logout(){
     $('.loading').show();
-    ajax('/users/logout', {}).then((result) => {
+    ajax('/users/logout', {}, 'PUT').then((result) => {
         $('.loading').hide();
         switch (result.status){
             case 200:

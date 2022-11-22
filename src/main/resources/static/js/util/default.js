@@ -79,6 +79,13 @@ function modal(setting = {}){
 function toast(msg, time){
     alert(msg);
 }
+function getDbStr(str, dir = true){
+    if(dir){
+        return str.replaceAll('\n','$n').replaceAll('\r','$r').replaceAll(',','$u002c');
+    }else{
+        return str.replaceAll('$n','\n').replaceAll('$r','\r').replaceAll('$u002c',',');
+    }
+}
 const TOAST_SHORT = 1500;
 const TOAST_LONG = 2500;
 const template = {};
