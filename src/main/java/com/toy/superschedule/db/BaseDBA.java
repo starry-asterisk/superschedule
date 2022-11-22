@@ -9,7 +9,9 @@ import java.util.*;
 
 import static com.toy.superschedule.Util.util.*;
 
-
+/**
+ * 기본 DBA객체 txt파일을 이용해서 DB처럼 작동한다
+ */
 @PropertySource(value = "application.yml")
 public class BaseDBA {
 

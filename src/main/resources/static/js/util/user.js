@@ -1,3 +1,8 @@
+/**
+ * 로그인 기능
+ * @param isAuto 자동 로그인 체크
+ * @param token 자동 로그인용 토큰
+ */
 function login(isAuto = false, token){
     let data = {};
     if(isAuto === true){
@@ -28,6 +33,9 @@ function login(isAuto = false, token){
     });
 }
 
+/**
+ * 로그아웃 기능, 로그아웃 성공 시 페이지 새로고침을 한다
+ */
 function logout(){
     $('.loading').show();
     ajax('/users/logout', {}, 'PUT').then((result) => {
@@ -45,6 +53,9 @@ function logout(){
     });
 }
 
+/*
+로그인 modal용 템플릿
+ */
 template.login = {
         cancelable: true,
         period: 0,

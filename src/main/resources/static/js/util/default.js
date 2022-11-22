@@ -1,3 +1,8 @@
+/**
+ * 모달창 생성 기능
+ * @param setting set this to false if you want to close modal window
+ * @returns void
+ */
 function modal(setting = {}){
     let wrap = $('.modal_wrap');
     let modal = wrap.find('.modal_window');
@@ -5,7 +10,7 @@ function modal(setting = {}){
         wrap.removeClass('on');
         wrap.removeClass('cancel-not');
         modal.find(':not(.modal_window > button)').remove();
-        return 0;
+        return;
     }
     if(setting.cancelable === false){
         wrap.addClass('cancel-not');
@@ -26,6 +31,11 @@ function modal(setting = {}){
         setTimeout(() => {modal(false);}, setting.period);
     }
 
+    /**
+     * get element for modal
+     * @param el settings Object
+     * @returns {HTMLElement} tag
+     */
     function getTag(el) {
         let tag;
         switch(el.role){
@@ -44,6 +54,7 @@ function modal(setting = {}){
                 tag.attr('placeholder',el.placeholder);
                 tag.attr('name',el.name);
                 tag.attr('type',el.type);
+                tag.prop('value',el.value);
                 break;
             case 'label':
                 tag = $(document.createElement('label'));
@@ -76,9 +87,22 @@ function modal(setting = {}){
         return tag;
     }
 }
+
+/**
+ * 일정시간동안 간단한 메시지를 띄워줌
+ * @param msg text want to show
+ * @param time set time you want to show by millisecond
+ */
 function toast(msg, time){
     alert(msg);
 }
+
+/**
+ * DB insert용으로 사용 불가한 특수문자를 escape처리 시켜줌
+ * @param str text
+ * @param dir false면 문장을 원상복구 시켜준다
+ * @returns {string}
+ */
 function getDbStr(str, dir = true){
     if(dir){
         return str.replaceAll('\n','$n').replaceAll('\r','$r').replaceAll(',','$u002c');
@@ -86,8 +110,20 @@ function getDbStr(str, dir = true){
         return str.replaceAll('$n','\n').replaceAll('$r','\r').replaceAll('$u002c',',');
     }
 }
+
+/**
+ * 토스트 메시징시 사용할 시간 변수
+ */
 const TOAST_SHORT = 1500;
 const TOAST_LONG = 2500;
+
+/**
+ * 템플릿 저장용 변수
+ */
 const template = {};
+
+/**
+ * 모달창 종료 버튼 클릭시 자동 종료 listener
+ */
 $(document).on('click','.modal_close', () => {modal(false);});
 

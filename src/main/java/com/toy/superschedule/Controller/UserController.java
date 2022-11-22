@@ -24,7 +24,6 @@ public class UserController {
         return loginSvc.login(req, param);
     }
 
-
     @RequestMapping(method={RequestMethod.PUT, RequestMethod.GET}, value="/users/logout")
     public JSONObject logout(HttpServletRequest req){
         JSONObject json = new JSONObject();

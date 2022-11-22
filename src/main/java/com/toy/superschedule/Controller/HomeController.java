@@ -7,14 +7,8 @@ import org.springframework.web.servlet.ModelAndView;
 @RestController
 @RequiredArgsConstructor
 public class HomeController {
-
-    @RequestMapping(method={RequestMethod.GET}, value={"/index", "/"})
-    public ModelAndView index(){
-        return new ModelAndView("index");
-    }
-
-    @RequestMapping(method={RequestMethod.GET}, value="/error")
-    public ModelAndView error(){
-        return new ModelAndView("error");
-    }
+    @GetMapping(value={"/index", "/"})
+    public ModelAndView index(){ return new ModelAndView("index"); }
+    @GetMapping(value="/error")
+    public ModelAndView error(){ return new ModelAndView("error"); }
 }

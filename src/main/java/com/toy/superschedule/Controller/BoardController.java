@@ -47,9 +47,7 @@ public class BoardController {
     @RequestMapping(method={RequestMethod.DELETE}, value="/boards/{id}")
     public JSONObject delete(@PathVariable int id){
         JSONObject r = new JSONObject();
-
-        System.out.println(id);
-        r.put("result", "it was success");
+        r.put("result", boardSvc.delOne(id));
         return r;
     }
 }

@@ -1,3 +1,9 @@
+/**
+ * POST, PUT, DELETE 용 ajax
+ * @param url 주소
+ * @param data 변수
+ * @returns {Promise<any>}
+ */
 async function ajax(url = '', data = {}, method= "POST") {
     // 옵션 기본 값은 *로 강조
     const response = await fetch(url, {
@@ -12,10 +18,19 @@ async function ajax(url = '', data = {}, method= "POST") {
     return response.json(); // JSON 응답을 네이티브 JavaScript 객체로 파싱
 }
 
+/**
+ * GET 요청 전용 ajax
+ * @param url 주소
+ * @param data 변수
+ * @returns {Promise<any>}
+ */
 async function ajaxGet(url = '', data = {}) {
-    // 옵션 기본 값은 *로 강조
-
-    const response = await fetch(url, {
+    let pathStr = '';
+    for(let key in data){
+        pathStr += `&${key}=${data[key]}`;
+    }
+    pathStr = pathStr.replace('&','?');
+    const response = await fetch(url + pathStr, {
         method: "GET", // *GET, POST, PUT, DELETE 등
         mode: 'cors', // this cannot be 'no-cors'
         headers: {

@@ -42,4 +42,13 @@ public class BoardSVC {
         return d.insertOne(data);
     }
 
+    public boolean delOne(int id){
+
+        JSONObject condition = new JSONObject();
+        condition.put("limit", 1);
+        Object[][] where = {{"id",'=',id}};
+        condition.put("where",where);
+
+        return d.delete(condition) > 0;
+    }
 }
