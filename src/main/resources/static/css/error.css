@@ -22,5 +22,5 @@ h3 {
 .error_code::before {
     content: attr(code);
     position: absolute;
-    left: 0px;
+    left: 0;
 }

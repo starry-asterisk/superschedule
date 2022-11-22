@@ -1,7 +1,6 @@
 package com.toy.superschedule.db;
 
 import org.springframework.stereotype.Component;
-
 import javax.annotation.PostConstruct;
 
 @Component

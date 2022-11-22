@@ -151,16 +151,16 @@ public class BaseDBA {
 
         int idx = 0;
         if(orderBy!=null){
-            Comparator c = Comparator.comparing((JSONObject a) -> a.get(orderBy).toString());
+            Comparator<JSONObject> c = Comparator.comparing((JSONObject a) -> a.get(orderBy).toString());
             if(orderASC < 0){
                 c = c.reversed();
             }
             table.sort(c);
         }
 
-        ListIterator i = table.listIterator();
+        ListIterator<JSONObject> i = table.listIterator();
         while(i.hasNext() && (limit == 0 || limit > idx)){
-            JSONObject json = (JSONObject) i.next();
+            JSONObject json = i.next();
             boolean isPassed = true;
             for (Object[] evalCondition : where) {
                 isPassed = evalBoolean((Character) evalCondition[1], json.get(evalCondition[0]), evalCondition[2]);

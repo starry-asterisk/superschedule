@@ -94,14 +94,14 @@
                 case 'default':
                 case 'title':
                     v = $('.input_title').val();
-                    r = v ? false : true;
+                    r = !v;
                     $('.apply_btn').prop('disabled',r);
-                    if(type == 'title'){break;}
+                    if(type === 'title'){break;}
                 case 'description':
                     v = $('.input_description').val();
-                    r = v ? false : true;
+                    r = !v;
                     $('.upload_btn').prop('disabled',r);
-                    if(type == 'description'){break;}
+                    if(type === 'description'){break;}
             }
             return !r;
         }
@@ -110,13 +110,13 @@
         $(document).on('click','.list_btn', list);
         $(document).on('click','.apply_btn', apply);
         $(document).on('click','.upload_btn', upload);
-        $(document).on('click','.header_sub', e => {if(loginData){logout();}else{modal(template.login);}});
+        $(document).on('click','.header_sub', () => {if(loginData){logout();}else{modal(template.login);}});
         $(document).on('click','.board_list .li .title', e => {$(e.target).parent().toggleClass("on");});
 
-        $(document).on('input','.input_title', e => {validate('title')});
-        $(document).on('input','.input_description', e => {validate('description')});
+        $(document).on('input','.input_title', () => {validate('title')});
+        $(document).on('input','.input_description', () => {validate('description')});
 
-        $(document).on('keypress','.input_title', e => {if(event.key == 'Enter' && validate('title')){apply();}});
+        $(document).on('keypress','.input_title', e => {if(e.key === 'Enter' && validate('title')){apply();}});
     </script>
 </head>
 <body>

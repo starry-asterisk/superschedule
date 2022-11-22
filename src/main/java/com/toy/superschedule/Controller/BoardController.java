@@ -1,14 +1,12 @@
 package com.toy.superschedule.Controller;
 
 import com.toy.superschedule.Service.BoardSVC;
-import com.toy.superschedule.Service.LoginSVC;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
 import java.util.Map;
 
 

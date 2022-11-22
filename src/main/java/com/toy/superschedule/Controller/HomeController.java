@@ -10,13 +10,11 @@ public class HomeController {
 
     @RequestMapping(method={RequestMethod.GET}, value={"/index", "/"})
     public ModelAndView index(){
-        ModelAndView mov = new ModelAndView("index");
-        return mov;
+        return new ModelAndView("index");
     }
 
     @RequestMapping(method={RequestMethod.GET}, value="/error")
     public ModelAndView error(){
-        ModelAndView mov = new ModelAndView("error");
-        return mov;
+        return new ModelAndView("error");
     }
 }

@@ -36,6 +36,7 @@ function logout(){
             case 200:
                 localStorage.removeItem('login_token');
                 location.reload();
+                break;
             default:
                 console.error("logout failed...");
                 console.log(result);
@@ -62,7 +63,7 @@ template.login = {
 * 자동 로그인 예약 실행
 * */
 if(loginData){
-    $(document).ready(e => {
+    $(document).ready(() => {
         $('.header_sub').text(`hello ${loginData.nickname} | sign out`);
     });
 }else{

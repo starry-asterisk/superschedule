@@ -23,7 +23,7 @@ function modal(setting = {}){
     });
     wrap.addClass('on');
     if(setting.period > 0){
-        setTimeout(e => {modal(false);}, setting.period);
+        setTimeout(() => {modal(false);}, setting.period);
     }
 
     function getTag(el) {
@@ -62,7 +62,7 @@ function modal(setting = {}){
                         tag.addClass('invert');
                         break;
                     case 'apply':
-                        tag.on('click', e => {
+                        tag.on('click', () => {
                             let return_data = {};
                             modal.find('input, textarea').each((idx, el) => {
                                 return_data[el.getAttribute('name')] = el.value;
@@ -89,5 +89,5 @@ function getDbStr(str, dir = true){
 const TOAST_SHORT = 1500;
 const TOAST_LONG = 2500;
 const template = {};
-$(document).on('click','.modal_close', e => {modal(false);});
+$(document).on('click','.modal_close', () => {modal(false);});
 

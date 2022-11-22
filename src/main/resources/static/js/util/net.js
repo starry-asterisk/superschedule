@@ -7,7 +7,7 @@ async function ajax(url = '', data = {}, method= "POST") {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
         },
-         body: JSON.stringify(data), // body의 데이터 유형은 반드시 "Content-Type" 헤더와 일치해야 함
+         body: JSON.stringify(data), // body 의 데이터 유형은 반드시 "Content-Type" 헤더와 일치해야 함
     });
     return response.json(); // JSON 응답을 네이티브 JavaScript 객체로 파싱
 }
