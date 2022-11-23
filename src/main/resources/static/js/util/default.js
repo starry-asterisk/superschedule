@@ -93,8 +93,17 @@ function modal(setting = {}){
  * @param msg text want to show
  * @param time set time you want to show by millisecond
  */
-function toast(msg, time){
-    alert(msg);
+function toast(msg, time = TOAST_SHORT){
+    let p = document.createElement('p');
+    p.innerHTML = msg;
+    p.classList.add('toast');
+    document.body.appendChild(p);
+    setTimeout(() => {
+        $(p).css('animation-name', 'fadeOut');
+        setTimeout(() => {
+            $(p).remove();
+        },200);
+    },time);
 }
 
 /**
@@ -114,8 +123,8 @@ function getDbStr(str, dir = true){
 /**
  * 토스트 메시징시 사용할 시간 변수
  */
-const TOAST_SHORT = 1500;
-const TOAST_LONG = 2500;
+const TOAST_SHORT = 2000;
+const TOAST_LONG = 3200;
 
 /**
  * 템플릿 저장용 변수

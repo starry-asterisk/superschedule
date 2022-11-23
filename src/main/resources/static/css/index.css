@@ -163,20 +163,58 @@ main {
     height: 100%;
 }
 .board_list .li .level {
-    width: 3px;
-    margin-right: 77px;
+    width: 80px;
+    border: 0;
+    border-left: 3px solid transparent;
+}
+.board_list .li .level .checkbox {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    float: left;
+    height: 40px;
+    width: 40px;
+    padding: 16px;
+    transition: 0.5s all;
+}
+.board_list .li.checked .level .checkbox {
+    padding: 10px;
+}
+.board_list .li:not(.my) .level .checkbox {
+    pointer-events: none;
+}
+.board_list .li .level .checkbox::after {
+    content: '';
+    display: inherit;
+    height: 8px;
+    width: 8px;
+    border: 1px solid var(--font-minor-color);
+    padding: 0;
+    border-radius: 50%;
+    outline: 0 solid var(--default-color-1of10);
+    transition: 0.5s all;
+}
+.board_list .li.checked .level .checkbox::after {
+    height: 20px;
+    width: 20px;
+    outline-width: 6px;
+}
+.board_list .li:not(.my) .level .checkbox::after {
+    color: var(--disabled-border);
+    border-color: var(--disabled-border);
+    background-color: var(--disabled-bg);
 }
 .board_list .li .level[value="3"] {
-    background-color: red;
+    border-color: red;
 }
 .board_list .li .level[value="2"] {
-    background-color: orange;
+    border-color: orange;
 }
 .board_list .li .level[value="1"] {
-    background-color: yellow;
+    border-color: yellow;
 }
 .board_list .li .level[value="0"] {
-    background-color: green;
+    border-color: green;
 }
 .board_list .li .title {
     flex: 1;

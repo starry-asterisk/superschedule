@@ -57,7 +57,7 @@ function list(){
                     `<svg>`+
                     `<rect height="100%" width="100%"/>`+
                     `</svg>`+
-                    `<div class="level" value="${li.danger_level}"></div>`+
+                    `<div class="level" value="${li.danger_level}"><span class="checkbox"></span></div>`+
                     `<div class="title">${getDbStr(li.title, false)}</div>`+
                     `<div class="author_nickname">${li.author_nickname}</div>`+
                     `<div class="li_detail">`+

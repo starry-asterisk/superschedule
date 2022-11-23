@@ -1,5 +1,6 @@
 package com.toy.superschedule.db;
 
+import com.fasterxml.jackson.databind.ser.Serializers;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,7 +30,6 @@ public class BaseDBA {
     public JSONArray table;
     public int table_cnt = 0;
     public int table_increment = 0;
-
     public int DEFAULT_PAGINATION = 20;
 
     public void initFolder(){
@@ -293,5 +293,43 @@ public class BaseDBA {
             insertAll(update_arr, true);
         }
         return 0;
+    }
+
+    public JSONArray join(BaseDBA other_dba, String table_a_column){
+        return join(other_dba, table_a_column, table_a_column);
+    }
+
+    /**
+     * join기능 condition추가 필요
+     * @param other_dba
+     * @param table_a_column
+     * @param table_b_column
+     * @return
+     */
+    public JSONArray join(BaseDBA other_dba, String table_a_column, String table_b_column){
+        JSONArray result = new JSONArray();
+        JSONArray other_table = (JSONArray) other_dba.table.clone();
+        JSONObject this_row, other_row, new_row;
+        String casted_key;
+        for(int i = table.size() -1; i > -1; i-- ){
+            this_row = (JSONObject) table.get(i);
+            for(int j = other_table.size() -1; j > -1; j-- ){
+                other_row = (JSONObject) other_table.get(j);
+                if(this_row.get(table_a_column).toString().equals(other_row.get(table_b_column).toString())){
+                    new_row = new JSONObject();
+                    for (Object key : this_row.keySet()) {
+                        casted_key = (String)key;
+                        new_row.put(FILE_NAME+"."+casted_key, this_row.get(casted_key));
+                    }
+                    for (Object key : other_row.keySet()) {
+                        casted_key = (String)key;
+                        new_row.put(other_dba.FILE_NAME+"."+casted_key, other_row.get(casted_key));
+                    }
+                    result.add(new_row);
+                    break;
+                }
+            }
+        }
+        return result;
     }
 }

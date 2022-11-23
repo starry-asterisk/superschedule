@@ -175,7 +175,27 @@ button.invert {
 .modal_window > div > *{
     margin: 2px;
 }
-
+.toast {
+    display: block !important;
+    position: fixed;
+    top: 19px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 32em;
+    max-width: 42em;
+    margin: 0 auto;
+    background: var(--bg-color);
+    border: 1px solid var(--font-minor-color2);
+    border-radius: 4px;
+    padding: 10px;
+    box-shadow: 0 0.5rem 1rem var(--default-color-1of10);
+    animation-name: fadeIn;
+    animation-iteration-count: 1;
+    animation-timing-function: ease-in;
+    animation-fill-mode: forwards;
+    animation-duration: 0.2s;
+    z-index: 999999;
+}
 input, textarea {
     color: var(--grey);
     padding: 10px;

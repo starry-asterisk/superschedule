@@ -32,9 +32,11 @@
         $(document).on('click','.upload_btn', upload);
         $(document).on('click','.header_sub', () => {if(loginData){logout();}else{modal(template.login);}});
         $(document).on('click','.board_list .li .title', e => {$(e.target).parent().toggleClass("on");});
-        $(document).on('click','.board_list .li .board_del', boardDel);
-        $(document).on('click','.board_list .li .board_edit', boardEdit);
+        $(document).on('click','.board_list .li.my .board_del', boardDel);
+        $(document).on('click','.board_list .li.my .board_edit', boardEdit);
         $(document).on('click','.board_list .li .board_reply', boardReply);
+        $(document).on('click','.board_list .li .checkbox', e=>{$(e.target).parents('.li').toggleClass('checked')});
+        $(document).on('click','.board_list .li:not(.my) .board_del, .board_list .li:not(.my) .board_edit', () => {toast('본인이 작성한 글만 수정, 삭제 가능합니다.',TOAST_LONG);});
 
         $(document).on('input','.input_title', () => {validate('title')});
         $(document).on('input','.input_description', () => {validate('description')});
