@@ -53,6 +53,15 @@ function logout(){
     });
 }
 
+/**
+ * 회원가입 요청 기능
+ * @param data 새로운 회원 정보
+ */
+function signUp(data){
+    console.log(data);
+    toast('아직 기능이 완성되지 않았어요!');
+}
+
 /*
 로그인 modal용 템플릿
  */
@@ -65,10 +74,32 @@ template.login = {
             {role: 'margin', value: 15},
             {role: 'input', type: 'text', name: 'id', value: '', placeholder: 'ID'},
             {role: 'input', type: 'password', name: 'pw', value: '', placeholder: 'PASSWORD'},
+            {role: 'link', text: 'sign up', template: () => template.signUp},
             {role: 'margin', value: 15},
             [{role: 'button', type: 'apply', text: 'apply', callback: login}, {role: 'button', type: 'cancel', text: 'cancel'}]
         ],
     };
+
+/*
+회원가입 modal용 템플릿
+ */
+template.signUp = {
+    cancelable: true,
+    period: 0,
+    lines: [
+        {role: 'margin', value: 15},
+        {role: 'title', text: 'Sign Up'},
+        {role: 'content', text: '회원 정보를 입력해 주세요.'},
+        {role: 'margin', value: 15},
+        {role: 'input', type: 'text', name: 'nickname', value: '', placeholder: 'NAME'},
+        {role: 'input', type: 'text', name: 'name', value: '', placeholder: 'ID'},
+        {role: 'input', type: 'password', name: 'pw', value: '', placeholder: 'PASSWORD'},
+        {role: 'input', type: 'password', name: 'pw_confirm', value: '', placeholder: 'PASSWORD CONFIRM'},
+        {role: 'margin', value: 15},
+        [{role: 'button', type: 'apply', text: 'apply', callback: signUp}, {role: 'button', type: 'cancel', text: 'cancel'}],
+        {role: 'margin', value: 15}
+    ],
+};
 
 /*
 * 자동 로그인 예약 실행

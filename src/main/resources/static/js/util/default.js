@@ -5,11 +5,11 @@
  */
 function modal(setting = {}){
     let wrap = $('.modal_wrap');
-    let modal = wrap.find('.modal_window');
+    let modal_window = wrap.find('.modal_window');
+    wrap.removeClass('on');
+    wrap.removeClass('cancel-not');
+    modal_window.find(':not(.modal_window > button)').remove();
     if(setting === false){
-        wrap.removeClass('on');
-        wrap.removeClass('cancel-not');
-        modal.find(':not(.modal_window > button)').remove();
         return;
     }
     if(setting.cancelable === false){
@@ -24,7 +24,7 @@ function modal(setting = {}){
         }else{
             wrap.append(getTag(el));
         }
-        modal.append(wrap);
+        modal_window.append(wrap);
     });
     wrap.addClass('on');
     if(setting.period > 0){
@@ -64,6 +64,14 @@ function modal(setting = {}){
                 tag = $(document.createElement('div'));
                 tag.css('height', el.value + 'px');
                 break;
+            case 'link':
+                tag = $(document.createElement('a'));
+                tag.text(el.text);
+                tag.attr('href', 'javascript:void(0);');
+                tag.on('click',()=>{
+                    modal(el.template());
+                });
+                break;
             case 'button':
                 tag = $(document.createElement('button'));
                 tag.text(el.text);
@@ -75,7 +83,7 @@ function modal(setting = {}){
                     case 'apply':
                         tag.on('click', () => {
                             let return_data = {};
-                            modal.find('input, textarea').each((idx, el) => {
+                            modal_window.find('input, textarea').each((idx, el) => {
                                 return_data[el.getAttribute('name')] = el.value;
                             });
                             el.callback(return_data);
