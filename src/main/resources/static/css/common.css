@@ -202,3 +202,148 @@ input, textarea {
     height: 50px;
     min-height: 50px;
 }
+selectmenu {
+    display: inline-block;
+    position: relative;
+    height: 40px;
+    line-height: 40px;
+    min-width: 250px;
+    margin: 5px 0;
+    background: var(--bg-color2);
+    border: 1px solid var(--font-minor-color2);
+    border-radius: 3px;
+    text-align: left;
+}
+selectmenu::before {
+    color: var(--font-minor-color);
+    content: attr(placeholder);
+    display: block;
+    position: relative;
+    width: 100%;
+    padding: 0 10px;
+    line-height: 38px;
+}
+selectmenu option {
+    display: none;
+}
+selectmenu:focus {
+    border-color: var(--blue);
+    outline: 2px solid var(--skyblue);
+    color: var(--font-default-color);
+    filter: drop-shadow(0 0.5rem 1rem var(--default-color-1of10));
+}
+selectmenu:focus option{
+    position: relative;
+    text-align: inherit;
+    float: right;
+    display: block;
+    width: 100%;
+    left: 0;
+    right: 0;
+    background: var(--bg-color2);
+    border: 0 solid var(--font-minor-color2);
+    border-width: 0 1px;
+}
+selectmenu:focus option::after {
+    content: '';
+    position: absolute;
+    width: calc(100% - 6px);
+    left: 3px;
+    top: 3px;
+    height: 35px;
+    border-radius: 5px;
+    transition: 0.3s background-color;
+}
+selectmenu:focus option[selected=true]::after {
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    outline: 1px solid var(--skyblue);
+    border: 1px solid var(--skyblue);
+    border-radius: 2px;
+    z-index: 1;
+}
+selectmenu:not(:focus) option[selected=true] {
+    position: absolute;
+    text-align: inherit;
+    display: block;
+    padding: 0 0 0 10px;
+    line-height: 38px;
+    border-radius: 5px;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: var(--bg-color2);
+}
+selectmenu:focus option:not(:disabled):hover::after {
+    background-color: var(--default-color-1of10);
+    width: calc(100% - 6px);
+    left: 3px;
+    top: 3px;
+    height: 35px;
+    outline: 0;
+    border: 0;
+    border-radius: 5px;
+}
+selectmenu:focus option:disabled {
+    text-decoration: line-through;
+    color: var(--disabled-border);
+}
+selectmenu:focus option::before{
+    content: '';
+    display: inline-block;
+    position: relative;
+    width: 10px;
+}
+selectmenu:focus option:first-child{
+    border-width: 1px 1px 0 1px;
+    border-radius:3px 0;
+    margin-top: 10px;
+}
+selectmenu:focus option:last-child{
+    border-width: 0 1px 1px 1px;
+    border-radius: 0 3px;
+}
+selectmenu[disabled], selectmenu[disabled] option {
+    pointer-events: none;
+    color: var(--disabled-border);
+    border-color: var(--disabled-border);
+    background-color: var(--disabled-bg) !important;
+}
+.input_st_underline {
+    border-width: 0;
+    border-bottom-width: 2px;
+    border-color: var(--default-color-1of10);
+    padding: 0 10px;
+    text-align: left;
+    background: none;
+}
+.input_st_underline:focus {
+    border-color: var(--blue);
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    transition: background-color 5000s;
+}
+input:autofill,
+input:autofill:hover,
+input:autofill:focus,
+input:autofill:active {
+    transition: background-color 5000s;
+}
+.input_st_underline:-webkit-autofill,
+.input_st_underline:-webkit-autofill:hover,
+.input_st_underline:-webkit-autofill:focus,
+.input_st_underline:-webkit-autofill:active {
+    border-color: var(--green);
+}
+
+.input_st_underline:autofill,
+.input_st_underline:autofill:hover,
+.input_st_underline:autofill:focus,
+.input_st_underline:autofill:active {
+    border-color: var(--green);
+}

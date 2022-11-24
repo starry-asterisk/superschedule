@@ -63,7 +63,16 @@
             <button class="list_btn">list</button>
             <input type="text" class="input_title" placeholder="제목을 입력해 주세요.">
             <button class="apply_btn" disabled>apply title</button>
+            <div class="input_etc">
+                <selectmenu class="input_level" placeholder="우선순위" tabIndex="-1">
+                    <option value="1">낮음</option>
+                    <option value="2">중간</option>
+                    <option value="3">높음</option>
+                    <option value="0" selected="true">기타</option>
+                </selectmenu>
+            </div>
             <textarea class="input_description" placeholder="내용을 입력해 주세요."></textarea>
+            <div></div>
             <button class="upload_btn" disabled>upload</button>
         </div>
     </main>

@@ -30,6 +30,7 @@ function upload(){
     $('.loading').show();
     ajax('/boards', {
         title: getDbStr($('.input_title').val()),
+        level: $('.input_level option[selected=true]').val(),
         description: getDbStr($('.input_description').val())
     },'POST').then((data) => {
         $('.loading').hide();

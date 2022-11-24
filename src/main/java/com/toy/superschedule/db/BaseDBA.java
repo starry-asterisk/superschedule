@@ -1,6 +1,5 @@
 package com.toy.superschedule.db;
 
-import com.fasterxml.jackson.databind.ser.Serializers;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
@@ -295,7 +294,7 @@ public class BaseDBA {
         return 0;
     }
 
-    public JSONArray join(BaseDBA other_dba, String table_a_column){
+    public BaseDBA join(BaseDBA other_dba, String table_a_column){
         return join(other_dba, table_a_column, table_a_column);
     }
 
@@ -306,8 +305,9 @@ public class BaseDBA {
      * @param table_b_column
      * @return
      */
-    public JSONArray join(BaseDBA other_dba, String table_a_column, String table_b_column){
-        JSONArray result = new JSONArray();
+    public BaseDBA join(BaseDBA other_dba, String table_a_column, String table_b_column){
+        BaseDBA joined_dba = new BaseDBA();
+        joined_dba.table = new JSONArray();
         JSONArray other_table = (JSONArray) other_dba.table.clone();
         JSONObject this_row, other_row, new_row;
         String casted_key;
@@ -325,11 +325,23 @@ public class BaseDBA {
                         casted_key = (String)key;
                         new_row.put(other_dba.FILE_NAME+"."+casted_key, other_row.get(casted_key));
                     }
-                    result.add(new_row);
+                    joined_dba.table.add(new_row);
                     break;
                 }
             }
         }
-        return result;
+        int idx = 0;
+        joined_dba.COLUMN = new String[COLUMN.length + other_dba.COLUMN.length];
+        joined_dba.COLUMN_TYPE = new String[COLUMN.length + other_dba.COLUMN.length];
+        for (; idx < COLUMN.length; idx++) {
+            joined_dba.COLUMN[idx] = FILE_NAME+"."+COLUMN[idx];
+            joined_dba.COLUMN_TYPE[idx] = COLUMN_TYPE[idx];
+        }
+        for (; idx < COLUMN.length + other_dba.COLUMN.length; idx++) {
+            joined_dba.COLUMN[idx] = other_dba.FILE_NAME+"."+other_dba.COLUMN[idx - COLUMN.length];
+            joined_dba.COLUMN_TYPE[idx] = other_dba.COLUMN_TYPE[idx - COLUMN.length];
+        }
+        joined_dba.FILE_NAME = FILE_NAME+"_"+other_dba.FILE_NAME;
+        return joined_dba;
     }
 }

@@ -69,14 +69,17 @@ template.login = {
         cancelable: true,
         period: 0,
         lines: [
+            {role: 'margin', value: 15},
             {role: 'title', text: 'Login'},
             {role: 'content', text: '로그인 정보를 입력해 주세요.'},
             {role: 'margin', value: 15},
-            {role: 'input', type: 'text', name: 'id', value: '', placeholder: 'ID'},
-            {role: 'input', type: 'password', name: 'pw', value: '', placeholder: 'PASSWORD'},
+            {role: 'input', type: 'text', name: 'id', value: '', placeholder: 'ID', class:'input_st_underline'},
+            {role: 'input', type: 'password', name: 'pw', value: '', placeholder: 'PASSWORD', class:'input_st_underline'},
+            {role: 'margin', value: 15},
             {role: 'link', text: 'sign up', template: () => template.signUp},
             {role: 'margin', value: 15},
-            [{role: 'button', type: 'apply', text: 'apply', callback: login}, {role: 'button', type: 'cancel', text: 'cancel'}]
+            [{role: 'button', type: 'apply', text: 'apply', callback: login}, {role: 'button', type: 'cancel', text: 'cancel'}],
+            {role: 'margin', value: 15},
         ],
     };
 
@@ -91,10 +94,10 @@ template.signUp = {
         {role: 'title', text: 'Sign Up'},
         {role: 'content', text: '회원 정보를 입력해 주세요.'},
         {role: 'margin', value: 15},
-        {role: 'input', type: 'text', name: 'nickname', value: '', placeholder: 'NAME'},
-        {role: 'input', type: 'text', name: 'name', value: '', placeholder: 'ID'},
-        {role: 'input', type: 'password', name: 'pw', value: '', placeholder: 'PASSWORD'},
-        {role: 'input', type: 'password', name: 'pw_confirm', value: '', placeholder: 'PASSWORD CONFIRM'},
+        {role: 'input', type: 'text', name: 'nickname', value: '', placeholder: 'NAME', class:'input_st_underline'},
+        {role: 'input', type: 'text', name: 'name', value: '', placeholder: 'ID', class:'input_st_underline'},
+        {role: 'input', type: 'password', name: 'pw', value: '', placeholder: 'PASSWORD', class:'input_st_underline'},
+        {role: 'input', type: 'password', name: 'pw_confirm', value: '', placeholder: 'PASSWORD CONFIRM', class:'input_st_underline'},
         {role: 'margin', value: 15},
         [{role: 'button', type: 'apply', text: 'apply', callback: signUp}, {role: 'button', type: 'cancel', text: 'cancel'}],
         {role: 'margin', value: 15}

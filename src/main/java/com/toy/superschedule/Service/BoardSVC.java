@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.Map;
 
 @Service
 public class BoardSVC {
@@ -28,15 +29,15 @@ public class BoardSVC {
         return d.find(condition);
     }
 
-    public boolean newBoard(String title, String contents, HttpServletRequest req){
+    public boolean newBoard(Map<String, String> param, HttpServletRequest req){
 
         JSONObject data = new JSONObject();
         JSONObject user = (JSONObject) req.getSession().getAttribute("user");
-        data.put("title", title);
-        data.put("contents", contents);
+        data.put("title", param.getOrDefault("title","[ERROR_TITLE_IS_NULL]"));
+        data.put("contents", param.getOrDefault("description","[ERROR_CONTENTS_IS_NULL]"));
         data.put("author", user.get("name"));
         data.put("author_nickname", user.get("nickname"));
-        data.put("danger_level", 0);
+        data.put("danger_level", param.getOrDefault("level","0"));
         data.put("created", new Date().getTime());
 
         return d.insertOne(data);

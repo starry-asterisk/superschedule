@@ -25,7 +25,7 @@ public class BoardController {
     @RequestMapping(method={RequestMethod.POST}, value="/boards")
     public JSONObject add(HttpServletRequest req, @RequestBody Map<String, String> param){
         JSONObject r = new JSONObject();
-        r.put("result", boardSvc.newBoard(param.get("title"), param.get("description"), req));
+        r.put("result", boardSvc.newBoard(param, req));
         return r;
     }
     @RequestMapping(method={RequestMethod.PUT}, value="/boards/{id}")

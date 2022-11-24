@@ -8,15 +8,21 @@
     display: none !important;
 }
 .input_title, .input_description {
-    display: block;
-    width: 0;
-    max-width: 45em;
     padding: 10px;
+}
+.input_title, .input_description, .input_etc {
+    position: fixed;
+    display: block;
+    max-width: 45em;
     height: 50px;
     min-height: 50px;
     transition: 1s width;
     margin: 0 auto;
     visibility: hidden;
+}
+.input_etc {
+    text-align: left;
+    width: 100%;
 }
 .input_description {
     margin-top: 10px;
@@ -37,7 +43,10 @@
     }
 }
 .go_btn.on ~ .input_title,
-.apply_btn.on ~ .input_description {
+.apply_btn.on ~ .input_description,
+.apply_btn.on ~ .input_etc
+{
+    position: inherit;
     width: 100%;
     visibility: visible;
 }
@@ -205,16 +214,16 @@ main {
     background-color: var(--disabled-bg);
 }
 .board_list .li .level[value="3"] {
-    border-color: red;
+    border-color: var(--red-darken);
 }
 .board_list .li .level[value="2"] {
-    border-color: orange;
+    border-color: var(--orange);
 }
 .board_list .li .level[value="1"] {
-    border-color: yellow;
+    border-color: var(--yellow);
 }
 .board_list .li .level[value="0"] {
-    border-color: green;
+    border-color: var(--green-darken);
 }
 .board_list .li .title {
     flex: 1;

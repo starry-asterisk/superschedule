@@ -92,6 +92,9 @@ function modal(setting = {}){
                 }
                 break;
         }
+        if(el.class){
+            tag.attr('class', el.class);
+        }
         return tag;
     }
 }
@@ -143,4 +146,5 @@ const template = {};
  * 모달창 종료 버튼 클릭시 자동 종료 listener
  */
 $(document).on('click','.modal_close', () => {modal(false);});
+$(document).on('click','selectmenu option', e => {e.target.parentElement.blur();$(e.target.parentElement).children().attr('selected',false);e.target.setAttribute('selected', true);});
 

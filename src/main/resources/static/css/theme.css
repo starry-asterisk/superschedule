@@ -4,13 +4,26 @@
     --default-color-1of10: rgba(0, 0, 0, 0.1);
     --bg-color: rgb(236, 237, 243);
     --bg-color2: rgb(255, 255, 255);
-    --font-default-color: black;
-    --font-minor-color: grey;
-    --font-minor-color2: lightgrey;
-    --disabled-bg: rgba(239, 239, 239, 0.3);
-    --disabled-border: rgba(118, 118, 118, 0.3);
+    --font-default-color: #101223;
+    --font-minor-color: rgba(119, 121, 134);
+    --font-minor-color2: rgb(210, 212, 218);
     --shadow-bg: inset 0 0 5rem rgb(0 0 0 / 10%);
+
+    --disabled-bg: rgb(242, 243, 244);
+    --disabled-border: rgba(118, 118, 118, 0.3);
+
     --grey: rgba(53,54,58,1);
+    --red: #E74C3C;
+    --red-darken: #C0392B;
+    --orange: #E67E22;
+    --orange-darken: #D35400;
+    --yellow: #F1C40F;
+    --yellow-darken: #F39C12;
+    --green: #2ECC71;
+    --green-darken: #27AE60;
+    --blue: #3498DB;
+    --blue-darken: #2980B9;
+    --skyblue: #87ceeb;
 }
 @media (prefers-color-scheme: dark) {
     /* 다크 모드에 적용할 스타일 정의 */
@@ -21,8 +34,8 @@
         --bg-color: rgb(53,54,58);
         --bg-color2: rgb(47,47,49);
         --font-default-color: rgb(232, 234, 237);
-        --font-minor-color: grey;
-        --font-minor-color2: grey;
+        --font-minor-color: rgba(119, 121, 134);
+        --font-minor-color2: rgba(119, 121, 134);
         --shadow-bg: inset 0 0 5rem rgb(0 0 0 / 50%);
     }
 }
