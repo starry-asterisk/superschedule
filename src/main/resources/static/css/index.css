@@ -8,7 +8,7 @@
     display: none !important;
 }
 .input_title, .input_description {
-    padding: 10px;
+    width: 0;
 }
 .input_title, .input_description, .input_etc {
     position: fixed;
@@ -23,6 +23,25 @@
 .input_etc {
     text-align: left;
     width: 100%;
+}
+.input_etc selectmenu {
+    width: 100px;
+    min-width: 130px;
+}
+.input_etc input {
+    display: inline-block;
+    position: fixed;
+    padding: 5px;
+    min-height: 40px;
+    height: 40px !important;
+    line-height: 30px;
+    min-width: 250px;
+    margin: 5px;
+    background: var(--bg-color2);
+    border: 1px solid var(--font-minor-color2);
+    border-radius: 3px;
+    width: 100px;
+    min-width: 170px;
 }
 .input_description {
     margin-top: 10px;
@@ -250,6 +269,7 @@ main {
     width: calc(100% + 10px);
     left: -5px;
     height: 40px;
+    margin-top: 10px;
     border-top: 1px solid var(--default-color-1of10);
     border-bottom: 1px solid var(--default-color-1of10);
     color: 1px solid var(--default-color-1of10);

@@ -53,7 +53,7 @@
 <div class="loading"></div>
 <div class="wrap">
     <header>
-        <a href="/index" class="logo">SuperScheduler</a>
+        <a href="/" class="logo">SuperScheduler</a>
         <a href="javascript:void(0);" class="header_sub">Sign in</a>
     </header>
     <main>
@@ -63,6 +63,7 @@
             <button class="list_btn">list</button>
             <input type="text" class="input_title" placeholder="제목을 입력해 주세요.">
             <button class="apply_btn" disabled>apply title</button>
+            <textarea class="input_description" placeholder="내용을 입력해 주세요."></textarea>
             <div class="input_etc">
                 <selectmenu class="input_level" placeholder="우선순위" tabIndex="-1">
                     <option value="1">낮음</option>
@@ -70,8 +71,8 @@
                     <option value="3">높음</option>
                     <option value="0" selected="true">기타</option>
                 </selectmenu>
+                <input type="date">
             </div>
-            <textarea class="input_description" placeholder="내용을 입력해 주세요."></textarea>
             <div></div>
             <button class="upload_btn" disabled>upload</button>
         </div>
