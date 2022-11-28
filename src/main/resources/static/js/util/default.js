@@ -68,9 +68,7 @@ function modal(setting = {}){
                 tag = $(document.createElement('a'));
                 tag.text(el.text);
                 tag.attr('href', 'javascript:void(0);');
-                tag.on('click',()=>{
-                    modal(el.template());
-                });
+                tag.on('click',()=>{modal(el.template());});
                 break;
             case 'button':
                 tag = $(document.createElement('button'));

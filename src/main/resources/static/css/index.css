@@ -30,13 +30,11 @@
 }
 .input_etc input {
     display: inline-block;
-    position: fixed;
     padding: 5px;
     min-height: 40px;
     height: 40px !important;
     line-height: 30px;
     min-width: 250px;
-    margin: 5px;
     background: var(--bg-color2);
     border: 1px solid var(--font-minor-color2);
     border-radius: 3px;
@@ -93,6 +91,14 @@ main {
     display: block !important;
     max-height: 100%;
     overflow-y: auto;
+    -ms-overflow-style: none;
+}
+.board_list {
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none;  /* Firefox */
+}
+.board_list::-webkit-scrollbar {
+    display: none;  /* Safari and Chrome */
 }
 .board_list::after {
     content: '';
