@@ -270,6 +270,9 @@ main {
     transition: 0.5s height;
     overflow: hidden;
 }
+.board_list .li .li_detail img {
+    max-width: 100%;
+}
 .board_list .li .li_detail .info_bar{
     position: relative;
     padding: 0 10px;

@@ -61,6 +61,10 @@
     font-family: bootstrap-icons;
     content: "\F5C9";
 }
+.tool_bar > button[data-style=image]:after {
+    font-family: bootstrap-icons;
+    content: "\F428";
+}
 
 .tool_bar > button.on {
     background: var(--font-minor-color);
@@ -81,4 +85,8 @@
     bottom: 10px;
     color: var(--font-default-color);
     overflow-y: auto;
+}
+
+.textarea img {
+    max-width: 100%;
 }

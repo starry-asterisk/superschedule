@@ -35,6 +35,25 @@ class TextEditorHTML extends HTMLElement{
             tool_bar.append(button);
         }
 
+        let input_image = document.createElement("input");
+        input_image.setAttribute("type","file");
+
+        let button_image = document.createElement("button");
+        button_image.setAttribute("data-style", "image");
+        tool_bar.append(button_image);
+
+        button_image.addEventListener('click', function () {
+            input_image.click();
+        });
+
+        input_image.addEventListener('change', function (e) {
+            const files = e.target.files;
+            if (!!files) {
+                insertImageDate(files[0]);
+            }
+            e.target.value = '';
+        });
+
         const textarea = document.createElement("div");
         textarea.className = "textarea";
         textarea.setAttribute("contenteditable", true);
@@ -69,6 +88,15 @@ class TextEditorHTML extends HTMLElement{
             document.execCommand(style);
             checkStyle();
             textarea.focus();
+        }
+
+        function insertImageDate(file) {
+            const reader = new FileReader();
+            reader.addEventListener('load', function (e) {
+                textarea.focus();
+                document.execCommand('insertImage', false, `${reader.result}`);
+            });
+            reader.readAsDataURL(file);
         }
     }
 }
