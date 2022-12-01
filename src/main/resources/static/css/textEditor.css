@@ -1,0 +1,75 @@
+.tool_bar {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    height: 25px;
+    overflow: hidden;
+}
+.tool_bar > button {
+    cursor: pointer;
+    float: left;
+    height: 25px;
+    min-width: 25px;
+    padding: 0 5px;
+    line-height: 25px;
+    margin-right: 5px;
+    border: 1px solid var(--font-minor-color);
+    border-radius: 3px;
+    background: none;
+    color: var(--font-default-color);
+}
+
+.tool_bar > button[data-style=bold]:after {
+    content: "B";
+    font-weight: bold;
+}
+.tool_bar > button[data-style=italic]:after {
+    content: "I";
+    font-style: italic;
+}
+.tool_bar > button[data-style=underline]:after {
+    content: "U";
+    text-decoration: underline;
+}
+.tool_bar > button[data-style=strikeThrough]:after {
+    content: "S";
+    text-decoration: line-through;
+}
+.tool_bar > button[data-style=insertOrderedList]:after {
+    content: "ol";
+}
+.tool_bar > button[data-style=insertUnorderedList]:after {
+    content: "ul";
+}
+.tool_bar > button[data-style=justifyFull]:after {
+    content: "full";
+}
+.tool_bar > button[data-style=justifyLeft]:after {
+    content: "left";
+}
+.tool_bar > button[data-style=justifyCenter]:after {
+    content: "center";
+}
+.tool_bar > button[data-style=justifyRight]:after {
+    content: "right";
+}
+
+.tool_bar > button.on {
+    background: var(--font-minor-color);
+    color: var(--bg-color2);
+}
+.tool_bar > button:active {
+    background: var(--font-minor-color);
+    color: var(--bg-color2);
+    opacity: 0.7;
+}
+.textarea {
+    outline: none;
+    cursor: text;
+    position: absolute;
+    top: 40px;
+    left: 10px;
+    right: 10px;
+    bottom: 10px;
+}

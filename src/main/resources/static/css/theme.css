@@ -9,6 +9,7 @@
     --font-minor-color2: rgb(210, 212, 218);
     --shadow-bg: inset 0 0 5rem rgb(0 0 0 / 10%);
 
+    --input-bg: rgba(239, 239, 239, 0.3);
     --disabled-bg: rgb(242, 243, 244);
     --disabled-border: rgba(118, 118, 118, 0.3);
 

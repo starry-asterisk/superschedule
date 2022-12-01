@@ -24,6 +24,7 @@
     <script type="text/javascript" src="${rootPath}/js/util/default.js"></script>
     <script type="text/javascript" src="${rootPath}/js/util/net.js"></script>
     <script type="text/javascript" src="${rootPath}/js/util/user.js"></script>
+    <script type="text/javascript" src="${rootPath}/js/util/textEditor.js"></script>
     <script type="text/javascript" src="${rootPath}/js/util/index.js"></script>
     <script>
         $(document).on('click','.go_btn', go);
@@ -38,8 +39,8 @@
         $(document).on('click','.board_list .li .checkbox', e=>{$(e.target).parents('.li').toggleClass('checked')});
         $(document).on('click','.board_list .li:not(.my) .board_del, .board_list .li:not(.my) .board_edit', () => {toast('본인이 작성한 글만 수정, 삭제 가능합니다.',TOAST_LONG);});
 
-        $(document).on('input','.input_title', () => {validate('title')});
-        $(document).on('input','.input_description', () => {validate('description')});
+        $(document).on('input','.input_title', () => validate('title'));
+        $(document).on('input','.input_description', () => validate('description'));
 
         $(document).on('keypress','.input_title', e => {if(e.key === 'Enter' && validate('title')){apply();}});
     </script>
@@ -63,7 +64,7 @@
             <button class="list_btn">list</button>
             <input type="text" class="input_title" placeholder="제목을 입력해 주세요.">
             <button class="apply_btn" disabled>apply title</button>
-            <textarea class="input_description" placeholder="내용을 입력해 주세요."></textarea>
+            <text-editor class="input_description" placeholder="내용을 입력해 주세요."></text-editor>
             <div class="input_etc">
                 <selectmenu class="input_level" placeholder="우선순위" tabIndex="-1">
                     <option value="1">낮음</option>
