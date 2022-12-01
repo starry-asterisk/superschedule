@@ -63,9 +63,9 @@ function list(){
                     `<div class="author_nickname">${li.author_nickname}</div>`+
                     `<div class="li_detail">`+
                     `<div class="info_bar">`+
-                    `<button data-id="${li.id}" class="board_del" icon="🔥" title="삭제"></button>`+
-                    `<button data-id="${li.id}" class="board_edit" icon="🔧" title="수정"></button>`+
-                    `<button data-id="${li.id}" class="board_reply" icon="💬" title="댓글로 이동"></button>`+
+                    `<button data-id="${li.id}" class="board_del" icon="&#xF5DD" title="삭제"></button>`+
+                    `<button data-id="${li.id}" class="board_edit" icon="&#xF5DB" title="수정"></button>`+
+                    `<button data-id="${li.id}" class="board_reply" icon="&#xF51F" title="댓글로 이동"></button>`+
                     `<div class="created">${new Date(li.created).toLocaleString()}</div>`+
                     `</div>`+
                     `<pre class="contents">${getDbStr(li.contents, false)}</pre>`+

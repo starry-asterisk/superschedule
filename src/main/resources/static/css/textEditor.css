@@ -7,11 +7,12 @@
     overflow: hidden;
 }
 .tool_bar > button {
+    font-size: 17px;
     cursor: pointer;
     float: left;
     height: 25px;
     min-width: 25px;
-    padding: 0 5px;
+    padding: 0;
     line-height: 25px;
     margin-right: 5px;
     border: 1px solid var(--font-minor-color);
@@ -37,22 +38,28 @@
     text-decoration: line-through;
 }
 .tool_bar > button[data-style=insertOrderedList]:after {
-    content: "ol";
+    font-family: bootstrap-icons;
+    content: "\F475";
 }
 .tool_bar > button[data-style=insertUnorderedList]:after {
-    content: "ul";
+    font-family: bootstrap-icons;
+    content: "\F478";
 }
 .tool_bar > button[data-style=justifyFull]:after {
-    content: "full";
+    font-family: bootstrap-icons;
+    content: "\F5C8";
 }
 .tool_bar > button[data-style=justifyLeft]:after {
-    content: "left";
+    font-family: bootstrap-icons;
+    content: "\F5C7";
 }
 .tool_bar > button[data-style=justifyCenter]:after {
-    content: "center";
+    font-family: bootstrap-icons;
+    content: "\F5C4";
 }
 .tool_bar > button[data-style=justifyRight]:after {
-    content: "right";
+    font-family: bootstrap-icons;
+    content: "\F5C9";
 }
 
 .tool_bar > button.on {
@@ -72,4 +79,6 @@
     left: 10px;
     right: 10px;
     bottom: 10px;
+    color: var(--font-default-color);
+    overflow-y: auto;
 }

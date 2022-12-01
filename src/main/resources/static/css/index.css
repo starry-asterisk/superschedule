@@ -40,6 +40,7 @@
     border-radius: 3px;
     width: 100px;
     min-width: 170px;
+    color: var(--font-default-color);
 }
 .input_description {
     margin-top: 10px;
@@ -312,7 +313,7 @@ main {
     width: 28px;
 }
 .board_list .li .li_detail .info_bar button::after {
-    content: '1';
+    content: '';
     display: inline-block;
     position: absolute;
     line-height: 38px;
@@ -322,6 +323,7 @@ main {
 }
 .board_list .li .li_detail .info_bar button:hover::after {
     content: attr(icon);
+    font-family: bootstrap-icons;
     display: inline-block;
     position: absolute;
     width: 38px;
@@ -335,7 +337,6 @@ main {
     height: 400px;
     transition: 0.5s height;
     padding: 0;
-    overflow-y: auto;
 }
 .board_list .li.on svg {
     display: none;

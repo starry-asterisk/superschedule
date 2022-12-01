@@ -41,6 +41,10 @@ class TextEditorHTML extends HTMLElement{
 
         ["mousedown","keydown"].forEach(event => textarea.addEventListener(event, () => checkStyle()));
         textarea.addEventListener("input", e => _this.value = e.target.innerHTML);
+        textarea.addEventListener("paste", e => {
+            e.preventDefault();
+            document.execCommand("insertText", false, (e.originalEvent || e).clipboardData.getData('text/plain'));
+        });
 
         this.shadowRoot.append(style);
         this.shadowRoot.append(tool_bar);
