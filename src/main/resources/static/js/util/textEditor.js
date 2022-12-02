@@ -2,6 +2,7 @@ class TextEditorHTML extends HTMLElement{
 
     //initial value of editor
     value = '';
+    textarea = undefined;
 
     constructor() {
         super();
@@ -42,11 +43,9 @@ class TextEditorHTML extends HTMLElement{
         button_image.setAttribute("data-style", "image");
         tool_bar.append(button_image);
 
-        button_image.addEventListener('click', function () {
-            input_image.click();
-        });
+        button_image.addEventListener('click', () => input_image.click());
 
-        input_image.addEventListener('change', function (e) {
+        input_image.addEventListener('change', e => {
             const files = e.target.files;
             if (!!files) {
                 insertImageDate(files[0]);
@@ -64,10 +63,41 @@ class TextEditorHTML extends HTMLElement{
             e.preventDefault();
             document.execCommand("insertText", false, (e.originalEvent || e).clipboardData.getData('text/plain'));
         });
+        textarea.addEventListener("drop", e => {
+            e.preventDefault();
+            textarea.classList.remove("dragover");
+            if(e.dataTransfer.files.length > 0){
+                insertImageDate(e.dataTransfer.files[0]);
+            }
+        });
+        textarea.addEventListener("dragover", e => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = "move";
+            textarea.classList.add("dragover");
+        });
+        textarea.addEventListener("dragleave", e => {
+            e.preventDefault();
+            textarea.classList.remove("dragover");
+        });
+
+        this.textarea = textarea;
+
+        let button_verticalSize = document.createElement("button");
+        button_verticalSize.classList.add("vertical_size");
+        let Offset = 0;
+        button_verticalSize.addEventListener("mousedown", e => {
+            Offset = _this.offsetHeight + _this.getBoundingClientRect().top - e.pageY;
+        });
+        window.addEventListener("mousemove", e => {
+            if($(button_verticalSize).is(":active")){
+                _this.style.height = `${Offset + e.pageY - _this.getBoundingClientRect().top}px`;
+            }
+        });
 
         this.shadowRoot.append(style);
         this.shadowRoot.append(tool_bar);
         this.shadowRoot.append(textarea);
+        this.shadowRoot.append(button_verticalSize);
 
 
         function checkStyle() {
@@ -97,6 +127,19 @@ class TextEditorHTML extends HTMLElement{
                 document.execCommand('insertImage', false, `${reader.result}`);
             });
             reader.readAsDataURL(file);
+        }
+
+    }
+
+    static get observedAttributes() {
+        return ['placeholder'];
+    }
+
+    attributeChangedCallback(name, oldValue, newValue) {
+        switch (name){
+            case 'placeholder':
+                this.textarea.setAttribute(name, newValue);
+                break;
         }
     }
 }

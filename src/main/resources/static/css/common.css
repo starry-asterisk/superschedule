@@ -195,6 +195,7 @@ button.invert {
     animation-fill-mode: forwards;
     animation-duration: 0.2s;
     z-index: 999999;
+    /*color: var(--font-default-color);*/
 }
 input, textarea, text-editor {
     color: var(--grey);

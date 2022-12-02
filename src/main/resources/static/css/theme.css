@@ -29,7 +29,7 @@
     --skyblue: #87ceeb;
 }
 
-@media (prefers-color-scheme: light) {
+@media (prefers-color-scheme: dark) {
     /* 다크 모드에 적용할 스타일 정의 */
     :root {
         --default-color: rgb(232, 234, 237);

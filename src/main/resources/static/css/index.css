@@ -56,7 +56,7 @@
         width: 100%;
     }
     100% {
-        height: 200px;
+        height: 330px;
         width: 100%;
     }
 }
@@ -70,7 +70,7 @@
 }
 .apply_btn.on ~ .input_description {
     animation: description_appear 1s linear;
-    height: 200px;
+    height: 330px;
 }
 .go_btn.on ~ .apply_btn,
 .apply_btn.on ~ .upload_btn {
