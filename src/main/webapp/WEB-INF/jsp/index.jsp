@@ -37,6 +37,8 @@
         $(document).on('click','.board_list .li.my .board_edit', boardEdit);
         $(document).on('click','.board_list .li .board_reply', boardReply);
         $(document).on('click','.board_list .li .checkbox', e=>{$(e.target).parents('.li').toggleClass('checked')});
+        $(document).on('click','.board_list > p .delete_all', boardDelAll);
+        $(document).on('click','.board_list > p .checkbox', e=>{if($(e.target).hasClass('checked')){$('.board_list .li.my').removeClass('checked')}else{$('.board_list .li.my').addClass('checked')}});
         $(document).on('click','.board_list .li:not(.my) .board_del, .board_list .li:not(.my) .board_edit', () => {toast('본인이 작성한 글만 수정, 삭제 가능합니다.',TOAST_LONG);});
 
         $(document).on('input','.input_title', () => validate('title'));
@@ -58,7 +60,13 @@
         <a href="javascript:void(0);" class="header_sub">Sign in</a>
     </header>
     <main>
-        <div class="board_list"></div>
+        <div class="board_list">
+            <p>
+                <span class="checkbox"></span>
+                <span class="total_cnt"></span>
+                <button class="delete_all">&#xF5DD</button>
+            </p>
+        </div>
         <div>
             <button class="go_btn">write</button>
             <button class="list_btn">list</button>
@@ -74,7 +82,6 @@
                 </selectmenu>
                 <input type="date">
             </div>
-            <div></div>
             <button class="upload_btn" disabled>upload</button>
         </div>
     </main>

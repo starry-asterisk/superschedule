@@ -28,6 +28,12 @@ public class BoardController {
         r.put("result", boardSvc.newBoard(param, req));
         return r;
     }
+    @RequestMapping(method={RequestMethod.DELETE}, value="/boards")
+    public JSONObject deleteAll(HttpServletRequest req, @RequestBody Map<String, int[]> param){
+        JSONObject r = new JSONObject();
+        r.put("result", boardSvc.delAll(param.get("ids")));
+        return r;
+    }
     @RequestMapping(method={RequestMethod.PUT}, value="/boards/{id}")
     public JSONObject edit(@PathVariable int id, @RequestBody Map<String, String> param){
         JSONObject r = new JSONObject();
