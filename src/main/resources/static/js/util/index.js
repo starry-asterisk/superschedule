@@ -168,7 +168,7 @@ function boardEdit(e){
 }
 
 function boardReply(e){
-
+    location.href=`/boards/${e.target.getAttribute("data-id")}`;
 }
 
 template.board_del = el => {return {

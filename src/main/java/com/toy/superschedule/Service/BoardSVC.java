@@ -69,4 +69,17 @@ public class BoardSVC {
             return false;
         }
     }
+
+    public JSONObject getDetail(int id) {
+        JSONObject condition = new JSONObject();
+        condition.put("limit", 1);
+        Object[][] where = {{"id",'=',id}};
+        condition.put("where",where);
+        JSONArray db_result = d.find(condition);
+        if(db_result.size() > 0){
+            return (JSONObject) db_result.get(0);
+        }else {
+            return null;
+        }
+    }
 }
