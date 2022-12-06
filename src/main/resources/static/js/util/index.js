@@ -74,7 +74,26 @@ function list(param = {}){
                     `<pre class="contents">${getDbStr(li.contents, false)}</pre>`+
                     `</div>`+
                     `</div>`;
-                $('.board_list').append($(wrap).children());
+                let target = $(wrap).children()[0];
+                new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        if(mutation.attributeName === "class"){
+                            let checked = $('.board_list .li.checked');
+                            if(checked.length > 0) {
+                                $('.board_list > p').addClass("on");
+                                $('.board_list > p > .total_cnt').text(checked.length);
+                                if($('.board_list .li.my').length === checked.length){
+                                    $('.board_list > p > .checkbox').addClass('checked');
+                                }else{
+                                    $('.board_list > p > .checkbox').removeClass('checked');
+                                }
+                            } else {
+                                $('.board_list > p').removeClass("on");
+                            }
+                        }
+                    });
+                }).observe(target, {attributes: true});
+                $('.board_list').append(target);
             }
         );
         $('.board_list').addClass("on");
@@ -125,12 +144,34 @@ function boardDel(e){
     }
 }
 
+function boardDelAll(e){
+    if(e.id != null){
+        $('.loading').show();
+        ajax('/boards', {ids:e.id.split(',')},'DELETE').then((data) => {
+            $('.loading').hide();
+            if(data.result){
+                //reload page if result is success
+                location.reload();
+            }else{
+                toast('게시글 삭제에 실패했습니다.',TOAST_LONG);
+            }
+        });
+    }else{
+        let checked = $('.board_list .li.checked');
+        let ids = [];
+        $.each(checked, i => {
+            ids[i] = checked[i].getAttribute('data-id');
+        })
+        modal(template.board_del({value: ids, callback: boardDelAll}));
+    }
+}
+
 function boardEdit(e){
 
 }
 
 function boardReply(e){
-
+    location.href=`/boards/${e.target.getAttribute("data-id")}`;
 }
 
 template.board_del = el => {return {
@@ -140,7 +181,7 @@ template.board_del = el => {return {
         {role: 'title', text: '게시글 삭제'},
         [{role: 'content', text: '해당 글을 삭제 할까요?'},{role: 'input', type: 'hidden', name: 'id', value: el.value, placeholder: 'ID'}],
         {role: 'margin', value: 15},
-        [{role: 'button', type: 'apply', text: 'apply', callback: boardDel}, {role: 'button', type: 'cancel', text: 'cancel'}]
+        [{role: 'button', type: 'apply', text: 'apply', callback: el.callback?el.callback:boardDel}, {role: 'button', type: 'cancel', text: 'cancel'}]
     ],
 }};
 $(document).ready(()=>{

@@ -356,3 +356,49 @@ input:autofill:active {
 .input_st_underline:autofill:active {
     border-color: var(--green);
 }
+
+
+.checkbox {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    height: 40px;
+    width: 40px;
+    padding: 16px;
+    transition: 0.5s all;
+}
+.checkbox[checked=true],
+.checkbox:checked,
+.checkbox.checked{
+    padding: 10px;
+}
+.checkbox[disabled=true],
+.checkbox:disabled,
+.checkbox.disabled{
+    pointer-events: none;
+}
+.checkbox::after {
+    content: '';
+    display: inherit;
+    height: 8px;
+    width: 8px;
+    border: 1px solid var(--font-minor-color);
+    padding: 0;
+    border-radius: 50%;
+    outline: 0 solid var(--default-color-1of10);
+    transition: 0.5s all;
+}
+.checkbox[checked=true]::after,
+.checkbox:checked::after,
+.checkbox.checked::after {
+    height: 20px;
+    width: 20px;
+    outline-width: 6px;
+}
+.checkbox[disabled=true]::after,
+.checkbox:disabled::after,
+.checkbox.disabled::after {
+    color: var(--disabled-border);
+    border-color: var(--disabled-border);
+    background-color: var(--disabled-bg);
+}

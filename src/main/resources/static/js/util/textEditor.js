@@ -3,6 +3,7 @@ class TextEditorHTML extends HTMLElement{
     //initial value of editor
     value = '';
     textarea = undefined;
+    attachment = [];
 
     constructor() {
         super();
@@ -121,10 +122,18 @@ class TextEditorHTML extends HTMLElement{
         }
 
         function insertImageDate(file) {
+
+            //파일 타입 검사
+            if(file.type.indexOf("image") < 0) return toast("이미지만 선택해서 업로드 해주세요.", TOAST_SHORT);
+
+            //파일 사이즈 검사
+            if(file.size > 10485760) return toast("10MB 이하 사이즈만 업로드 해주세요", TOAST_SHORT);
+
             const reader = new FileReader();
             reader.addEventListener('load', function (e) {
                 textarea.focus();
                 document.execCommand('insertImage', false, `${reader.result}`);
+                _this.attachment.push(file);
             });
             reader.readAsDataURL(file);
         }

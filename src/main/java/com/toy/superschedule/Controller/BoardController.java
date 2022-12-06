@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
@@ -28,19 +29,24 @@ public class BoardController {
         r.put("result", boardSvc.newBoard(param, req));
         return r;
     }
+    @RequestMapping(method={RequestMethod.DELETE}, value="/boards")
+    public JSONObject deleteAll(HttpServletRequest req, @RequestBody Map<String, int[]> param){
+        JSONObject r = new JSONObject();
+        r.put("result", boardSvc.delAll(param.get("ids")));
+        return r;
+    }
+    @RequestMapping(method={RequestMethod.GET}, value="/boards/{id}")
+    public ModelAndView detail(@PathVariable int id){
+        ModelAndView r = new ModelAndView("boards/detail");
+        r.addObject("boards", boardSvc.getDetail(id));
+        return r;
+    }
+    public ModelAndView index(){ return new ModelAndView("index"); }
     @RequestMapping(method={RequestMethod.PUT}, value="/boards/{id}")
     public JSONObject edit(@PathVariable int id, @RequestBody Map<String, String> param){
         JSONObject r = new JSONObject();
 
         System.out.println(param);
-        r.put("result", "it was success");
-        return r;
-    }
-    @RequestMapping(method={RequestMethod.GET}, value="/boards/{id}")
-    public JSONObject detail(@PathVariable int id){
-        JSONObject r = new JSONObject();
-
-        System.out.println(id);
         r.put("result", "it was success");
         return r;
     }

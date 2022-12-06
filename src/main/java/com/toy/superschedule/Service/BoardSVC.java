@@ -52,4 +52,34 @@ public class BoardSVC {
 
         return d.delete(condition) > 0;
     }
+
+    public boolean delAll(int[] ids){
+        try {
+            for(int id:ids){
+                JSONObject condition = new JSONObject();
+                condition.put("limit", 1);
+                Object[][] where = {{"id",'=',id}};
+                condition.put("where",where);
+                if(d.delete(condition) <= 0){
+                    throw new Exception();
+                }
+            }
+            return true;
+        } catch(Exception e) {
+            return false;
+        }
+    }
+
+    public JSONObject getDetail(int id) {
+        JSONObject condition = new JSONObject();
+        condition.put("limit", 1);
+        Object[][] where = {{"id",'=',id}};
+        condition.put("where",where);
+        JSONArray db_result = d.find(condition);
+        if(db_result.size() > 0){
+            return (JSONObject) db_result.get(0);
+        }else {
+            return null;
+        }
+    }
 }
