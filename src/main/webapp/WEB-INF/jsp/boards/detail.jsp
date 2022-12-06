@@ -9,7 +9,7 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="${rootPath}/css/theme.css" rel="stylesheet">
     <link href="${rootPath}/css/common.css" rel="stylesheet">
-    <link href="${rootPath}/css/index.css" rel="stylesheet">
+    <link href="${rootPath}/css/boards/detail.css" rel="stylesheet">
 
     <title>SuperScheduler :: main</title>
 
@@ -18,7 +18,7 @@
         기본 변수 선언 부
         */
         let loginData = ${user!=null?user:'undefined'};
-
+        let created_dt = new Date(${boards.created}).toLocaleString();
     </script>
     <script src="https://code.jquery.com/jquery-3.6.1.slim.js" integrity="sha256-tXm+sa1uzsbFnbXt8GJqsgi2Tw+m4BLGDof6eUPjbtk=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
@@ -26,8 +26,23 @@
     <script type="text/javascript" src="${rootPath}/js/util/net.js"></script>
     <script type="text/javascript" src="${rootPath}/js/util/user.js"></script>
     <script type="text/javascript" src="${rootPath}/js/util/textEditor.js"></script>
-    <script type="text/javascript" src="${rootPath}/js/util/index.js"></script>
+    <script type="text/javascript" src="${rootPath}/js/util/boards/detail.js"></script>
     <script>
+        $(document).on('click','.header_sub', () => {if(loginData){logout();}else{modal(template.login);}});
+        $(document).on('click','.toggle', e => {
+            e.preventDefault();
+            e.stopPropagation();
+            e.target.parentElement.classList.toggle("right");
+        })
+        $(document).ready(() => {
+           $('.created').text(created_dt);
+           if(loginData){
+               document.body.classList.add("login");
+               if(loginData.name === "${boards.author}"){
+                   document.body.classList.add("my");
+               }
+           }
+        });
     </script>
 </head>
 <body>
@@ -43,24 +58,28 @@
         <a href="javascript:void(0);" class="header_sub">Sign in</a>
     </header>
     <main>
-        <div class="board_list on">
-            <div class="li my on" data-id="${boards.id}">
-                <svg><rect height="100%" width="100%"></rect></svg>
-                <div class="level" value="${boards.danger_level}">
-                    <span class="checkbox"></span>
-                </div>
-                <div class="title">${boards.title}</div>
-                <div class="author_nickname">${boards.author_nickname}</div>
-                <div class="li_detail">
-                    <div class="info_bar">
-                        <button data-id="${boards.id}" class="board_del" icon="" title="삭제"></button>
-                        <button data-id="${boards.id}" class="board_edit" icon="" title="수정"></button>
-                        <button data-id="${boards.id}" class="board_reply" icon="" title="댓글로 이동"></button>
-                        <div class="created">${boards.created}</div>
-                    </div>
-                    <pre class="contents">${boards.contents}</pre>
-                </div>
+        <div class="boards_wrap">
+            <div class="title" danger_level="${boards.danger_level}">
+                ${boards.title}
             </div>
+            <div class="info_bar">
+                <span class="author_nickname">${boards.author_nickname}</span>
+                <span class="created"></span>
+                <button data-id="${boards.id}" class="checkbox" icon="&#xF5DD" title="삭제"></button>
+                <button data-id="${boards.id}" class="checkbox" icon="&#xF5DB" title="수정"></button>
+                <button data-id="${boards.id}" class="checkbox" icon="&#xF51F" title="댓글로 이동"></button>
+            </div>
+            <pre class="contents">${boards.contents}</pre>
+            <div class="reply_editor">
+                <div class="toggle_wrap">
+                    <span>single line</span>
+                    <span class="toggle"></span>
+                    <span>multi line</span>
+                </div>
+                <input class="reply_single" type="text"/>
+                <text-editor class="reply_multi" placeholder="댓글을 작성해 주세요."></text-editor>
+            </div>
+            <div class="reply_list"></div>
         </div>
     </main>
     <footer>by <a href="https://github.com/starry-asterisk" style="color:cornflowerblue">@starry-asterisk</a></footer>

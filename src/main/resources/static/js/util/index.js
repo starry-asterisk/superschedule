@@ -184,6 +184,7 @@ template.board_del = el => {return {
         [{role: 'button', type: 'apply', text: 'apply', callback: el.callback?el.callback:boardDel}, {role: 'button', type: 'cancel', text: 'cancel'}]
     ],
 }};
+
 $(document).ready(()=>{
    if(location.search.length > 1){
        const param = {};

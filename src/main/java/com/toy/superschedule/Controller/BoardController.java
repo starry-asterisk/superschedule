@@ -20,7 +20,7 @@ public class BoardController {
     @RequestMapping(method={RequestMethod.GET}, value="/boards")
     public JSONObject list(@RequestParam(required = false) Map<String, String> param){
         JSONObject r = new JSONObject();
-        r.put("result", boardSvc.searchList(Integer.parseInt(param.getOrDefault("page", "0")), param.getOrDefault("title",""), param.getOrDefault("author_nickname",""), param.getOrDefault("order","created"),Integer.parseInt(param.getOrDefault("orderASC", "-1"))));
+        r.put("result", boardSvc.searchList(Integer.parseInt(param.getOrDefault("page", "1")), param.getOrDefault("title",""), param.getOrDefault("author_nickname",""), param.getOrDefault("order","id"),Integer.parseInt(param.getOrDefault("orderASC", "-1"))));
         return r;
     }
     @RequestMapping(method={RequestMethod.POST}, value="/boards")
@@ -41,7 +41,6 @@ public class BoardController {
         r.addObject("boards", boardSvc.getDetail(id));
         return r;
     }
-    public ModelAndView index(){ return new ModelAndView("index"); }
     @RequestMapping(method={RequestMethod.PUT}, value="/boards/{id}")
     public JSONObject edit(@PathVariable int id, @RequestBody Map<String, String> param){
         JSONObject r = new JSONObject();

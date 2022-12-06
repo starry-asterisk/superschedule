@@ -1,0 +1,192 @@
+.boards_wrap {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    width: 100%;
+    max-width: 45em;
+    min-height: 350px;
+    margin: auto;
+    background: var(--bg-color2);
+    border-radius: 3px;
+    padding: 5px 0;
+}
+.title {
+    margin: 0 5px;
+    border-top: 3px solid transparent;
+    line-height: 40px;
+}
+.title[danger_level="3"] {
+    border-color: var(--red-darken);
+}
+.title[danger_level="2"] {
+    border-color: var(--orange);
+}
+.title[danger_level="1"] {
+    border-color: var(--yellow);
+}
+.title[danger_level="0"] {
+    border-color: var(--green-darken);
+}
+.info_bar{
+    height: 42px;
+    line-height: 40px;
+    color: var(--default-color-half);
+    padding: 0 10px;
+    text-align: left;
+    border-top: 1px solid var(--default-color-1of10);
+    border-bottom: 1px solid var(--default-color-1of10);
+}
+.info_bar span {
+    position: relative;
+    display: inline-block;
+    height: 40px;
+    line-height: 40px;
+    font-size: 0.8em;
+    color: var(--default-color-half);
+}
+.info_bar button {
+    float: right;
+    background: none;
+    border: 0;
+    padding-left: 5px !important;
+    padding-right: 5px !important;
+    width: 18px;
+}
+.checkbox:hover {
+    width: 40px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.checkbox::after {
+    content: attr(icon);
+    font-family: bootstrap-icons;
+    font-size: 0;
+    overflow: hidden;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+.checkbox:hover::after {
+    height: 30px;
+    width: 30px;
+    font-size: inherit;
+}
+.contents {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid var(--default-color-1of10);
+    flex: 1;
+    margin-bottom: 0;
+}
+body:not(.login) .reply_editor {
+    display: none;
+}
+.reply_editor{
+    min-height: 50px;
+    padding: 0;
+    border-bottom: 1px solid var(--default-color-1of10);
+}
+.toggle_wrap span {
+    display: inline-block;
+    overflow: hidden;
+    line-height: 30px;
+    margin: 5px 0;
+    color: var(--default-color-half);
+}
+.toggle_wrap:not(.right) span:first-child,
+.toggle_wrap.right span:last-child  {
+    color: var(--blue);
+}
+.toggle {
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    height: 30px;
+    width: 54px;
+    margin: 5px;
+    border-radius: 15px;
+    border: 1px solid var(--default-color-1of10);
+    padding: 2px;
+    overflow: hidden;
+    text-align: left;
+    transition: background-color 0.2s;
+}
+.toggle::after {
+    content: "";
+    display: inline-block;
+    position: relative;
+    height: 24px;
+    width: 24px;
+    border-radius: 12px;
+    border: 1px solid var(--default-color-1of10);
+    background-color: var(--bg-color2);
+    box-shadow: 0 0 0 60px var(--default-color-1of10);
+    padding: 3px;
+    margin-left: 0;
+    transition: margin 0.2s;
+
+}
+.right .toggle {
+    background-color: var(--blue);
+}
+.right .toggle::after {
+    margin-left: 24px;
+}
+.reply_multi {
+    display: none;
+    position: relative;
+    width: 100%;
+    border-color: transparent;
+    text-align: left;
+}
+.reply_single {
+    display: none;
+    position: relative;
+    width: 100%;
+    border-color: transparent;
+    text-align: left;
+}
+.toggle_wrap:not(.right) ~ .reply_single,
+.toggle_wrap.right ~ .reply_multi {
+    display: block;
+}
+.reply_list{
+    min-height: 50px;
+
+}
+.reply_list:empty {
+    display: flex;
+    position: relative;
+    flex-direction: column;
+    justify-content: center;
+    overflow: hidden;
+    opacity: 0.7;
+}
+.reply_list:empty::after {
+    color: var(--default-color-half);
+    content: "No Reply is here";
+    display: block;
+    position: relative;
+    text-align: center;
+    width: 100%;
+    font-weight: bold;
+}
+.reply_list:empty::before {
+    color: var(--default-color-1of10);
+    content: "404";
+    display: block;
+    position: absolute;
+    top: -0.5em;
+    left: 0;
+    right: 0;
+    text-align: center;
+    font-size: 5em;
+    font-weight: bold;
+}
+
+.reply_list:empty + .bottom_btn {
+    display: none;
+}
+.reply_list:not(:empty) + .bottom_btn {
+
+}
