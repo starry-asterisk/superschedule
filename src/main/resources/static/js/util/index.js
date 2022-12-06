@@ -46,9 +46,12 @@ function upload(){
 /**
  * 게시글 목록을 불러와주는 기능
  */
-function list(){
+function list(param = {}){
+    if(param.target != null){
+        param = {};
+    }
     $('.loading').show();
-    ajaxGet('/boards', {}).then((data) => {
+    ajaxGet('/boards', param).then((data) => {
         let wrap = document.createElement("div");
         let user_name = loginData!=null?loginData.name:null;
         data.result.forEach(
@@ -140,3 +143,14 @@ template.board_del = el => {return {
         [{role: 'button', type: 'apply', text: 'apply', callback: boardDel}, {role: 'button', type: 'cancel', text: 'cancel'}]
     ],
 }};
+$(document).ready(()=>{
+   if(location.search.length > 1){
+       const param = {};
+       location.search.replace("?","").split("&").forEach(el => {
+           let key = el.split("=")[0];
+           let value = el.split("=")[1];
+           param[key] = value;
+       });
+       list(param);
+   }
+});
