@@ -29,11 +29,21 @@
     <script type="text/javascript" src="${rootPath}/js/util/boards/detail.js"></script>
     <script>
         $(document).on('click','.header_sub', () => {if(loginData){logout();}else{modal(template.login);}});
-        $(document).on('click','.toggle', e => {
-            e.preventDefault();
-            e.stopPropagation();
-            e.target.parentElement.classList.toggle("right");
-        })
+        $(document).on('keypress','.reply_simple', e => {if(e.key === 'Enter'){
+            e.target.classList.remove('on');
+            document.querySelector('.reply_detailed').dispatchEvent(new CustomEvent('editor_send', {detail: e.target.value}));
+            e.target.value = '';
+        }});
+        $(document).on('click','.reply_submit', () => {
+            let simple = document.querySelector('.reply_simple');
+            let detailed = document.querySelector('.reply_detailed')
+            renderReply({
+                contents: simple.classList.contains('on')?simple.value:detailed.value,
+                author: loginData.nickname,
+                datetime: new Date()
+            });
+        });
+
         $(document).ready(() => {
            $('.created').text(created_dt);
            if(loginData){
@@ -71,13 +81,9 @@
             </div>
             <pre class="contents">${boards.contents}</pre>
             <div class="reply_editor">
-                <div class="toggle_wrap">
-                    <span>single line</span>
-                    <span class="toggle"></span>
-                    <span>multi line</span>
-                </div>
-                <input class="reply_single" type="text"/>
-                <text-editor class="reply_multi" placeholder="댓글을 작성해 주세요."></text-editor>
+                <button class="reply_submit"></button>
+                <input class="reply_simple on" type="text" placeholder="ENTER 누르면 상세한 작성 모드"/>
+                <text-editor class="reply_detailed" placeholder="댓글을 작성해 주세요."></text-editor>
             </div>
             <div class="reply_list"></div>
         </div>

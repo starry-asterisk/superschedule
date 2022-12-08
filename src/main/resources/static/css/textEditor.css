@@ -11,7 +11,7 @@
     top: 10px;
     left: 10px;
     right: 10px;
-    height: 25px;
+    height: 26px;
     overflow: hidden;
 }
 .tool_bar > button {
@@ -23,6 +23,7 @@
     padding: 0;
     line-height: 25px;
     margin-right: 5px;
+    margin-top: 1px;
     border: 1px solid var(--font-minor-color);
     border-radius: 3px;
     background: none;

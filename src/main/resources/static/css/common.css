@@ -5,7 +5,13 @@
     color: var(--font-default-color);
     outline: none;
 }
-body {
+body::before {
+    top: 0;
+    left: 0;
+    content: "";
+    position: fixed;
+    height: 100%;
+    width: 100%;
     background-color: var(--bg-color);
     box-shadow: var(--shadow-bg);
 }

@@ -1,7 +1,6 @@
+//const event = new CustomEvent('editorSend',{key: value});
 class TextEditorHTML extends HTMLElement{
 
-    //initial value of editor
-    value = '';
     textarea = undefined;
     attachment = [];
 
@@ -56,7 +55,8 @@ class TextEditorHTML extends HTMLElement{
 
         const textarea = document.createElement("div");
         textarea.className = "textarea";
-        textarea.setAttribute("contenteditable", true);
+        textarea.contentEditable = true;
+        textarea.tabIndex = 0;
 
         ["mousedown","keydown"].forEach(event => textarea.addEventListener(event, () => checkStyle()));
         textarea.addEventListener("input", e => _this.value = e.target.innerHTML);
@@ -100,6 +100,29 @@ class TextEditorHTML extends HTMLElement{
         this.shadowRoot.append(textarea);
         this.shadowRoot.append(button_verticalSize);
 
+        //this.shadowRoot.addEventListener( 'focus', () => _this.textarea.focus() );
+        this.shadowRoot.addEventListener( 'test', () => console.log('wow im touched =D') );
+        this.addEventListener( 'editor_send', e => {
+            _this.textarea.innerHTML = _this.value = e.detail;
+            _this.textarea.focus();
+            let el = $(_this.textarea).get(0);
+            el.focus();
+            if (typeof window.getSelection != "undefined"
+                && typeof document.createRange != "undefined") {
+                let range = document.createRange();
+                range.selectNodeContents(el);
+                range.collapse(false);
+                let sel = window.getSelection();
+                sel.removeAllRanges();
+                sel.addRange(range);
+            } else if (typeof document.body.createTextRange != "undefined") {
+                let textRange = document.body.createTextRange();
+                textRange.moveToElementText(el);
+                textRange.collapse(false);
+                textRange.select();
+            }
+        });
+
 
         function checkStyle() {
             for(let command in buttons){
@@ -141,7 +164,7 @@ class TextEditorHTML extends HTMLElement{
     }
 
     static get observedAttributes() {
-        return ['placeholder'];
+        return ['placeholder','value'];
     }
 
     attributeChangedCallback(name, oldValue, newValue) {
@@ -149,7 +172,14 @@ class TextEditorHTML extends HTMLElement{
             case 'placeholder':
                 this.textarea.setAttribute(name, newValue);
                 break;
+            case 'value':
+                this.textarea.innerHTML = newValue;
+                break;
         }
+    }
+
+    createdCallback() {
+        this.tabIndex = 0;
     }
 }
 customElements.define('text-editor',TextEditorHTML);
