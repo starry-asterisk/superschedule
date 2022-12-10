@@ -185,3 +185,54 @@ body:not(.login) .reply_editor {
 .reply_list:not(:empty) + .bottom_btn {
 
 }
+.reply_list > div {
+    text-align: left;
+    margin-top: 16px;
+}
+.reply_list > :last-child {
+    text-align: left;
+    margin-bottom: 10px;
+}
+.reply_profile {
+    overflow: hidden;
+    position: relative;
+    float: left;
+    margin: 5px 16px auto 10px;
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+}
+.reply_profile[alt]:after {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 40px;
+    height: 40px;
+    background-color: var(--bg-color);
+    font-weight: 300;
+    line-height: 40px;
+    text-align: center;
+    content: attr(alt);
+}
+.reply_author {
+    color: var(--font-default-color);
+    font-size: 13px;
+    font-weight: 600;
+    margin-right: 4px;
+}
+.reply_datetime {
+    color: var(--font-minor-color);
+    font-size: 13px;
+    font-weight: 400;
+}
+.reply_contents{
+    margin-left: 66px;
+    margin-right: 10px;
+    text-align: inherit;
+    color: var(--font-default-color);
+    font-size: 14px;
+    font-weight: 400;
+    overflow-wrap: break-word;
+    margin-top: 2px;
+}

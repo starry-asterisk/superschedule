@@ -40,7 +40,7 @@
             renderReply({
                 contents: simple.classList.contains('on')?simple.value:detailed.value,
                 author: loginData.nickname,
-                datetime: new Date()
+                datetime: loaded_current
             });
         });
 

@@ -130,6 +130,53 @@ function getDbStr(str, dir = true){
 }
 
 /**
+ * 페이지 로드시, 시간
+ */
+const loaded_current = new Date();
+
+/**
+ * 유튜브첨 ~시간 전 같은 문구로 시간 출력
+ * @param {Date} date
+ * @returns {string}
+ */
+function getDateStr(date){
+    //초 단위
+    let str = '';
+    let unit_value = 60;//1분 이상
+    let date_diff = Math.floor((loaded_current.getTime() - date.getTime()) / 1000);
+    if(date_diff >= unit_value){
+        unit_value = 3600;//1시간 이상
+        if(date_diff >= unit_value){
+            unit_value = 86400;//1일 이상
+            if(date_diff >= unit_value){
+                unit_value = 2678400;//1달 이상
+                if(date_diff >= unit_value){
+                    let date_computed_year = loaded_current.getFullYear() - date.getFullYear();
+                    if(date_computed_year > 0){
+                        str += `${date_computed_year}년 `;
+                    }
+                    let date_computed_month = loaded_current.getMonth() - date.getMonth();
+                    if(date_computed_month > 0){
+                        str += `${date_computed_month}개월 `;
+                    }
+                } else {
+                    str += `${Math.floor(date_diff * 31 / unit_value)}일 `;
+                }
+            } else {
+                str += `${Math.floor(date_diff * 24 / unit_value)}시간 `;
+            }
+        } else {
+            str += `${Math.floor(date_diff * 60 / unit_value)}분 `;
+        }
+    } else {
+        str += `${Math.floor(date_diff * 60 / unit_value)}초 `;
+    }
+    str += `전`;
+
+    return str;
+}
+
+/**
  * 토스트 메시징시 사용할 시간 변수
  */
 const TOAST_SHORT = 2000;
