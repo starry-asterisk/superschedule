@@ -1,3 +1,23 @@
+/**
+ * 댓글 목록을 불러와주는 기능
+ */
+function list(){
+    $('.loading').show();
+    ajaxGet(`/boards/${board_id}/replies`).then((data) => {
+        data.result.forEach(
+            li => {
+                renderReply({
+                    id: li.id,
+                    contents: li.contents,
+                    author: li.author_nickname,
+                    datetime: new Date(li.created)
+                });
+            }
+        );
+        $('.loading').hide();
+    });
+}
+
 function renderReply (data =
         {contents: '[sample contents]', author: '[sample author]', datetime: new Date()}
 ) {
@@ -20,4 +40,44 @@ function renderReply (data =
     reply.appendChild(datetime);
     reply.appendChild(contents);
     document.querySelector('.reply_list').appendChild(reply);
+}
+
+
+/**
+ * 댓글 작성 기능
+ */
+function put_reply(){
+    let simple = document.querySelector('.reply_simple');
+    let detailed = document.querySelector('.reply_detailed');
+    let contents = simple.classList.contains('on')?simple.value:detailed.value;
+    if(contents != null && contents.length > 0){
+
+        $('.loading').show();
+        ajax(`/boards/${board_id}/replies`, {
+            contents: contents,
+            datetime: loaded_current
+        }, 'PUT').then((result) => {
+            $('.loading').hide();
+            switch (result.status){
+                case 200:
+                    renderReply({
+                        id: result.id,
+                        contents: contents,
+                        author: loginData.nickname,
+                        datetime: loaded_current
+                    });
+                    break;
+                default:
+                    toast('댓글 등록에 실패 했습니다.');
+                    setTimeout(() => location.reload(), TOAST_SHORT);
+                    break;
+            }
+        });
+
+        simple.value = '';
+        detailed.value = '';
+        detailed.setAttribute('value','');
+    }else{
+        toast('먼저 내용을 작성해 주세요.')
+    }
 }

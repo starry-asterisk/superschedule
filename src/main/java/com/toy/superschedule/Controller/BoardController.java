@@ -1,6 +1,7 @@
 package com.toy.superschedule.Controller;
 
 import com.toy.superschedule.Service.BoardSVC;
+import com.toy.superschedule.Service.ReplySVC;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ public class BoardController {
 
     @Autowired
     BoardSVC boardSvc;
+    @Autowired
+    ReplySVC replySVC;
     @RequestMapping(method={RequestMethod.GET}, value="/boards")
     public JSONObject list(@RequestParam(required = false) Map<String, String> param){
         JSONObject r = new JSONObject();
@@ -53,6 +56,24 @@ public class BoardController {
     public JSONObject delete(@PathVariable int id){
         JSONObject r = new JSONObject();
         r.put("result", boardSvc.delOne(id));
+        return r;
+    }
+    @RequestMapping(method={RequestMethod.GET}, value="/boards/{id}/replies")
+    public JSONObject getReplies(@PathVariable int id){
+        JSONObject r = new JSONObject();
+        r.put("result", replySVC.getListOf(id));
+        return r;
+    }
+    @RequestMapping(method={RequestMethod.PUT}, value="/boards/{id}/replies")
+    public JSONObject putReplies(HttpServletRequest req, @PathVariable String id, @RequestBody Map<String, String> param){
+        JSONObject r = new JSONObject();
+        param.put("board_id", id);
+        if(replySVC.insertReply(param, req)){
+            r.put("id", replySVC.getLastInsertedId());
+            r.put("status", 200);
+        }else{
+            r.put("status", 500);
+        }
         return r;
     }
 }

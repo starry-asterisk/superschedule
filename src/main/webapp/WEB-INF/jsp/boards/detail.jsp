@@ -19,6 +19,7 @@
         */
         let loginData = ${user!=null?user:'undefined'};
         let created_dt = new Date(${boards.created}).toLocaleString();
+        let board_id = '${boards.id}';
     </script>
     <script src="https://code.jquery.com/jquery-3.6.1.slim.js" integrity="sha256-tXm+sa1uzsbFnbXt8GJqsgi2Tw+m4BLGDof6eUPjbtk=" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
@@ -34,15 +35,7 @@
             document.querySelector('.reply_detailed').dispatchEvent(new CustomEvent('editor_send', {detail: e.target.value}));
             e.target.value = '';
         }});
-        $(document).on('click','.reply_submit', () => {
-            let simple = document.querySelector('.reply_simple');
-            let detailed = document.querySelector('.reply_detailed')
-            renderReply({
-                contents: simple.classList.contains('on')?simple.value:detailed.value,
-                author: loginData.nickname,
-                datetime: loaded_current
-            });
-        });
+        $(document).on('click','.reply_submit', put_reply);
 
         $(document).ready(() => {
            $('.created').text(created_dt);
@@ -52,6 +45,7 @@
                    document.body.classList.add("my");
                }
            }
+            list();
         });
     </script>
 </head>
