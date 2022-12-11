@@ -130,14 +130,14 @@
     height: 16px;
     line-height: 0;
     font-size: 0;
-    border-width: 8px;
+    border-width: 3px;
     border-style: solid;
     padding: 0;
     background-color: transparent;
     border-top-color: transparent;
     border-left-color: transparent;
-    border-bottom-color: var(--default-color-half);
-    border-right-color: var(--default-color-half);
+    border-bottom-color: var(--default-color-1of10);
+    border-right-color: var(--default-color-1of10);
 }
 
 .vertical_size:active {

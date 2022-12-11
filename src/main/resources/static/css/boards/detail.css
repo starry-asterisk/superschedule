@@ -186,6 +186,7 @@ body:not(.login) .reply_editor {
 
 }
 .reply_list > div {
+    position: relative;
     text-align: left;
     margin-top: 16px;
 }
@@ -214,6 +215,24 @@ body:not(.login) .reply_editor {
     line-height: 40px;
     text-align: center;
     content: attr(alt);
+}
+.reply_list > div:first-child:before {
+    content: '';
+    position: absolute;
+    width: 2px;
+    height: 21px;
+    background-color: var(--bg-color);
+    left: 29px;
+    top: -16px;
+}
+.reply_list > div:not(:last-child):after {
+    content: '';
+    position: absolute;
+    width: 2px;
+    height: 100%;
+    background-color: var(--bg-color);
+    left: 29px;
+    top: 45px;
 }
 .reply_author {
     color: var(--font-default-color);
