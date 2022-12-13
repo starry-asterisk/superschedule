@@ -21,3 +21,6 @@ spring:
       static-locations: classpath:/static/
 db:
   path: /superschedule/db/
+file:
+  img:
+    path: /superschedule/files/img/

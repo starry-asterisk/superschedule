@@ -26,7 +26,7 @@ function renderReply (data =
     reply.setAttribute('data-id', data.id);
     let profile = document.createElement('img');
     profile.classList.add('reply_profile');
-    profile.src = `/users/img/${data.author}`;
+    profile.src = `/img/users/${data.author}`;
     profile.alt = `${data.author_nickname[0]}`;
     let author = document.createElement('span');
     author.classList.add('reply_author');
