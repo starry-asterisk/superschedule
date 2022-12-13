@@ -1,6 +1,5 @@
 package com.toy.superschedule.Controller;
 
-import com.toy.superschedule.db.BoardDBA;
 import com.toy.superschedule.db.FileDBA;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
@@ -38,15 +37,15 @@ public class ImageColtroller {
     @RequestMapping(method={RequestMethod.GET}, value="/img/users/{id}")
     public ResponseEntity<Resource> downloadUsersImg(@PathVariable String id) {
         try {
-            System.out.println("=======================START========================");
             JSONObject condition = new JSONObject();
             condition.put("limit", 1);
             Object[][] where = {{"folder",'=',"img.users"},{"key",'=',id}};
             condition.put("where",where);
 
             JSONObject file_db_obj = (JSONObject) f.find(condition).get(0);
+            System.out.println(file_db_obj);
 
-            Path path = Paths.get(PATH + "/users/" + file_db_obj.get("name"));
+            Path path = Paths.get(PATH + "users/" + file_db_obj.get("name"));
             String contentType = Files.probeContentType(path);
 
             HttpHeaders headers = new HttpHeaders();
@@ -60,24 +59,32 @@ public class ImageColtroller {
 
             return new ResponseEntity<>(resource, headers, HttpStatus.OK);
         } catch (IOException e){
+            e.printStackTrace();
             return  new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         } catch (Exception e){
+            e.printStackTrace();
             return  new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
     }
 
 
     @RequestMapping(method={RequestMethod.POST}, value="/img/users")
-    public JSONObject uploadUsersImg(HttpServletRequest req, @RequestParam("uploadfile") MultipartFile[] uploadfile) {
+    public JSONObject uploadUsersImg(HttpServletRequest req, @RequestBody MultipartFile[] upload_file) throws Exception {
 
+        File dir = new File(PATH + "users/");
+
+        if(!dir.exists()){
+            if(!dir.mkdirs()){
+                throw new Exception();
+            }
+        }
 
         JSONObject result = new JSONObject();
 
         JSONArray list = new JSONArray();
 
-        JSONObject user = (JSONObject) req.getSession().getAttribute("user");
-
-        for (MultipartFile file : uploadfile) {
+        for (MultipartFile file : upload_file) {
+            JSONObject user = (JSONObject) req.getSession().getAttribute("user");
 
             JSONObject data = new JSONObject();
             data.put("owner", user.get("name"));
@@ -90,11 +97,10 @@ public class ImageColtroller {
             data.put("size", file.getSize());
             data.put("type", file.getContentType());
 
-
-            File newFileName = new File(String.valueOf(data.get("name")));
+            Path path = Paths.get(PATH + "users/" + String.valueOf(data.get("name")));
 
             try {
-                file.transferTo(newFileName);
+                file.transferTo(path);
                 f.insertOne(data);
             } catch (Exception e) {
                 e.printStackTrace();

@@ -9,6 +9,11 @@ server:
     include-exception: true
     include-stacktrace: always
 spring:
+  http:
+    multipart:
+      enabled: true
+      max-file-size: 50MB
+      max-request-size: 50MB
   profiles:
     active: dev
   mvc:

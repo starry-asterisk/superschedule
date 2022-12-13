@@ -82,7 +82,14 @@ function modal(setting = {}){
                         tag.on('click', () => {
                             let return_data = {};
                             modal_window.find('input, textarea').each((idx, el) => {
-                                return_data[el.getAttribute('name')] = el.value;
+                                switch (el.getAttribute('type')){
+                                    case 'file':
+                                        return_data[el.getAttribute('name')] = el.files;
+                                        break;
+                                    default:
+                                        return_data[el.getAttribute('name')] = el.value;
+                                        break;
+                                }
                             });
                             el.callback(return_data);
                         });
