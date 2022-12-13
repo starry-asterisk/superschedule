@@ -11,7 +11,7 @@
     <link href="${rootPath}/css/common.css" rel="stylesheet">
     <link href="${rootPath}/css/boards/detail.css" rel="stylesheet">
 
-    <title>SuperScheduler :: main</title>
+    <title>SuperScheduler :: ${boards.title}</title>
 
     <script>
         /*

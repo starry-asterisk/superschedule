@@ -9,7 +9,8 @@ function list(){
                 renderReply({
                     id: li.id,
                     contents: li.contents,
-                    author: li.author_nickname,
+                    author_nickname: li.author_nickname,
+                    author: li.author,
                     datetime: new Date(li.created)
                 });
             }
@@ -19,16 +20,17 @@ function list(){
 }
 
 function renderReply (data =
-        {contents: '[sample contents]', author: '[sample author]', datetime: new Date()}
+        {id: -1, contents: '[sample contents]', author: -1, author_nickname: '[sample author]', datetime: new Date()}
 ) {
     let reply = document.createElement('div');
+    reply.setAttribute('data-id', data.id);
     let profile = document.createElement('img');
     profile.classList.add('reply_profile');
-    profile.src = `/users/img/${loginData.id}`;
-    profile.alt = `${loginData.nickname[0]}`;
+    profile.src = `/users/img/${data.author}`;
+    profile.alt = `${data.author_nickname[0]}`;
     let author = document.createElement('span');
     author.classList.add('reply_author');
-    author.innerText= data.author;
+    author.innerText= data.author_nickname;
     let datetime = document.createElement('span');
     datetime.classList.add('reply_datetime');
     datetime.innerText= getDateStr(data.datetime);
