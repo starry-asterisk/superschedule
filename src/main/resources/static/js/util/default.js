@@ -55,6 +55,34 @@ function modal(setting = {}){
                 tag.attr('name',el.name);
                 tag.attr('type',el.type);
                 tag.prop('value',el.value);
+                if(el.type === 'file'){
+                    let label = document.createElement('label');
+                    label.appendChild(tag[0]);
+                    tag.attr('accept','image/*');
+                    tag.on('change', e => {
+                        if(e.target.files.length < 1){
+                            return;
+                        }
+
+                        let file = e.target.files[0];
+                        //파일 타입 검사
+                        if(file.type.indexOf("image") < 0) return toast("이미지만 선택해서 업로드 해주세요.", TOAST_SHORT);
+
+                        //파일 사이즈 검사
+                        if(file.size > 10485760) return toast("10MB 이하 사이즈만 업로드 해주세요", TOAST_SHORT);
+
+                        const reader = new FileReader();
+                        reader.addEventListener('load', function (e) {
+                            let img = document.createElement('img');
+                            img.src = reader.result;
+                            $(label).find('img').each((i, e) => e.remove());
+                            label.classList.add('selected');
+                            label.appendChild(img);
+                        });
+                        reader.readAsDataURL(file);
+                    });
+                    tag = $(label);
+                }
                 break;
             case 'label':
                 tag = $(document.createElement('label'));

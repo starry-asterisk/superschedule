@@ -1,7 +1,7 @@
 /**
  * 댓글 목록을 불러와주는 기능
  */
-function list(){
+function getReplyList(){
     $('.loading').show();
     ajaxGet(`/boards/${board_id}/replies`).then((data) => {
         data.result.forEach(

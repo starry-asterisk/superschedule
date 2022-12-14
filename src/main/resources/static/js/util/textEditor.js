@@ -48,7 +48,7 @@ class TextEditorHTML extends HTMLElement{
         input_image.addEventListener('change', e => {
             const files = e.target.files;
             if (!!files) {
-                insertImageDate(files[0]);
+                insertImageData(files[0]);
             }
             e.target.value = '';
         });
@@ -68,7 +68,7 @@ class TextEditorHTML extends HTMLElement{
             e.preventDefault();
             textarea.classList.remove("dragover");
             if(e.dataTransfer.files.length > 0){
-                insertImageDate(e.dataTransfer.files[0]);
+                insertImageData(e.dataTransfer.files[0]);
             }
         });
         textarea.addEventListener("dragover", e => {
@@ -144,7 +144,7 @@ class TextEditorHTML extends HTMLElement{
             textarea.focus();
         }
 
-        function insertImageDate(file) {
+        function insertImageData(file) {
 
             //파일 타입 검사
             if(file.type.indexOf("image") < 0) return toast("이미지만 선택해서 업로드 해주세요.", TOAST_SHORT);

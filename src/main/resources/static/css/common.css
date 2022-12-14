@@ -337,6 +337,52 @@ selectmenu[disabled], selectmenu[disabled] option {
 .input_st_underline:focus {
     border-color: var(--blue);
 }
+.input_st_file {
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    max-height: 20em;
+    max-width: 20em;
+    cursor: pointer;
+}
+.input_st_file > img {
+    position: relative;
+    max-height: 100%;
+    max-width: 100%;
+}
+.input_st_file > input {
+    display: none;
+}
+.input_st_file:not(.selected)::after {
+    content: '\F603';
+    font-family: bootstrap-icons;
+    font-size: 2.5em;
+    line-height: 2.5em;
+    color: var(--bg-color);
+    display: block;
+    width: 2.5em;
+    height: 2.5em;
+    margin: 15px 0;
+    background-color: var(--font-minor-color);
+    border-radius: 3em;
+    box-shadow: 0 0 8px 4px var(--default-color-1of10);
+}
+.input_st_file.selected::after {
+    content: '';
+    position: absolute;
+    display: block;
+    max-height: 100%;
+    max-width: 100%;
+    aspect-ratio: 1 / 1;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    border: 2px solid var(--font-minor-color);
+    border-radius: 50%;
+    box-shadow: 0 0 0 10em var(--default-color-half);
+}
 input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
@@ -407,4 +453,9 @@ input:autofill:active {
     color: var(--disabled-border);
     border-color: var(--disabled-border);
     background-color: var(--disabled-bg);
+}
+
+img {
+    object-fit: cover;
+    object-position: center;
 }

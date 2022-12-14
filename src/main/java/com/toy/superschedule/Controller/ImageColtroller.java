@@ -50,7 +50,7 @@ public class ImageColtroller {
 
             HttpHeaders headers = new HttpHeaders();
             headers.setContentDisposition(
-                    ContentDisposition.builder("attachment")
+                    ContentDisposition.builder("inline")
                             .filename((String) file_db_obj.get("name"), StandardCharsets.UTF_8)
                             .build());
             headers.add(HttpHeaders.CONTENT_TYPE, contentType);

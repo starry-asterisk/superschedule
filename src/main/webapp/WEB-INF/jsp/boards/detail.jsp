@@ -45,7 +45,7 @@
                    document.body.classList.add("my");
                }
            }
-            list();
+            getReplyList();
         });
 
 
@@ -58,7 +58,7 @@
                 {role: 'title', text: '프로필 이미지'},
                 {role: 'content', text: '프로필 이미지를 선택해 주세요.'},
                 {role: 'margin', value: 15},
-                {role: 'input', type: 'file', name: 'upload_file', value: '', placeholder: ''},
+                {role: 'input', type: 'file', name: 'upload_file', value: '', placeholder: '', class: 'input_st_file'},
                 {role: 'margin', value: 15},
                 [{role: 'button', type: 'apply', text: 'apply', callback: e => ajaxFile('/img/users',e)}, {role: 'button', type: 'cancel', text: 'cancel'}],
                 {role: 'margin', value: 15}
