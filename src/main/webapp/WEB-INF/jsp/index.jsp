@@ -31,7 +31,6 @@
         $(document).on('click','.list_btn', ()=>{list();});
         $(document).on('click','.apply_btn', apply);
         $(document).on('click','.upload_btn', upload);
-        $(document).on('click','.header_sub', () => {if(loginData){logout();}else{modal(template.login);}});
         $(document).on('click','.board_list .li .title', e => {$(e.target).parent().toggleClass("on");});
         $(document).on('click','.board_list .li.my .board_del', boardDel);
         $(document).on('click','.board_list .li.my .board_edit', boardEdit);
@@ -57,7 +56,7 @@
 <div class="wrap">
     <header>
         <a href="/" class="logo">SuperScheduler</a>
-        <a href="javascript:void(0);" class="header_sub">Sign in</a>
+        <user-button class="header_sub"/>
     </header>
     <main>
         <div class="board_list">

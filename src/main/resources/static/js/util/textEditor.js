@@ -100,8 +100,6 @@ class TextEditorHTML extends HTMLElement{
         this.shadowRoot.append(textarea);
         this.shadowRoot.append(button_verticalSize);
 
-        //this.shadowRoot.addEventListener( 'focus', () => _this.textarea.focus() );
-        this.shadowRoot.addEventListener( 'test', () => console.log('wow im touched =D') );
         this.addEventListener( 'editor_send', e => {
             _this.textarea.innerHTML = _this.value = e.detail;
             _this.textarea.focus();

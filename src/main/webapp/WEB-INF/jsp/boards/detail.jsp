@@ -25,11 +25,10 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
     <script type="text/javascript" src="${rootPath}/js/util/default.js"></script>
     <script type="text/javascript" src="${rootPath}/js/util/net.js"></script>
-    <script type="text/javascript" src="${rootPath}/js/util/user.js"></script>
+    <script type="module" src="${rootPath}/js/util/user.js"></script>
     <script type="text/javascript" src="${rootPath}/js/util/textEditor.js"></script>
     <script type="text/javascript" src="${rootPath}/js/util/boards/detail.js"></script>
     <script>
-        $(document).on('click','.header_sub', () => {if(loginData){logout();}else{modal(template.login);}});
         $(document).on('keypress','.reply_simple', e => {if(e.key === 'Enter'){
             e.target.classList.remove('on');
             document.querySelector('.reply_detailed').dispatchEvent(new CustomEvent('editor_send', {detail: e.target.value}));
@@ -50,23 +49,6 @@
 
 
 
-        template.signUp = {
-            cancelable: true,
-            period: 0,
-            lines: [
-                {role: 'margin', value: 15},
-                {role: 'title', text: '프로필 이미지'},
-                {role: 'content', text: '프로필 이미지를 선택해 주세요.'},
-                {role: 'margin', value: 15},
-                {role: 'input', type: 'file', name: 'upload_file', value: '', placeholder: '', class: 'input_st_file'},
-                {role: 'margin', value: 15},
-                [{role: 'button', type: 'apply', text: 'apply', callback: e => ajaxFile('/img/users',e)}, {role: 'button', type: 'cancel', text: 'cancel'}],
-                {role: 'margin', value: 15}
-            ],
-        };
-        function test(){
-            modal(template.signUp)
-        }
     </script>
 </head>
 <body>
@@ -79,7 +61,7 @@
 <div class="wrap">
     <header>
         <a href="/" class="logo">SuperScheduler</a>
-        <a href="javascript:void(0);" class="header_sub">Sign in</a>
+        <user-button class="header_sub"/>
     </header>
     <main>
         <div class="boards_wrap">

@@ -1,0 +1,59 @@
+:host {
+    position: relative;
+    height: 50px;
+}
+span {
+    -webkit-user-select:none;
+    -moz-user-select:none;
+    -ms-user-select:none;
+    user-select:none
+}
+span:hover {
+    color: var(--link-hover-blue);
+}
+div {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+div:focus, div:focus-within {
+    outline: none;
+    opacity: 1;
+    pointer-events: auto;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 3px;
+    background: var(--bg-color2);
+    border: 1px solid var(--font-minor-color2);
+    box-shadow: 0 0.5rem 1rem var(--default-color-1of10);
+}
+button {
+    display: block;
+    position: relative;
+    border: 0;
+    background: none;
+    height: 35px;
+    min-width: 150px;
+}
+img {
+    overflow: hidden;
+    position: relative;
+    float: left;
+    margin: 5px 16px auto 10px;
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+}
+img:after {
+    content: attr(alt);
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 40px;
+    height: 40px;
+    background-color: var(--bg-color);
+    font-weight: 300;
+    line-height: 40px;
+    text-align: center;
+}

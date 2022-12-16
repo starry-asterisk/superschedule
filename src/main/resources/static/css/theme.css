@@ -27,6 +27,7 @@
     --blue: #3498DB;
     --blue-darken: #2980B9;
     --skyblue: #87ceeb;
+    --link-hover-blue: #0a58ca;
 }
 
 @media (prefers-color-scheme: dark) {

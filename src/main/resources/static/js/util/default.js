@@ -1,71 +1,3 @@
-//const event = new CustomEvent('editorSend',{key: value});
-class UserButtonHTML extends HTMLElement{
-
-    data = undefined;
-    span = undefined;
-    profile_img = undefined;
-    div = undefined;
-
-    constructor() {
-        super();
-        let _this = this;
-        this.attachShadow({mode: "open"});
-
-        const style = document.createElement('link');
-        style.setAttribute('rel', 'stylesheet');
-        style.setAttribute('href', '/css/customElement/userButton.css');
-
-
-        const span = document.createElement('span');
-        span.addEventListener('click',e => loginData?focus(e):modal(template.login));
-        this.span = span;
-
-        const div = document.createElement('div');
-        div.tabIndex = 0;
-        this.div = div;
-
-        const profile_img = document.createElement('img');
-        this.profile_img = profile_img;
-
-        this.shadowRoot.append(style);
-        this.shadowRoot.append(span);
-        this.shadowRoot.append(profile_img);
-        this.shadowRoot.append(div);
-    }
-
-    static get observedAttributes() {
-        return ['data'];
-    }
-
-    attributeChangedCallback(name, oldValue, newValue) {
-        switch (name){
-            case 'data':
-                this.data = newValue;
-                this.refresh();
-                break;
-        }
-    }
-
-    refresh(){
-        let callback;
-        if(this.data){
-            this.span.innerHTML = 'sign out';
-            callback = focus;
-        }else{
-            this.span.innerHTML = 'sign in';
-            callback = () => modal(template.login);
-        }
-        this.span.addEventListener('click',callback);
-    }
-
-    focus(e){
-        e.preventDefault();
-        e.stopPropagation();
-        div.focus();
-    }
-}
-customElements.define('user-button',UserButtonHTML);
-
 /**
  * 모달창 생성 기능
  * @param setting set this to false if you want to close modal window
@@ -295,4 +227,5 @@ const template = {};
  */
 $(document).on('click','.modal_close', () => {modal(false);});
 $(document).on('click','selectmenu option', e => {e.target.parentElement.blur();$(e.target.parentElement).children().attr('selected',false);e.target.setAttribute('selected', true);});
+
 
