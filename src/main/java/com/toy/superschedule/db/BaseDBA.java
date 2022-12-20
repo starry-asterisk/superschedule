@@ -294,6 +294,27 @@ public class BaseDBA {
         return 0;
     }
 
+    public boolean updateOne(JSONObject old_data, JSONObject new_data) {
+
+        JSONArray update_arr = new JSONArray();
+        update_arr.add(old_data);
+        if(delete(update_arr) > 0){
+            old_data.putAll(new_data);
+            try {
+                File file = new File(PATH + FILE_NAME + EXTENSION);
+                if (file.exists()) {
+                    BufferedWriter writer = getWriter(file);
+                    insertWithId(writer, old_data);
+                    writer.close();
+                }
+                return true;
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
+    }
+
     public BaseDBA join(BaseDBA other_dba, String table_a_column){
         return join(other_dba, table_a_column, table_a_column);
     }

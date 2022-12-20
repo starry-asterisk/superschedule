@@ -2,7 +2,6 @@ package com.toy.superschedule.Controller;
 
 import com.toy.superschedule.db.FileDBA;
 import lombok.RequiredArgsConstructor;
-import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -75,13 +74,11 @@ public class ImageColtroller {
 
         if(!dir.exists()){
             if(!dir.mkdirs()){
-                throw new Exception();
+                throw new IOException();
             }
         }
 
         JSONObject result = new JSONObject();
-
-        JSONArray list = new JSONArray();
 
         for (MultipartFile file : upload_file) {
             JSONObject user = (JSONObject) req.getSession().getAttribute("user");
@@ -97,13 +94,16 @@ public class ImageColtroller {
             data.put("size", file.getSize());
             data.put("type", file.getContentType());
 
-            Path path = Paths.get(PATH + "users/" + String.valueOf(data.get("name")));
+            Path path = Paths.get(PATH + "users/" + data.get("name"));
 
             try {
                 file.transferTo(path);
                 f.insertOne(data);
+                result.put("data",data);
+                result.put("status",HttpStatus.OK);
             } catch (Exception e) {
                 e.printStackTrace();
+                result.put("status",HttpStatus.INTERNAL_SERVER_ERROR);
             }
         }
         return result;
