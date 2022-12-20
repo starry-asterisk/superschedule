@@ -2,14 +2,17 @@
  * POST, PUT, DELETE 용 ajax
  * @param url 주소
  * @param data 변수
+ * @param method
+ * @param header
  * @returns {Promise<any>}
  */
-async function ajax(url = '', data = {}, method= "POST") {
+async function ajax(url = '', data = {}, method= "POST", header = {}) {
     // 옵션 기본 값은 *로 강조
     const response = await fetch(url, {
         method: method, // *GET, POST, PUT, DELETE 등
         mode: 'cors', // this cannot be 'no-cors'
         headers: {
+            ...header,
             'Accept': 'application/json',
             'Content-Type': 'application/json',
         },
@@ -22,9 +25,10 @@ async function ajax(url = '', data = {}, method= "POST") {
  * GET 요청 전용 ajax
  * @param url 주소
  * @param data 변수
+ * @param header
  * @returns {Promise<any>}
  */
-async function ajaxGet(url = '', data = {}) {
+async function ajaxGet(url = '', data = {}, header = {}) {
     let pathStr = '';
     for(let key in data){
         pathStr += `&${key}=${data[key]}`;
@@ -34,6 +38,7 @@ async function ajaxGet(url = '', data = {}) {
         method: "GET", // *GET, POST, PUT, DELETE 등
         mode: 'cors', // this cannot be 'no-cors'
         headers: {
+            ...header,
             'Accept': 'application/json',
             'Content-Type': 'application/json',
         }
@@ -45,6 +50,7 @@ async function ajaxGet(url = '', data = {}) {
  * File Upload 용 ajax
  * @param url 주소
  * @param data 변수
+ * @param method
  * @returns {Promise<any>}
  */
 async function ajaxFile(url = '', data = {}, method= "POST") {
