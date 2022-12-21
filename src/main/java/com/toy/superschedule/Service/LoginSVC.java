@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.util.Date;
 import java.util.Map;
 import java.util.UUID;
 
@@ -44,6 +45,35 @@ public class LoginSVC {
             session.setAttribute("user", r.get(0));
             condition.put("token", token);
             condition.put("status", 200);
+        }
+
+        return condition;
+    }
+
+    public JSONObject signup(Map<String, String> param){
+
+        JSONObject condition = new JSONObject();
+        condition.put("limit", 1);
+        Object[][] where = {{"name", '=', param.get("id")}};
+        condition.put("where",where);
+        JSONArray r = u.find(condition);
+        if(r.toArray().length > 0){
+            condition.put("status", 400);
+            condition.put("message", "이미 가입된 회원입니다.");
+        } else {
+
+            JSONObject data = new JSONObject();
+
+            data.put("name", param.get("name"));
+            data.put("nickname", param.get("nickname"));
+            data.put("pw", param.get("pw"));
+            data.put("created", new Date().getTime());
+
+            if(u.insertOne(data)){
+                condition.put("status", 200);
+            }else{
+                condition.put("status", 500);
+            }
         }
 
         return condition;

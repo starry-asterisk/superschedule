@@ -2,6 +2,7 @@ package com.toy.superschedule.Controller;
 
 import com.toy.superschedule.db.FileDBA;
 import lombok.RequiredArgsConstructor;
+import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,7 +42,11 @@ public class ImageColtroller {
             Object[][] where = {{"folder",'=',"img.users"},{"key",'=',id}};
             condition.put("where",where);
 
-            JSONObject file_db_obj = (JSONObject) f.find(condition).get(0);
+            JSONArray query_result = f.find(condition);
+
+            if(query_result.size() < 1) return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+            JSONObject file_db_obj = (JSONObject) query_result.get(0);
 
             Path path = Paths.get(PATH + "users/" + file_db_obj.get("name"));
             String contentType = Files.probeContentType(path);

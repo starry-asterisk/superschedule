@@ -139,7 +139,7 @@
     },
         *
         */
-        const WEBEX_ACCESS_TOKEN = 'NTNiOTM1ZjUtZjhhOS00ZDE1LWFkZmEtYjUxMjYzN2ZhYTk5OWY0NGRmMmYtY2I1_PF84_eea88d1a-36ce-4536-8138-8db52792dbf3';
+        const WEBEX_ACCESS_TOKEN = 'YTI1N2UwZmEtODI1Mi00N2E4LWI5ZWYtMTQ3ZjQ3MWI5NjMxZDNiY2UzNmYtZTI5_PF84_eea88d1a-36ce-4536-8138-8db52792dbf3';
         const url = {
             rooms: 'https://webexapis.com/v1/rooms',
             messages: 'https://webexapis.com/v1/messages',

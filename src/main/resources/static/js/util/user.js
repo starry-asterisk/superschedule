@@ -23,6 +23,7 @@ class UserButtonHTML extends HTMLElement{
 
         if(loginData){
             const profile_img = document.createElement('img');
+            profile_img.alt = loginData.nickname[0];
             profile_img.src = `/img/users/${loginData.name}`;
             profile_img.style.height = '40px';
             profile_img.style.width = '40px';
@@ -131,8 +132,29 @@ function logout(){
  * @param data 새로운 회원 정보
  */
 function signUp(data){
-    console.warn(data);
-    toast('아직 기능이 완성되지 않았어요!');
+    if(data.nickname == null || data.nickname.length < 3) return toast('이름은 3자리 이상으로 해주세요.');
+    if(data.name == null || data.name.length < 3) return toast('아이디는 3자리 이상으로 해주세요.');
+    if(data.pw !== data.pw_confirm) return toast('패스워드, 패스워드 확인이 일치하지 않습니다.');
+    if(data.pw == null || data.pw.length < 8) return toast('패스워드는 8자리 이상으로 해주세요.');
+
+    ajax('/users', data, 'POST').then(r => {
+        switch(r.status) {
+            case 200:
+                success();
+                break;
+            case 400:
+                toast(r.message, TOAST_LONG);
+                break;
+            default:
+                location.reload();
+                break;
+        }
+    });
+
+    function success(){
+        toast('가입 축하드립니다. 이제 로그인 해 주세요', TOAST_LONG);
+        modal(template.login);
+    }
 }
 
 /*
@@ -187,7 +209,7 @@ template.profileImgEdit = {
         {role: 'margin', value: 15},
         {role: 'input', type: 'file', name: 'upload_file', value: '', placeholder: '', class: 'input_st_file'},
         {role: 'margin', value: 15},
-        [{role: 'button', type: 'apply', text: 'apply', callback: e => ajaxFile('/img/users',e)}, {role: 'button', type: 'cancel', text: 'cancel'}],
+        [{role: 'button', type: 'apply', text: 'apply', callback: e => ajaxFile('/img/users',e).then(r => toast(r.status === 'OK'?'프로필 이미지 등록에 성공했습니다.':'프로필 이미지 등록에 실패했습니다.'))}, {role: 'button', type: 'cancel', text: 'cancel'}],
         {role: 'margin', value: 15}
     ],
 };
