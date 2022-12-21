@@ -47,6 +47,14 @@ class UserButtonHTML extends HTMLElement{
             div.appendChild(button_go_profile_detail);
             div.appendChild(button_setting);
 
+            if(loginData.name === 'admin'){
+                const button_admin = document.createElement('button');
+                button_admin.innerHTML = '테스트 페이지';
+                button_admin.onclick = () => {location.href='/external/api-test';};
+                div.appendChild(button_admin);
+
+            }
+
             shadowRoot.append(div);
 
             span.innerHTML = loginData.nickname;
@@ -89,8 +97,8 @@ function login(isAuto = false, token){
                 }
                 break;
             case 200:
+                localStorage.setItem('login_token', result.token);
                 if(isAuto !== true){
-                    //localStorage.setItem('login_token', result.token);
                     modal(false);
                     location.reload();
                 }
@@ -111,8 +119,8 @@ function logout(){
                 location.reload();
                 break;
             default:
-                console.error("logout failed...");
-                console.log(result);
+                toast('로그아웃에 실패했습니다.',TOAST_LONG);
+                console.error(result);
                 break;
         }
     });
@@ -123,7 +131,7 @@ function logout(){
  * @param data 새로운 회원 정보
  */
 function signUp(data){
-    console.log(data);
+    console.warn(data);
     toast('아직 기능이 완성되지 않았어요!');
 }
 
@@ -186,8 +194,9 @@ template.profileImgEdit = {
 /*
 * 자동 로그인 예약 실행
 * */
-let login_token = localStorage.getItem('login_token');
-if(login_token){
-    login(true, login_token);
+if(!loginData){
+    let login_token = localStorage.getItem('login_token');
+    if(login_token){
+        login(true, login_token);
+    }
 }
-

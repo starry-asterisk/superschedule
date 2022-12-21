@@ -43,14 +43,37 @@ function upload(){
     });
 }
 
+const paginator = {
+    total:0,
+    page: 0,
+    pagination: 20,
+    isEnd: false,
+    isLoading: false
+}
 /**
  * 게시글 목록을 불러와주는 기능
  */
 function list(param = {}){
+
+    if(paginator.isLoading || paginator.isEnd) return false;
+
+    $('.board_list').on('scroll', e => {
+        if(($(e.target).scrollTop()+$(e.target).innerHeight())>=$(e.target)[0].scrollHeight)list();
+    });
+
     if(param.target != null){
-        param = {};
+        param = {}
     }
+
+    if(param.page > 0){
+        paginator.page = param.page;
+    } else {
+        paginator.page++;
+        param.page = paginator.page;
+    }
+
     $('.loading').show();
+    paginator.isLoading = true;
     ajaxGet('/boards', param).then((data) => {
         let wrap = document.createElement("div");
         let user_name = loginData!=null?loginData.name:null;
@@ -97,10 +120,13 @@ function list(param = {}){
             }
         );
         $('.board_list').addClass("on");
-        if(data.result.length < 1){
+        paginator.total += data.result.length;
+        if(paginator.total < 1){
             $('.board_list').addClass("empty");
         }
+        paginator.isEnd = data.result.length < paginator.pagination;
         $('.loading').hide();
+        paginator.isLoading = false;
     });
 }
 

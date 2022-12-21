@@ -34,13 +34,16 @@ public class LoginSVC {
         if(r.toArray().length < 1){
             condition.put("status", 404);
         }else{
-            condition.put("status", 200);
+            String token = UUID.randomUUID().toString();
+
             JSONObject update_data = new JSONObject();
-            update_data.put("token", UUID.randomUUID().toString());
+            update_data.put("token", token);
             u.updateOne((JSONObject) r.get(0), update_data);
+
             HttpSession session = req.getSession();
             session.setAttribute("user", r.get(0));
-            session.setAttribute("login_token", update_data.get("token"));
+            condition.put("token", token);
+            condition.put("status", 200);
         }
 
         return condition;

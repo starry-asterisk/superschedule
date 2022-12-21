@@ -28,7 +28,7 @@
     <script type="text/javascript" src="${rootPath}/js/util/index.js"></script>
     <script>
         $(document).on('click','.go_btn', go);
-        $(document).on('click','.list_btn', ()=>{list();});
+        $(document).on('click','.list_btn', list);
         $(document).on('click','.apply_btn', apply);
         $(document).on('click','.upload_btn', upload);
         $(document).on('click','.board_list .li .title', e => {$(e.target).parent().toggleClass("on");});

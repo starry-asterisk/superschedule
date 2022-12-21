@@ -42,7 +42,6 @@ public class ImageColtroller {
             condition.put("where",where);
 
             JSONObject file_db_obj = (JSONObject) f.find(condition).get(0);
-            System.out.println(file_db_obj);
 
             Path path = Paths.get(PATH + "users/" + file_db_obj.get("name"));
             String contentType = Files.probeContentType(path);

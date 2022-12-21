@@ -35,6 +35,7 @@
             e.target.value = '';
         }});
         $(document).on('click','.reply_submit', put_reply);
+        $(document).on('click','.back_button', ()=>{history.back()});
 
         $(document).ready(() => {
            $('.created').text(created_dt);
@@ -73,7 +74,7 @@
                 <span class="created"></span>
                 <button data-id="${boards.id}" class="checkbox" icon="&#xF5DD" title="삭제"></button>
                 <button data-id="${boards.id}" class="checkbox" icon="&#xF5DB" title="수정"></button>
-                <button data-id="${boards.id}" class="checkbox" icon="&#xF51F" title="댓글로 이동"></button>
+                <button data-id="${boards.id}" class="checkbox" icon="&#xF51F" class="back_button" title="댓글로 이동"></button>
             </div>
             <pre class="contents">${boards.contents}</pre>
             <div class="reply_editor">

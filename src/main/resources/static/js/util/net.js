@@ -47,6 +47,30 @@ async function ajaxGet(url = '', data = {}, header = {}) {
 }
 
 /**
+ * GET/HEAD 요청 전용 ajax
+ * @param url 주소
+ * @param data 변수
+ * @param header
+ * @returns {Promise<any>}
+ */
+async function ajaxHead(url = '', data = {}, header = {}) {
+    let pathStr = '';
+    for(let key in data){
+        pathStr += `&${key}=${data[key]}`;
+    }
+    pathStr = pathStr.replace('&','?');
+    return fetch(url + pathStr, {
+        method: "HEAD", // *GET, POST, PUT, DELETE 등
+        mode: 'cors', // this cannot be 'no-cors'
+        headers: {
+            ...header,
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        }
+    }); // JSON 응답을 네이티브 JavaScript 객체로 파싱
+}
+
+/**
  * File Upload 용 ajax
  * @param url 주소
  * @param data 변수

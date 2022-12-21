@@ -43,6 +43,8 @@ public class util {
             }
         } else if(operation == '=') {
             r = args1 == args2;
+        } else if(operation == '!') {
+            r = args1 != args2;
         }
         return r;
     }
