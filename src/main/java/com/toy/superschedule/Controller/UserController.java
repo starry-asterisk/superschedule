@@ -32,4 +32,9 @@ public class UserController {
         session.invalidate();
         return json;
     }
+
+    @RequestMapping(method={RequestMethod.POST}, value="/users")
+    public JSONObject signup(@RequestBody Map<String, String> param){
+        return loginSvc.signup(param);
+    }
 }
