@@ -14,6 +14,7 @@
             display: flex;
             flex-direction: row;
             height: calc(100vh - 132px);
+            border: 1px solid grey;
         }
         ul.rooms_list {
             list-style: none;
@@ -23,7 +24,7 @@
             overflow-y: scroll;
             flex: 1;
             max-width: 20rem;
-
+            border-right: 1px solid grey;
         }
         ul.rooms_list > li{
             display: flex;
@@ -59,33 +60,83 @@
             flex-direction: column;
             padding: 10px;
             overflow-y: scroll;
+            overflow-x: hidden;
             height: 100%;
             margin: 0;
         }
         .messages_list > span {
             position: relative;
             margin-top: 40px;
+            margin-left: 50px;
             margin-right: auto;
-            max-width: 60%;
+            max-width: 80%;
             padding: 10px;
             border-radius: 5px;
-            background-color: #3498DB;
+            background-color: var(--bg-color2);
             text-align: left;
             word-break: break-all;
+            box-shadow: 2px 5px 10px 0 var(--default-color-1of10);
+        }
+        .messages_list > span.me {
+            margin-right: 50px;
+            margin-left: auto;
+            background-color: var(--font-minor-color);
+        }
+        .messages_list > span > img {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            object-position: center;
+            border-radius: 20px;
+            bottom: calc(100% - 15px);
+            right: calc(100% + 5px);
+        }
+        .messages_list > span > img::after {
+            content: attr(alt);
+            display: block;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 40px;
+            height: 40px;
+            background-color: var(--bg-color2);
+            color: var(--default-color);
+            font-weight: 600;
+            line-height: 40px;
+            text-align: center;
+        }
+        .messages_list > span.me > img {
+            right: auto;
+            left: calc(100% + 5px);
         }
         .messages_list > span > span {
             position: absolute;
             color: grey;
             white-space: nowrap;
         }
-        .messages_list > span > span:first-child {
+        .messages_list > span > span:first-of-type {
             bottom: 100%;
             margin-bottom: 5px;
             left: 0;
-            right: 0;
+            right: auto;
             text-align: left;
         }
-        .messages_list > span > span:last-child {
+        .messages_list > span.me > span:last-of-type {
+            left: auto;
+            right: 100%;
+            margin-left: 0;
+            margin-right: 5px;
+            text-align: right;
+        }
+        .messages_list > span.me > span:first-of-type {
+            bottom: 100%;
+            margin-bottom: 5px;
+            left: auto;
+            right: 0;
+            text-align: right;
+        }
+        .messages_list > span > span:last-of-type {
             bottom: 0;
             left: 100%;
             margin-left: 5px;
@@ -115,7 +166,11 @@
             width: 40px;
             height: 40px;
             border: 20px;
-            background-color: #0a58ca;
+        }
+        .message_form > .message_submit::after {
+            content: '\F6C0';
+            font-family: bootstrap-icons;
+            font-weight: 600;
         }
     </style>
     <title>SuperScheduler :: API test</title>
@@ -143,7 +198,7 @@
     },
         *
         */
-        const WEBEX_ACCESS_TOKEN = 'MjhhY2M3ZjItODFkOC00NDZkLWE4ZWQtYjE5YjU1MDFiZmJlZjhiMjc0M2YtZDRk_PF84_eea88d1a-36ce-4536-8138-8db52792dbf3';
+        const WEBEX_ACCESS_TOKEN = 'NmIwODE3ZjEtMzMxZi00NjE0LWFhYTEtOGJjOTgwNzM4MDY5NGU0MzcyZjUtMjIx_PF84_eea88d1a-36ce-4536-8138-8db52792dbf3';
         const data = {
             rooms: [],
             messages: {now_presented: null},
@@ -167,7 +222,7 @@
                     li.setAttribute('roomId', room.id);
                     li.setAttribute('type', room.type);
                     li.addEventListener('click', () => {
-                        beforeMessages = null;
+                        beforeMessage = null;
                         message_top_reached = null;
                         listUpMessages(room.id)
                     });
@@ -185,7 +240,7 @@
                     rooms_list.appendChild(li);
                 }
             },
-            messages: (args, reversed) => {
+            messages: (args, reverse = false, autoScroll= true) => {
                 loaded_current = new Date();
 
                 const messages_list = document.querySelector('.messages_list');
@@ -202,11 +257,21 @@
                     let owner = document.createElement('span');
                     let timestamp = document.createElement('span');
                     let text = document.createElement('span');
-                    owner.innerHTML = arg.personName;
+                    let avatar = document.createElement('img');
                     timestamp.innerHTML = getDateStr(new Date(arg.created));
-                    if(arg.text){
-                        text.innerHTML = arg.text;
+                    let person = data.peoples[arg.personId];
+                    if(person){
+                        owner.innerHTML = person.displayName;
+                        avatar.setAttribute('alt',person.displayName[0]);
+                        if(person.avatar) avatar.src = person.avatar;
+                    }else{
+                        owner.innerHTML = arg.personEmail;
+                        avatar.setAttribute('alt',arg.personEmail[0]);
                     }
+
+                    if(arg.personId === tokenHolder.id) text.classList.add('me');
+
+                    if(arg.text) text.innerHTML = arg.text;
                     if(arg.files){
                         arg.files.forEach(link => {
                             let a = document.createElement('a');
@@ -221,13 +286,19 @@
                                 });
                         })
                     }
-                    text.prepend(owner);
+                    text.appendChild(avatar);
+                    text.appendChild(owner);
                     text.appendChild(timestamp);
-                    if(reversed === true){
-                        messages_list.prepend(text);
-                    }else{
+                    text.tabIndex = -1;
+                    if(reverse){
                         messages_list.appendChild(text);
+                    }else{
+                        messages_list.prepend(text);
                     }
+                    if(autoScroll) {
+                        messages_list.scrollTop = messages_list.scrollHeight
+                    }
+                    return {wrap: text, namespace: owner, timestamp: timestamp, avatar: avatar};
                 }
             }
         }
@@ -326,7 +397,6 @@
 
 
                     function display_message(sender){
-                        event.data.personName = sender.displayName;
                         if(data.messages[event.data.roomId]) data.messages[event.data.roomId].unshift(event.data);
                         if(data.messages.now_presented === event.data.roomId) render.messages(event.data, true);
                         //getting the details of the room the message was posted in
@@ -352,7 +422,7 @@
                 .catch(error_handler);
         }
 
-        let beforeMessages = null;
+        let beforeMessage = null;
         let message_top_reached = false;
         const MESSAGES_MAX = 50;
 
@@ -360,13 +430,13 @@
 
             if(message_top_reached) return toast("모든 메시지를 확인 하셨습니다.");
 
-            if(beforeMessages === null) {
+            if(beforeMessage === null) {
                 render.messages(false);
                 data.messages.now_presented = room_id;
                 if(!data.messages[room_id]){
                     data.messages[room_id] = [];
                 }else{
-                    beforeMessages = data.messages[room_id][data.messages[room_id].length - 1].id;
+                    beforeMessage = data.messages[room_id][data.messages[room_id].length - 1].id;
                     return data.messages[room_id].forEach(render.messages);
                 }
             }
@@ -376,30 +446,32 @@
                 max: MESSAGES_MAX
             };
 
-            if(beforeMessages) param.beforeMessages = beforeMessages;
+            if(beforeMessage) param.beforeMessage = beforeMessage;
 
             webex.messages.list(param)
                 .then(res =>{
                     res.items.forEach(item => {
                         if(data.peoples[item.personId]){
-                            display_message(data.peoples[item.personId]);
+                            display_message();
                         }else{
+                            let el = display_message();
                             webex.people.get(item.personId).then(
                                 sender => {
-                                    data.peoples[item.personId] = sender;
-                                    display_message(sender);
+                                    data.peoples[sender.id] = sender;
+                                    el.namespace.innerHTML = sender.displayName;
+                                    el.avatar.setAttribute('alt',sender.displayName[0]);
+                                    if(sender.avatar) el.avatar.src = sender.avatar;
                                 }
                             ).catch(error_handler);
                         }
 
-                        function display_message(sender_info){
-                            item.personName = sender_info.displayName;
+                        function display_message(){
                             data.messages[room_id].push(item);
-                            render.messages(item);
+                            return render.messages(item, false, !beforeMessage);
                         }
                     });
 
-                    beforeMessages = res.items[res.items.length - 1].id;
+                    beforeMessage = res.items[res.items.length - 1].id;
 
                     if(res.items.length < MESSAGES_MAX) message_top_reached = true;
                 }).catch(error_handler);
@@ -420,7 +492,6 @@
             webex.people.get('me').then(person => {
 
                 //access token is verified
-
                 tokenHolder = person;
 
                 //show further options
@@ -428,6 +499,10 @@
                 listenToMessages();
 
             }).catch(error_handler);
+
+            $('.messages_list').on('scroll', e => {
+                if(e.target.scrollTop <= 0) listUpMessages(data.messages.now_presented);
+            })
         });
 
 
