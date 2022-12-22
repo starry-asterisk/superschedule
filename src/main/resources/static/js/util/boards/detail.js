@@ -65,7 +65,8 @@ function put_reply(){
                     renderReply({
                         id: result.id,
                         contents: contents,
-                        author: loginData.nickname,
+                        author_nickname: loginData.nickname,
+                        author: loginData.name,
                         datetime: loaded_current
                     });
                     break;

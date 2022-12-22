@@ -346,7 +346,8 @@
         function listUpRooms(){
             webex.rooms.list({max: 1000})
                 .then(res => {
-                    res.items.sort((a, b) => new Date(b.lastActivityDate) - new Date(a.lastActivityDate)).forEach(render.rooms);
+                    data.rooms = res.items;
+                    render.rooms();
                 })
                 .catch(error_handler);
         }
