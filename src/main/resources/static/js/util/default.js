@@ -167,7 +167,7 @@ function getDbStr(str, dir = true){
 /**
  * 페이지 로드시, 시간
  */
-const loaded_current = new Date();
+let loaded_current = new Date();
 
 /**
  * 유튜브첨 ~시간 전 같은 문구로 시간 출력
