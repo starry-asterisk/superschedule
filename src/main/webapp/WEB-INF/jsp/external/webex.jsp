@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -6,7 +6,6 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <link rel="shortcut icon" href="/img/favicon.ico" type="image/x-icon">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="${rootPath}/css/theme.css" rel="stylesheet">
     <link href="${rootPath}/css/common.css" rel="stylesheet">
     <style>
@@ -110,6 +109,30 @@
             right: auto;
             left: calc(100% + 5px);
         }
+
+        .messages_list > span > img.content_img {
+            position: relative;
+            width: 100%;
+            height: auto;
+            right: auto;
+            left: auto;
+            bottom: auto;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .messages_list > span > img.content_img.full_screen {
+            z-index: 9999;
+            position: fixed;
+            max-width: 50%;
+            max-height: 100%;
+            margin: auto;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            border-radius: 0;
+            box-shadow: 0 0 0 10000px rgb(0 0 0 / 50%);
+        }
         .messages_list > span > span {
             position: absolute;
             color: grey;
@@ -198,7 +221,7 @@
     },
         *
         */
-        const WEBEX_ACCESS_TOKEN = 'NmIwODE3ZjEtMzMxZi00NjE0LWFhYTEtOGJjOTgwNzM4MDY5NGU0MzcyZjUtMjIx_PF84_eea88d1a-36ce-4536-8138-8db52792dbf3';
+        const WEBEX_ACCESS_TOKEN = '${access_token}';
         const data = {
             rooms: [],
             messages: {now_presented: null},
@@ -282,7 +305,26 @@
                                     if(res.status !== 200){
                                         return toast(res.message, TOAST_LONG);
                                     }
-                                    a.innerHTML = `[ \${res.headers.get('content-Type')} : \${decodeURI(res.headers.get('content-Disposition').split('\"')[1])} ]`;
+
+                                    if(res.headers.get('content-Type').indexOf('image') > -1){
+                                        fetch(res.url, {
+                                            method: "GET", // *GET, POST, PUT, DELETE 등
+                                            mode: 'cors', // this cannot be 'no-cors'
+                                            headers: {
+                                                Authorization: `Bearer \${WEBEX_ACCESS_TOKEN}`,
+                                            }
+                                        })
+                                            .then(imageRes => imageRes.blob())
+                                            .then((imageBlob) => {
+                                                let img = document.createElement('img');
+                                                const imageBlob64 = URL.createObjectURL(imageBlob);
+                                                img.src = imageBlob64;
+                                                img.classList.add('content_img');
+                                                $(a).replaceWith(img);
+                                            });
+                                    }else{
+                                        a.innerHTML = `[ \${res.headers.get('content-Type')} : \${decodeURI(res.headers.get('content-Disposition').split('\"')[1])} ]`;
+                                    }
                                 });
                         })
                     }
@@ -370,6 +412,8 @@
             }
         });
 
+        $(document).on('click', 'img.content_img ', e => e.target.classList.toggle('full_screen'));
+
         /**
          * Starts a websocket, that will listen for incoming messages. The process is
          * similar to creating a webhook with 'resource' and 'event', here the resource
@@ -435,9 +479,9 @@
                 data.messages.now_presented = room_id;
                 if(!data.messages[room_id]){
                     data.messages[room_id] = [];
-                }else{
+                }else if(data.messages[room_id].length > 0){
                     beforeMessage = data.messages[room_id][data.messages[room_id].length - 1].id;
-                    return data.messages[room_id].forEach(render.messages);
+                    return data.messages[room_id].forEach(el => render.messages(el));
                 }
             }
 

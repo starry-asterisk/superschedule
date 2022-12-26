@@ -51,7 +51,7 @@ class UserButtonHTML extends HTMLElement{
             if(loginData.name === 'admin'){
                 const button_admin = document.createElement('button');
                 button_admin.innerHTML = '테스트 페이지';
-                button_admin.onclick = () => {location.href='/external/api-test';};
+                button_admin.onclick = () => {location.href='/external/webex';};
                 div.appendChild(button_admin);
 
             }

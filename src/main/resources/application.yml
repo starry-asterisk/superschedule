@@ -29,3 +29,7 @@ db:
 file:
   img:
     path: /superschedule/files/img/
+external:
+  webex:
+    client_id: C134a08b585eb73a4fdac0d735ee0ee8fefa445014d4c98db03e666ec8e43ee11
+    client_secret: dbd0941c2966d784a8ad2d348dc6c96cc6e2ab4b96b8eed83cb19b43b1f01e67
