@@ -204,23 +204,6 @@
     <script type="text/javascript" src="${rootPath}/js/util/net.js"></script>
     <script type="text/javascript" src="${rootPath}/js/lib/webex-bundle.js"></script>
     <script>
-        /*
-        * https://developer.webex.com/docs/api/v1/rooms/list-rooms
-        *
-    {
-        "id": "Y2lzY29zcGFyazovL3VzL1JPT00vMWRlYTY4MTAtN2Y2MS0xMWVkLWJmMDUtYzdmOWE3NDlmODA5",
-        "title": "박현규",
-        "type": "direct",
-        "isLocked": false,
-        "lastActivity": "2022-12-19T06:54:45.589Z",
-        "creatorId": "Y2lzY29zcGFyazovL3VzL1BFT1BMRS84OGQ2NTE2Mi0xMTk3LTRkYzYtOTA0ZC1hOTk5NGFhN2U4ZGQ",
-        "created": "2022-12-19T05:51:00.881Z",
-        "ownerId": "Y2lzY29zcGFyazovL3VzL09SR0FOSVpBVElPTi9lZWE4OGQxYS0zNmNlLTQ1MzYtODEzOC04ZGI1Mjc5MmRiZjM",
-        "isPublic": false,
-        "isReadOnly": false
-    },
-        *
-        */
         const WEBEX_ACCESS_TOKEN = '${access_token}';
         const data = {
             rooms: [],
@@ -246,7 +229,7 @@
                     li.setAttribute('type', room.type);
                     li.addEventListener('click', () => {
                         beforeMessage = null;
-                        message_top_reached = null;
+                        message_top_reached = false;
                         listUpMessages(room.id)
                     });
 

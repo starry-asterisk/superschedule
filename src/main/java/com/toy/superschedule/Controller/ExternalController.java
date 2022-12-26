@@ -51,7 +51,7 @@ public class ExternalController {
                 mov.setViewName("external/webex");
                 mov.addObject("access_token", ((JSONObject)result.get(0)).get("access_token"));
             }else{
-                mov.setViewName("redirect:https://webexapis.com/v1/authorize?client_id="+WEBEX_CLIENT_ID+"&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%2Fexternal%2Fwebex&scope=spark%3Akms%20spark%3Apeople_read%20spark%3Arooms_read%20spark%3Amessages_write%20spark%3Adevices_write%20spark%3Amessages_read%20spark%3Adevices_read");
+                mov.setViewName("redirect:https://webexapis.com/v1/authorize?client_id="+WEBEX_CLIENT_ID+"&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%2Fexternal%2Fwebex&scope=spark%3Aall%20spark%3Akms");
             }
 
         }else{

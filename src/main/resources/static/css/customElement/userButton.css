@@ -10,6 +10,7 @@ span {
 }
 span:hover {
     color: var(--link-hover-blue);
+    cursor: pointer;
 }
 div {
     position: absolute;
@@ -41,6 +42,7 @@ button {
 }
 button:hover {
     color: var(--link-hover-blue);
+    cursor: pointer;
 }
 img {
     overflow: hidden;
