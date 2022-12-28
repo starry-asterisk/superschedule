@@ -1,5 +1,10 @@
 package com.toy.superschedule.Util;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
+import java.util.StringJoiner;
+
 public class util {
     public static boolean empty(Object v) {
         return (v == null || "".equals(v));
@@ -47,5 +52,18 @@ public class util {
             r = args1 != args2;
         }
         return r;
+    }
+
+    public static String mapToSearch(Map<String, String> map){
+        StringJoiner postData = new StringJoiner("&");
+
+        for(Map.Entry<String, String> params: map.entrySet()) {
+            postData.add(
+                    URLEncoder.encode(params.getKey(), StandardCharsets.UTF_8) +
+                    "=" +
+                    URLEncoder.encode(String.valueOf(params.getValue()), StandardCharsets.UTF_8)
+            );
+        }
+        return postData.toString();
     }
 }

@@ -57,7 +57,9 @@ public class BaseDBA {
                 table_cnt = table.size();
 
                 reader.close();
-            } else if(!file.createNewFile()){
+            } else if(file.createNewFile()){
+                table = new JSONArray();
+            } else {
                 throw new IOException();
             }
         } catch (IOException e) {

@@ -1,27 +1,25 @@
 package com.toy.superschedule.Controller;
 
-import com.toy.superschedule.db.ReplyDBA;
 import com.toy.superschedule.db.TokenDBA;
 import lombok.RequiredArgsConstructor;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
+import static com.toy.superschedule.Util.util.mapToSearch;
 
 @RestController
 @RequiredArgsConstructor
@@ -36,9 +34,15 @@ public class ExternalController {
     TokenDBA t;
     @GetMapping(value={"/external/webex"})
     public ModelAndView webex(HttpServletRequest req, @RequestParam Map<String, String> param) throws Exception {
+        Object temp;
         ModelAndView mov = new ModelAndView();
         JSONObject data = new JSONObject();
-        JSONObject user = (JSONObject) req.getSession().getAttribute("user");
+        temp = req.getSession().getAttribute("user");
+        if(temp == null){
+            mov.setViewName("redirect:/");
+            return mov;
+        }
+        JSONObject user = (JSONObject) temp;
         String user_secret = param.get("code");
         if(user_secret == null){
 
@@ -48,16 +52,24 @@ public class ExternalController {
 
             JSONArray result = t.find(condition);
             if(result.size() > 0){
-                mov.setViewName("external/webex");
                 mov.addObject("access_token", ((JSONObject)result.get(0)).get("access_token"));
+                mov.setViewName("external/webex");
             }else{
-                mov.setViewName("redirect:https://webexapis.com/v1/authorize?client_id="+WEBEX_CLIENT_ID+"&response_type=code&redirect_uri=http%3A%2F%2Flocalhost%2Fexternal%2Fwebex&scope=spark%3Aall%20spark%3Akms");
+                Map<String, String> webex_param = new HashMap<>();
+
+                webex_param.put("response_type","code");
+                webex_param.put("client_id",WEBEX_CLIENT_ID);
+                webex_param.put("client_secret",WEBEX_CLIENT_SECRET);
+                webex_param.put("scope","spark:all spark:kms");
+                webex_param.put("redirect_uri","http://localhost/external/webex");
+
+                mov.setViewName("redirect:https://webexapis.com/v1/authorize?"+mapToSearch(webex_param));
             }
 
         }else{
 
-            Map<String, Object> resultMap = new HashMap<String, Object>();
-            BufferedReader in = null;
+            Map<String, Object> resultMap;
+            BufferedReader in;
 
             URL url = new URL("https://webexapis.com/v1/access_token");
 
@@ -69,17 +81,7 @@ public class ExternalController {
             webex_param.put("code",user_secret);
             webex_param.put("redirect_uri","http://localhost/external/webex");
 
-
-            // Map에 담아온 데이터 셋팅해주기
-            StringBuilder postData = new StringBuilder();
-            for(Map.Entry<String, String> params: webex_param.entrySet()) {
-                if(postData.length() != 0) postData.append("&");
-                postData.append(URLEncoder.encode(params.getKey(), StandardCharsets.UTF_8));
-                postData.append("=");
-                postData.append(URLEncoder.encode(String.valueOf(params.getValue()), StandardCharsets.UTF_8));
-
-            }
-            byte[] postDataBytes = postData.toString().getBytes(StandardCharsets.UTF_8);
+            byte[] postDataBytes = mapToSearch(webex_param).getBytes(StandardCharsets.UTF_8);
 
             // url 연결
             HttpURLConnection conn = (HttpURLConnection)url.openConnection();
@@ -122,7 +124,6 @@ public class ExternalController {
             data.put("created", new Date().getTime());
 
             t.insertOne(data);
-
 
             mov.setViewName("external/webex");
             mov.addObject("access_token", resultMap.get("access_token"));
