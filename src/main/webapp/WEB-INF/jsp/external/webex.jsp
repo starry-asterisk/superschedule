@@ -431,7 +431,19 @@
                             room => {
                                 //update UI
                                 //dateToDisplay;
-                                toast(`\${sender.displayName}님 이 보낸 메시지: \${event.data.text} - \${room.title}`);
+                                if (Notification.permission !== 'granted') {
+                                    toast(`\${sender.displayName}님 이 보낸 메시지: \${event.data.text} - \${room.title}`);
+                                }
+                                else {
+                                    var notification = new Notification('Notification title', {
+                                        icon: 'http://cdn.sstatic.net/stackexchange/img/logos/so/so-icon.png',
+                                        body: `\${sender.displayName}님 이 보낸 메시지: \${event.data.text} - \${room.title}`,
+                                    });
+
+                                    notification.onclick = function () {
+                                        window.focus();
+                                    };
+                                }
                             }
                         ).catch(error_handler);
                     }
@@ -530,6 +542,10 @@
             $('.messages_list').on('scroll', e => {
                 if(e.target.scrollTop <= 0) listUpMessages(data.messages.now_presented);
             })
+
+            if (window.Notification && Notification.permission === 'default') {
+                Notification.requestPermission();
+            }
         });
 
 
