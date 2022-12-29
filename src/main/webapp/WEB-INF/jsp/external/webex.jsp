@@ -133,6 +133,14 @@
             border-radius: 0;
             box-shadow: 0 0 0 10000px rgb(0 0 0 / 50%);
         }
+
+        .messages_list > span > .content_file {
+            display: block;
+            padding: 10px;
+            border-radius: 3px;
+            border: 1px solid var(--font-default-color);
+            margin-top: 10px;
+        }
         .messages_list > span > span {
             position: absolute;
             color: grey;
@@ -307,6 +315,7 @@
                                             });
                                     }else{
                                         a.innerHTML = `[ \${res.headers.get('content-Type')} : \${decodeURI(res.headers.get('content-Disposition').split('\"')[1])} ]`;
+                                        a.classList.add('content_file');
                                     }
                                 });
                         })
