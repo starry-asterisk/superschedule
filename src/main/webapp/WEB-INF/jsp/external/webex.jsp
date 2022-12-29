@@ -435,9 +435,9 @@
                                     toast(`\${sender.displayName}님 이 보낸 메시지: \${event.data.text} - \${room.title}`);
                                 }
                                 else {
-                                    var notification = new Notification('Notification title', {
-                                        icon: 'http://cdn.sstatic.net/stackexchange/img/logos/so/so-icon.png',
-                                        body: `\${sender.displayName}님 이 보낸 메시지: \${event.data.text} - \${room.title}`,
+                                    const notification = new Notification(`\${room.title}`, {
+                                        icon: '${rootPath}/img/icon.png',
+                                        body: `\${sender.displayName} : \${event.data.text}`,
                                     });
 
                                     notification.onclick = function () {
