@@ -211,6 +211,8 @@ function getDateStr(date){
     return str;
 }
 
+function randomColor() {return Math.floor(Math.random()*16777215).toString(16)}
+
 /**
  * 토스트 메시징시 사용할 시간 변수
  */

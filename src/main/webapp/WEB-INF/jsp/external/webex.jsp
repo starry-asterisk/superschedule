@@ -70,16 +70,16 @@
             margin-right: auto;
             max-width: 80%;
             padding: 10px;
-            border-radius: 5px;
-            background-color: var(--bg-color2);
+            /*border-radius: 5px;*/
+            /*background-color: var(--bg-color2);*/
             text-align: left;
             word-break: break-all;
-            box-shadow: 2px 5px 10px 0 var(--default-color-1of10);
+            /*box-shadow: 2px 5px 10px 0 var(--default-color-1of10);*/
         }
         .messages_list > span.me {
             margin-right: 50px;
             margin-left: auto;
-            background-color: var(--font-minor-color);
+            /*background-color: var(--font-minor-color);*/
         }
         .messages_list > span > img {
             position: absolute;
@@ -112,13 +112,14 @@
 
         .messages_list > span > img.content_img {
             position: relative;
-            width: 100%;
+            width: auto;
             height: auto;
             right: auto;
             left: auto;
             bottom: auto;
             border-radius: 5px;
             margin-top: 10px;
+            max-width: 450px;
         }
         .messages_list > span > img.content_img.full_screen {
             z-index: 9999;
@@ -140,38 +141,39 @@
             border-radius: 3px;
             border: 1px solid var(--font-default-color);
             margin-top: 10px;
+            text-align: left;
+        }
+        .messages_list > span > .content_file > img.mime {
+            width: 2em;
+            margin-right: 10px;
         }
         .messages_list > span > span {
             position: absolute;
-            color: grey;
+            color: var(--font-default-color);
+            font-weight: 600;
             white-space: nowrap;
-        }
-        .messages_list > span > span:first-of-type {
             bottom: 100%;
             margin-bottom: 5px;
             left: 0;
             right: auto;
             text-align: left;
+            padding: 0 10px;
         }
-        .messages_list > span.me > span:last-of-type {
-            left: auto;
-            right: 100%;
-            margin-left: 0;
-            margin-right: 5px;
-            text-align: right;
+        .messages_list > span:not(.me) > span::before {
+            content: attr(data-name);
         }
-        .messages_list > span.me > span:first-of-type {
-            bottom: 100%;
-            margin-bottom: 5px;
+        .messages_list > span.me > span::after {
+            content: attr(data-name);
+        }
+        .messages_list > span.me > span {
             left: auto;
             right: 0;
             text-align: right;
         }
-        .messages_list > span > span:last-of-type {
-            bottom: 0;
-            left: 100%;
-            margin-left: 5px;
-            text-align: left;
+        .messages_list > span > span > span {
+            color: var(--font-minor-color);
+            font-weight: 100;
+            margin: 0 5px;
         }
         .message_form {
             padding: 10px;
@@ -211,12 +213,14 @@
     <script type="text/javascript" src="${rootPath}/js/util/default.js"></script>
     <script type="text/javascript" src="${rootPath}/js/util/net.js"></script>
     <script type="text/javascript" src="${rootPath}/js/lib/webex-bundle.js"></script>
-    <script>
+    <script type="module">
+        import mime from '/js/json/mime.json' assert { type: 'json' };
+
         const WEBEX_ACCESS_TOKEN = '${access_token}';
         const data = {
             rooms: [],
             messages: {now_presented: null},
-            peoples: {}
+            peoples: {},
         }
         const render = {
             rooms: args => {
@@ -259,33 +263,29 @@
 
                 const messages_list = document.querySelector('.messages_list');
 
-                if(args){
+                if(reverse){
                     return one_message(args);
                 }
 
                 while (messages_list.firstChild) messages_list.firstChild.remove();
 
-                if(args !== false) data.messages[data.messages.now_presented].forEach(one_message);
+                if(args){
+                    args.forEach(one_message);
+                }else{
+                    data.messages[data.messages.now_presented].forEach(one_message);
+                }
 
-                function one_message(arg){
+
+                function one_message(arg, index){
                     let owner = document.createElement('span');
-                    let timestamp = document.createElement('span');
                     let text = document.createElement('span');
                     let avatar = document.createElement('img');
-                    timestamp.innerHTML = getDateStr(new Date(arg.created));
-                    let person = data.peoples[arg.personId];
-                    if(person){
-                        owner.innerHTML = person.displayName;
-                        avatar.setAttribute('alt',person.displayName[0]);
-                        if(person.avatar) avatar.src = person.avatar;
-                    }else{
-                        owner.innerHTML = arg.personEmail;
-                        avatar.setAttribute('alt',arg.personEmail[0]);
-                    }
 
                     if(arg.personId === tokenHolder.id) text.classList.add('me');
 
+
                     if(arg.text) text.innerHTML = arg.text;
+
                     if(arg.files){
                         arg.files.forEach(link => {
                             let a = document.createElement('a');
@@ -297,7 +297,9 @@
                                         return toast(res.message, TOAST_LONG);
                                     }
 
-                                    if(res.headers.get('content-Type').indexOf('image') > -1){
+                                    let contentType = res.headers.get('content-Type');
+
+                                    if(contentType.indexOf('image') > -1){
                                         fetch(res.url, {
                                             method: "GET", // *GET, POST, PUT, DELETE 등
                                             mode: 'cors', // this cannot be 'no-cors'
@@ -314,28 +316,90 @@
                                                 $(a).replaceWith(img);
                                             });
                                     }else{
-                                        a.innerHTML = `[ \${res.headers.get('content-Type')} : \${decodeURI(res.headers.get('content-Disposition').split('\"')[1])} ]`;
+                                        a.innerHTML = decodeURI(res.headers.get('content-Disposition').split('\"')[1]);
                                         a.classList.add('content_file');
+                                        let mime_img = document.createElement('img');
+                                        mime_img.src = '/img' + ( mime[contentType] ? mime[contentType][3] : '/mime/file.png' );
+                                        mime_img.classList.add('mime');
+                                        a.prepend(mime_img);
                                     }
                                 });
                         })
                     }
-                    text.appendChild(avatar);
-                    text.appendChild(owner);
-                    text.appendChild(timestamp);
-                    text.tabIndex = -1;
-                    if(reverse){
-                        messages_list.appendChild(text);
-                    }else{
-                        messages_list.prepend(text);
+
+
+
+                    if(!reverse && args.length !== index + 1){
+                        let next = args[index + 1];
+                        let now_timestamp = Math.floor(new Date(arg.created).getTime() / 60000);
+                        let next_timestamp = Math.floor(new Date(next.created).getTime() / 60000);
+                        if(next.personId === arg.personId && next_timestamp === now_timestamp) return final();
                     }
-                    if(autoScroll) {
-                        messages_list.scrollTop = messages_list.scrollHeight
+
+                    addProfileInfo();
+
+                    function addProfileInfo(){
+
+                        let person = data.peoples[arg.personId];
+                        if(person){
+                            owner.setAttribute('data-name', person.displayName);
+                            avatar.setAttribute('alt',person.displayName[0]);
+                            if(person.avatar) avatar.src = person.avatar;
+                        }else{
+                            owner.setAttribute('data-name', arg.personEmail);
+                            avatar.setAttribute('alt',arg.personEmail[0]);
+                            if (!render_temp.lazy_load_info_queue[arg.personId]) {
+                                render_temp.lazy_load_info_queue[arg.personId] = [{owner: owner, avatar: avatar}];
+                                webex.people.get(arg.personId).then(
+                                    sender => {
+                                        data.peoples[sender.id] = sender;
+                                        render_temp.lazy_load_info_queue[arg.personId].forEach(el => {
+                                            el.owner.setAttribute('data-name', sender.displayName);
+                                            el.avatar.setAttribute('alt', sender.displayName[0]);
+                                            if (sender.avatar) el.avatar.src = sender.avatar;
+                                        });
+                                        render_temp.lazy_load_info_queue[arg.personId] = undefined;
+                                    }
+                                ).catch(error_handler);
+                            } else {
+                                render_temp.lazy_load_info_queue[arg.personId].push({owner: owner, avatar: avatar});
+                            }
+                        }
+
+                        if(!render_temp.name_color[arg.personId]) render_temp.name_color[arg.personId] = randomColor();
+                        owner.style.color = '#' + render_temp.name_color[arg.personId];
+                        let timestamp = document.createElement('span');
+                        timestamp.innerHTML = getDateStr(new Date(arg.created));
+                        owner.appendChild(timestamp);
+                        text.appendChild(owner);
+                        text.appendChild(avatar);
+
+                        final();
                     }
-                    return {wrap: text, namespace: owner, timestamp: timestamp, avatar: avatar};
+
+                    function addSeperater(){
+
+                    }
+
+                    function final(){
+                        text.tabIndex = -1;
+                        if(reverse){
+                            messages_list.appendChild(text);
+                        }else{
+                            messages_list.prepend(text);
+                        }
+                        if(autoScroll) {
+                            messages_list.scrollTop = messages_list.scrollHeight
+                        }
+                    }
                 }
             }
         }
+        const render_temp = {
+            name_color: {},
+            lazy_load_info_queue: {},
+        }
+
 
 
         function valid_length(s){
@@ -479,13 +543,12 @@
             if(message_top_reached) return toast("모든 메시지를 확인 하셨습니다.");
 
             if(beforeMessage === null) {
-                render.messages(false);
                 data.messages.now_presented = room_id;
                 if(!data.messages[room_id]){
                     data.messages[room_id] = [];
                 }else if(data.messages[room_id].length > 0){
                     beforeMessage = data.messages[room_id][data.messages[room_id].length - 1].id;
-                    return data.messages[room_id].forEach(el => render.messages(el));
+                    return render.messages();
                 }
             }
 
@@ -498,26 +561,9 @@
 
             webex.messages.list(param)
                 .then(res =>{
-                    res.items.forEach(item => {
-                        if(data.peoples[item.personId]){
-                            display_message();
-                        }else{
-                            let el = display_message();
-                            webex.people.get(item.personId).then(
-                                sender => {
-                                    data.peoples[sender.id] = sender;
-                                    el.namespace.innerHTML = sender.displayName;
-                                    el.avatar.setAttribute('alt',sender.displayName[0]);
-                                    if(sender.avatar) el.avatar.src = sender.avatar;
-                                }
-                            ).catch(error_handler);
-                        }
+                    res.items.forEach(item => data.messages[room_id].push(item));
 
-                        function display_message(){
-                            data.messages[room_id].push(item);
-                            return render.messages(item, false, !beforeMessage);
-                        }
-                    });
+                    render.messages(res.items, false, !beforeMessage);
 
                     beforeMessage = res.items[res.items.length - 1].id;
 

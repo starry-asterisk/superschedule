@@ -39,6 +39,7 @@ button {
     height: 35px;
     min-width: 150px;
     text-align: left;
+    color: var(--font-default-color);
 }
 button:hover {
     color: var(--link-hover-blue);

@@ -43,6 +43,10 @@
         --font-minor-color2: rgba(119, 121, 134);
         --shadow-bg: inset 0 0 5rem rgb(0 0 0 / 50%);
     }
+
+    mime.img {
+        filter: invert(1);
+    }
 }
 
 @keyframes spin {
