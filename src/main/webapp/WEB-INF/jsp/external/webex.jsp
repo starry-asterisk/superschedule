@@ -258,23 +258,16 @@
                     rooms_list.appendChild(li);
                 }
             },
-            messages: (args, reverse = false, autoScroll= true) => {
+            messages: (args = data.messages[data.messages.now_presented], reverse = false, autoScroll= true) => {
                 loaded_current = new Date();
 
                 const messages_list = document.querySelector('.messages_list');
 
-                if(reverse){
-                    return one_message(args);
-                }
+                if(reverse) return one_message(args);
 
-                while (messages_list.firstChild) messages_list.firstChild.remove();
+                if(autoScroll) while (messages_list.firstChild) messages_list.firstChild.remove();
 
-                if(args){
-                    args.forEach(one_message);
-                }else{
-                    data.messages[data.messages.now_presented].forEach(one_message);
-                }
-
+                args.forEach(one_message);
 
                 function one_message(arg, index){
                     let owner = document.createElement('span');
@@ -312,6 +305,7 @@
                                                 let img = document.createElement('img');
                                                 const imageBlob64 = URL.createObjectURL(imageBlob);
                                                 img.src = imageBlob64;
+                                                img.onload = () => URL.revokeObjectURL(imageBlob64);
                                                 img.classList.add('content_img');
                                                 $(a).replaceWith(img);
                                             });
@@ -374,15 +368,16 @@
                         text.appendChild(owner);
                         text.appendChild(avatar);
 
-                        final();
+                        final(true);
                     }
 
                     function addSeperater(){
 
                     }
 
-                    function final(){
+                    function final(marginTop = false){
                         text.tabIndex = -1;
+                        if(!marginTop) text.style.marginTop = 0;
                         if(reverse){
                             messages_list.appendChild(text);
                         }else{
