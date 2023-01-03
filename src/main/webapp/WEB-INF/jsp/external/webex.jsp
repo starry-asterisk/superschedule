@@ -22,6 +22,7 @@
             position: absolute;
             right: 0;
             width: 8px;
+            min-height: 15px;
             padding: 2px;
             overflow: auto;
             z-index: 1;
