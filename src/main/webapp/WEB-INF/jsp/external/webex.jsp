@@ -18,14 +18,31 @@
             display: none;  /* Safari and Chrome */
         }
         .custom-scrollbar {
+            display: flex;
             position: absolute;
             right: 0;
-            width: 20px;
+            width: 8px;
+            padding: 2px;
             overflow: auto;
             z-index: 1;
-            background-color: red;
+            transition: width ease 0.2s;
+        }
+        .custom-scrollbar:hover,
+        .custom-scrollbar.active {
+            width: 12px;
+        }
+        .custom-scrollbar::after {
+            content: '';
+            flex:1;
+            background: var(--default-color-1of10);
+            border-radius: 2px;
             cursor: pointer;
         }
+        .custom-scrollbar:hover::after,
+        .custom-scrollbar.active::after {
+            background: var(--default-color-half);
+        }
+
         main {
             display: flex;
             flex-direction: row;
@@ -84,6 +101,21 @@
             padding: 10px;
             overflow-x: hidden;
             margin: 0;
+        }
+        .messages_list > p {
+            display: flex;
+            height: 17px;
+            margin: 0;
+            color: var(--red);
+            line-height: 17px;
+        }
+        .messages_list > p::before,
+        .messages_list > p::after{
+            content: '';
+            flex: 1;
+            margin: 8px 5px;
+            height: 1px;
+            background-color: var(--red);
         }
         .messages_list > span {
             position: relative;
@@ -284,7 +316,8 @@
             messages: (args = data.messages[data.messages.now_presented], reverse = false, autoScroll= true) => {
                 loaded_current = new Date();
 
-                const messages_list = document.querySelector('.messages_list');
+                const messages_list_wrap = document.querySelector('.messages_list_wrap');
+                const messages_list = messages_list_wrap.querySelector('.messages_list');
 
                 if(reverse) return one_message(args);
 
@@ -298,10 +331,6 @@
                     let avatar = document.createElement('img');
 
                     if(arg.personId === tokenHolder.id) text.classList.add('me');
-
-                    console.log('in text : ',arg.text);
-                    console.log('in html : ',arg.html);
-                    console.log('in markdown : ',arg.markdown);
 
                     if(arg.text) text.innerHTML = renderLinkInText(arg.text);
 
@@ -347,12 +376,13 @@
                         })
                     }
 
-
+                    let now_timestamp;
+                    let next_timestamp;
 
                     if(!reverse && args.length !== index + 1){
                         let next = args[index + 1];
-                        let now_timestamp = Math.floor(new Date(arg.created).getTime() / 60000);
-                        let next_timestamp = Math.floor(new Date(next.created).getTime() / 60000);
+                        now_timestamp = Math.floor(new Date(arg.created).getTime() / 60000);
+                        next_timestamp = Math.floor(new Date(next.created).getTime() / 60000);
                         if(next.personId === arg.personId && next_timestamp === now_timestamp) return final();
                     }
 
@@ -395,10 +425,22 @@
                         text.appendChild(avatar);
 
                         final(true);
+
+                        now_timestamp = Math.floor(now_timestamp / 1440);
+                        next_timestamp = Math.floor(next_timestamp / 1440);
+
+                        if(next_timestamp !== now_timestamp) addSeparator();
                     }
 
-                    function addSeperater(){
-
+                    function addSeparator(){
+                        let separator = document.createElement('p');
+                        let date = new Date(arg.created);
+                        separator.innerHTML = date.getFullYear()+'년 '+(date.getMonth() + 1)+'월 '+date.getDate()+'일';
+                        if(reverse){
+                            messages_list.appendChild(separator);
+                        }else{
+                            messages_list.prepend(separator);
+                        }
                     }
 
                     function final(marginTop = false){
@@ -410,7 +452,7 @@
                             messages_list.prepend(text);
                         }
                         if(autoScroll) {
-                            messages_list.scrollTop = messages_list.scrollHeight
+                            messages_list_wrap.scrollTop = messages_list_wrap.scrollHeight;
                         }
                     }
                 }
@@ -634,21 +676,56 @@
 
                     parent.onscroll = updateThumb;
 
-                    updateThumb();
+                    thumb.onmousedown = mousedownThumb;
+
+                    parent.onscroll();
 
                     function updateThumb() {
-                        console.log('updated');
-
                         thumb.style.setProperty('display', 'none');
                         scrollHeight = target.scrollHeight;
                         scrollTop = parent.scrollTop;
                         clientHeight = parent.getClientRects()[0].height;
-                        thumb.style.setProperty('display', 'block');
-
-                        thumb.style.setProperty('top', scrollTop + (scrollTop / scrollHeight * clientHeight) + 'px');
-                        thumb.style.setProperty('height', clientHeight / scrollHeight * 100 + '%');
+                        if(clientHeight / scrollHeight < 1){
+                            thumb.style.removeProperty('display');
+                            thumb.style.setProperty('top', scrollTop + (scrollTop / scrollHeight * clientHeight) + 'px');
+                            thumb.style.setProperty('height', clientHeight / scrollHeight * 100 + '%');
+                        }
                     }
 
+                    let mousedown_y;
+                    let container_rect;
+                    let container_y;
+                    let container_y_bottom;
+
+                    function mousemoveThumb(move_event) {
+                        if(move_event.pageY <= container_y) {parent.scrollTop = 0;}
+                        else if(move_event.pageY >= container_y_bottom) {parent.scrollTop = target.scrollHeight - container_rect.height;}
+                        else {parent.scrollTop = ( move_event.pageY - container_y ) / container_rect.height * ( target.scrollHeight - container_rect.height );}
+                        parent.onscroll();
+                    }
+
+                    function mousedownThumb(down_event) {
+
+                        down_event.preventDefault();
+                        down_event.stopPropagation();
+
+                        mousedown_y = down_event.pageY;
+                        container_rect = parent.getClientRects()[0];
+                        container_y = container_rect.y;
+                        container_y_bottom = container_y + target.scrollHeight;
+
+                        thumb.classList.add('active');
+
+                        window.onmouseup = mouseupThumb;
+                        window.onmousemove = mousemoveThumb;
+                    }
+
+                    function mouseupThumb() {
+                        thumb.classList.remove('active');
+
+                        window.onmouseup = null;
+                        window.onmousemove = null;
+                    }
                 }
             });
             resizeObserver.observe(document.querySelector('.rooms_list'));
