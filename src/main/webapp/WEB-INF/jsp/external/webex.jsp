@@ -9,21 +9,41 @@
     <link href="${rootPath}/css/theme.css" rel="stylesheet">
     <link href="${rootPath}/css/common.css" rel="stylesheet">
     <style>
+
+        *:not(.custom-scrollbar) {
+            -ms-overflow-style: none;  /* Internet Explorer 10+ */
+            scrollbar-width: none; /* Firefox */
+        }
+        :not(.custom-scrollbar)::-webkit-scrollbar {
+            display: none;  /* Safari and Chrome */
+        }
+        .custom-scrollbar {
+            position: absolute;
+            right: 0;
+            width: 20px;
+            overflow: auto;
+            z-index: 1;
+            background-color: red;
+            cursor: pointer;
+        }
         main {
             display: flex;
             flex-direction: row;
             height: calc(100vh - 132px);
             border: 1px solid grey;
         }
+        .rooms_list_wrap {
+            position: relative;
+            flex: 1;
+            max-width: 20rem;
+            border-right: 1px solid grey;
+            height: 100%;
+            overflow-y: scroll;
+        }
         ul.rooms_list {
             list-style: none;
             margin: 0;
             padding: 0;
-            height: 100%;
-            overflow-y: scroll;
-            flex: 1;
-            max-width: 20rem;
-            border-right: 1px solid grey;
         }
         ul.rooms_list > li{
             display: flex;
@@ -31,7 +51,6 @@
             font-size: 12px;
             text-align: left;
             padding: 10px;
-            border-bottom: 1px solid grey;
             overflow: hidden;
         }
         ul.rooms_list > li:hover {
@@ -54,13 +73,16 @@
             flex-direction: column;
             flex: 2;
         }
+        .messages_list_wrap{
+            position: relative;
+            height: 100%;
+            overflow-y: scroll;
+        }
         .messages_list{
             display: flex;
             flex-direction: column;
             padding: 10px;
-            overflow-y: scroll;
             overflow-x: hidden;
-            height: 100%;
             margin: 0;
         }
         .messages_list > span {
@@ -70,16 +92,16 @@
             margin-right: auto;
             max-width: 80%;
             padding: 10px;
-            /*border-radius: 5px;*/
-            /*background-color: var(--bg-color2);*/
             text-align: left;
             word-break: break-all;
-            /*box-shadow: 2px 5px 10px 0 var(--default-color-1of10);*/
+            white-space: pre-wrap;
+        }
+        .messages_list > span > .link {
+            text-decoration: underline;
         }
         .messages_list > span.me {
             margin-right: 50px;
             margin-left: auto;
-            /*background-color: var(--font-minor-color);*/
         }
         .messages_list > span > img {
             position: absolute;
@@ -111,6 +133,7 @@
         }
 
         .messages_list > span > img.content_img {
+            display: block;
             position: relative;
             width: auto;
             height: auto;
@@ -137,11 +160,11 @@
 
         .messages_list > span > .content_file {
             display: block;
-            padding: 10px;
+            padding: 11px;
             border-radius: 3px;
-            border: 1px solid var(--font-default-color);
             margin-top: 10px;
             text-align: left;
+            background: var(--default-color-1of10);
         }
         .messages_list > span > .content_file > img.mime {
             width: 2em;
@@ -276,8 +299,11 @@
 
                     if(arg.personId === tokenHolder.id) text.classList.add('me');
 
+                    console.log('in text : ',arg.text);
+                    console.log('in html : ',arg.html);
+                    console.log('in markdown : ',arg.markdown);
 
-                    if(arg.text) text.innerHTML = arg.text;
+                    if(arg.text) text.innerHTML = renderLinkInText(arg.text);
 
                     if(arg.files){
                         arg.files.forEach(link => {
@@ -596,6 +622,45 @@
             if (window.Notification && Notification.permission === 'default') {
                 Notification.requestPermission();
             }
+
+            let resizeObserver = new ResizeObserver((entries) => {
+                for (const entry of entries) {
+                    let target = entry.target;
+                    let parent = target.parentElement;
+                    let thumb = parent.querySelector('.custom-scrollbar');
+                    let scrollHeight;
+                    let scrollTop;
+                    let clientHeight;
+
+                    parent.onscroll = updateThumb;
+
+                    updateThumb();
+
+                    function updateThumb() {
+                        console.log('updated');
+
+                        thumb.style.setProperty('display', 'none');
+                        scrollHeight = target.scrollHeight;
+                        scrollTop = parent.scrollTop;
+                        clientHeight = parent.getClientRects()[0].height;
+                        thumb.style.setProperty('display', 'block');
+
+                        thumb.style.setProperty('top', scrollTop + (scrollTop / scrollHeight * clientHeight) + 'px');
+                        thumb.style.setProperty('height', clientHeight / scrollHeight * 100 + '%');
+                    }
+
+                }
+            });
+            resizeObserver.observe(document.querySelector('.rooms_list'));
+            resizeObserver.observe(document.querySelector('.messages_list'));
+
+            let parentResizeObserver = new ResizeObserver((entries) => {
+                for (const entry of entries) {
+                    entry.target.onscroll();
+                }
+            });
+            parentResizeObserver.observe(document.querySelector('.rooms_list_wrap'));
+            parentResizeObserver.observe(document.querySelector('.messages_list_wrap'));
         });
 
 
@@ -667,13 +732,19 @@
         <a href="/" class="logo">SuperScheduler</a>
     </header>
     <main>
-        <ul class="rooms_list">
-
-        </ul>
-        <div class="room_detail">
-            <ul class="messages_list">
+        <div class="rooms_list_wrap">
+            <span class="custom-scrollbar"></span>
+            <ul class="rooms_list">
 
             </ul>
+        </div>
+        <div class="room_detail">
+            <div class="messages_list_wrap">
+                <span class="custom-scrollbar"></span>
+                <ul class="messages_list">
+
+                </ul>
+            </div>
             <div class="message_form">
                 <div contenteditable="plaintext-only" class="message_input"></div>
                 <button class="message_submit"></button>

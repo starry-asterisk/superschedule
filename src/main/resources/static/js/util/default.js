@@ -211,7 +211,26 @@ function getDateStr(date){
     return str;
 }
 
+/**
+ * 무작위 색상 코드를 만들어 주는 기능
+ * @returns {string}
+ */
 function randomColor() {return Math.floor(Math.random()*16777215).toString(16)}
+
+/**
+ * 문자열 속 URL 을 a 태그로 치환해주는 기능
+ * @param text
+ * @returns {*}
+ */
+function renderLinkInText(text) {
+    let urlRegex = /(https?:\/\/[^\s]+)/g;
+    /*
+    return text.replace(urlRegex, function(url) {
+        return '<a href="' + url + '">' + url + '</a>';
+    })*/
+    // or alternatively
+    return text.replace(urlRegex, '<a href="$1" target="_blank" class="link">$1</a>')
+}
 
 /**
  * 토스트 메시징시 사용할 시간 변수
