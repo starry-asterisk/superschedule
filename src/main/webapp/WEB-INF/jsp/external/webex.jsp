@@ -25,7 +25,7 @@
             min-height: 15px;
             padding: 2px;
             overflow: auto;
-            z-index: 1;
+            z-index: 2;
             transition: width ease 0.2s;
         }
         .custom-scrollbar:hover,
@@ -49,6 +49,35 @@
             flex-direction: row;
             height: calc(100vh - 132px);
             border: 1px solid grey;
+        }
+        .sticky_menu {
+            position: sticky;
+            top:0;
+            z-index: 1;
+            background: linear-gradient(180deg, var(--bg-color) 65%, transparent 100%);
+        }
+        input[type=radio]{
+            vertical-align: middle;
+            appearance: none;
+            padding: 5px 0;
+        }
+        input[type=radio]::after{
+            content: attr(label);
+            line-height: 40px;
+            padding: 5px 10px;
+            border-radius: 20px;
+        }
+        input[type=radio]:hover::after{
+            background-color: var(--default-color-1of10);
+            opacity: 0.8;
+            cursor: pointer;
+        }
+        input[type=radio]:active::after{
+            background-color: var(--default-color-1of10);
+            opacity: 0.6;
+        }
+        input[type=radio]:checked::after{
+            background-color: var(--default-color-1of10);
         }
         .rooms_list_wrap {
             position: relative;
@@ -95,6 +124,16 @@
             position: relative;
             height: 100%;
             overflow-y: scroll;
+        }
+        .room_title {
+            height: 50px;
+            padding-left: 30px;
+            line-height: 50px;
+            text-align: left;
+            font-size: 1.3em;
+            font-weight: 600;
+            border-bottom: 1px solid grey;
+            background-color: var(--bg-color);
         }
         .messages_list{
             display: flex;
@@ -279,17 +318,34 @@
             peoples: {},
         }
         const render = {
-            rooms: args => {
+            rooms: filter => {
 
                 const rooms_list = document.querySelector('.rooms_list');
 
-                if(args){
-                    return one_room(args);
-                }
-
                 while (rooms_list.firstChild) rooms_list.firstChild.remove();
 
-                if(args !== false) data.rooms.sort((a, b) => new Date(b.lastActivity) - new Date(a.lastActivity)).forEach(one_room);
+                let rooms = data.rooms;
+
+                switch (filter){
+                    case 'direct':
+                        rooms = rooms.filter(room => room.type === 'direct');
+                        break;
+                    case 'space':
+                        rooms = rooms.filter(room => room.type === 'group');
+                        break;
+                    default:
+                        rooms = rooms.filter(room => room.title.indexOf(filter) > -1);
+                        break;
+                    case 'all':
+                    case undefined:
+                    case null:
+                    case NaN:
+                    case '':
+                    case []:
+                        break;
+                }
+
+                rooms.sort((a, b) => new Date(b.lastActivity) - new Date(a.lastActivity)).forEach(one_room);
 
                 function one_room(room){
                     let li = document.createElement('li');
@@ -298,6 +354,7 @@
                     li.addEventListener('click', () => {
                         beforeMessage = null;
                         message_top_reached = false;
+                        document.querySelector('.room_title').innerHTML = room.title;
                         listUpMessages(room.id)
                     });
 
@@ -438,7 +495,7 @@
                         let date = new Date(arg.created);
                         separator.innerHTML = date.getFullYear()+'년 '+(date.getMonth() + 1)+'월 '+date.getDate()+'일';
                         if(reverse){
-                            messages_list.appendChild(separator);
+                            //messages_list.appendChild(separator);
                         }else{
                             messages_list.prepend(separator);
                         }
@@ -560,29 +617,28 @@
                     }
 
 
-                    function display_message(sender){
+                    async function display_message(sender){
                         if(data.messages[event.data.roomId]) data.messages[event.data.roomId].unshift(event.data);
                         if(data.messages.now_presented === event.data.roomId) render.messages(event.data, true);
-                        //getting the details of the room the message was posted in
-                        webex.rooms.get(event.data.roomId).then(
-                            room => {
-                                //update UI
-                                //dateToDisplay;
-                                if (Notification.permission !== 'granted') {
-                                    toast(`\${sender.displayName}님 이 보낸 메시지: \${event.data.text} - \${room.title}`);
-                                }
-                                else {
-                                    const notification = new Notification(`\${room.title}`, {
-                                        icon: '${rootPath}/img/icon.png',
-                                        body: `\${sender.displayName} : \${event.data.text}`,
-                                    });
 
-                                    notification.onclick = function () {
-                                        window.focus();
-                                    };
-                                }
-                            }
-                        ).catch(error_handler);
+                        let room = data.rooms[event.data.roomId];
+                        if(!room) room = data.rooms[event.data.roomId] = await webex.rooms.get(event.data.roomId);
+
+                        //room.lastActivity = event.data.created;
+
+                        if (Notification.permission !== 'granted') {
+                            toast(`\${sender.displayName}님 이 보낸 메시지: \${event.data.text} - \${room.title}`);
+                        }
+                        else {
+                            const notification = new Notification(`\${room.title}`, {
+                                icon: '${rootPath}/img/icon.png',
+                                body: `\${sender.displayName} : \${event.data.text}`,
+                            });
+
+                            notification.onclick = function () {
+                                window.focus();
+                            };
+                        }
                     }
                 });
 
@@ -661,6 +717,8 @@
             $('.messages_list').on('scroll', e => {
                 if(e.target.scrollTop <= 0) listUpMessages(data.messages.now_presented);
             })
+
+            $('input[name=room_type]').on('click', e => render.rooms(e.target.value));
 
             if (window.Notification && Notification.permission === 'default') {
                 Notification.requestPermission();
@@ -812,6 +870,11 @@
     <main>
         <div class="rooms_list_wrap">
             <span class="custom-scrollbar"></span>
+            <div class="sticky_menu">
+                <input type="radio" name="room_type" value="all" label="전체" checked>
+                <input type="radio" name="room_type" value="direct" label="다이렉트">
+                <input type="radio" name="room_type" value="space" label="스페이스">
+            </div>
             <ul class="rooms_list">
 
             </ul>
@@ -819,6 +882,7 @@
         <div class="room_detail">
             <div class="messages_list_wrap">
                 <span class="custom-scrollbar"></span>
+                <div class="sticky_menu room_title"></div>
                 <ul class="messages_list">
 
                 </ul>
