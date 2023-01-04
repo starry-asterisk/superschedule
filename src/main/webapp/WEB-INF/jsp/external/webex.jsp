@@ -9,7 +9,6 @@
     <link href="${rootPath}/css/theme.css" rel="stylesheet">
     <link href="${rootPath}/css/common.css" rel="stylesheet">
     <style>
-
         *:not(.custom-scrollbar) {
             -ms-overflow-style: none;  /* Internet Explorer 10+ */
             scrollbar-width: none; /* Firefox */
@@ -390,7 +389,7 @@
 
                     if(arg.personId === tokenHolder.id) text.classList.add('me');
 
-                    if(arg.text) text.innerHTML = renderLinkInText(arg.text);
+                    if(arg.text) text.innerHTML = renderLinkInText(arg.markdown || arg.text);
 
                     if(arg.files){
                         arg.files.forEach(link => {
@@ -621,18 +620,22 @@
                         if(data.messages[event.data.roomId]) data.messages[event.data.roomId].unshift(event.data);
                         if(data.messages.now_presented === event.data.roomId) render.messages(event.data, true);
 
-                        let room = data.rooms[event.data.roomId];
-                        if(!room) room = data.rooms[event.data.roomId] = await webex.rooms.get(event.data.roomId);
+                        let room = data.rooms.find(room => event.data.roomId === room.id);
 
-                        //room.lastActivity = event.data.created;
+                        if(room) {
+                            room.lastActivity = event.data.created;
+                        }else {
+                            room = await webex.rooms.get(event.data.roomId);
+                            data.rooms.push(room);
+                        }
 
                         if (Notification.permission !== 'granted') {
-                            toast(`\${sender.displayName}님 이 보낸 메시지: \${event.data.text} - \${room.title}`);
+                            toast(`\${sender.displayName}님 이 보낸 메시지: \${event.data.text?event.data.text:'(파일 또는 사진)'} - \${room.title}`);
                         }
                         else {
                             const notification = new Notification(`\${room.title}`, {
                                 icon: '${rootPath}/img/icon.png',
-                                body: `\${sender.displayName} : \${event.data.text}`,
+                                body: `\${sender.displayName} : \${event.data.text?event.data.text:'(파일 또는 사진)'}`,
                             });
 
                             notification.onclick = function () {
@@ -718,7 +721,9 @@
                 if(e.target.scrollTop <= 0) listUpMessages(data.messages.now_presented);
             })
 
-            $('input[name=room_type]').on('click', e => render.rooms(e.target.value));
+            $(document).on('click', 'input[name=room_type]', e => render.rooms(e.target.value));
+
+            $(document).on('keydown', '.message_input', e => {if(e.key === 'Enter' && !e.shiftKey) {e.preventDefault();document.querySelector('.message_submit').click();}});
 
             if (window.Notification && Notification.permission === 'default') {
                 Notification.requestPermission();
