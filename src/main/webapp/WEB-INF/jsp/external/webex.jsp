@@ -110,6 +110,14 @@
             white-space: nowrap;
             text-overflow: ellipsis;
         }
+        ul.rooms_list > li > span.title[data-count]::after{
+            content: attr(data-count);
+            margin-left: 5px;
+            color: white;
+            background: var(--red);
+            padding: 0px 5px;
+            border-radius: 10px;
+        }
         ul.rooms_list > li > span.timestamp{
             color: grey;
             padding-left: 10px;
@@ -319,6 +327,8 @@
         const render = {
             rooms: filter => {
 
+                render_temp.presented_filter = filter;
+
                 const rooms_list = document.querySelector('.rooms_list');
 
                 while (rooms_list.firstChild) rooms_list.firstChild.remove();
@@ -354,12 +364,15 @@
                         beforeMessage = null;
                         message_top_reached = false;
                         document.querySelector('.room_title').innerHTML = room.title;
-                        listUpMessages(room.id)
+                        listUpMessages(room.id);
+                        room.unchecked = undefined;
+                        render.rooms(render_temp.presented_filter);
                     });
 
                     let title = document.createElement('span');
                     title.classList.add('title');
                     title.innerHTML = room.title;
+                    if(room.unchecked) title.setAttribute('data-count', room.unchecked);
                     li.appendChild(title);
 
                     let timestamp = document.createElement('span');
@@ -516,6 +529,7 @@
             }
         }
         const render_temp = {
+            presented_filter: 'all',
             name_color: {},
             lazy_load_info_queue: {},
         }
@@ -618,7 +632,6 @@
 
                     async function display_message(sender){
                         if(data.messages[event.data.roomId]) data.messages[event.data.roomId].unshift(event.data);
-                        if(data.messages.now_presented === event.data.roomId) render.messages(event.data, true);
 
                         let room = data.rooms.find(room => event.data.roomId === room.id);
 
@@ -629,10 +642,21 @@
                             data.rooms.push(room);
                         }
 
+                        if(data.messages.now_presented === event.data.roomId) {
+                            render.messages(event.data, true);
+                        } else {
+                            if(room.unchecked){
+                                room.unchecked++;
+                            } else {
+                                room.unchecked = 1;
+                            }
+                        }
+
+                        render.rooms(render_temp.presented_filter);
+
                         if (Notification.permission !== 'granted') {
                             toast(`\${sender.displayName}님 이 보낸 메시지: \${event.data.text?event.data.text:'(파일 또는 사진)'} - \${room.title}`);
-                        }
-                        else {
+                        } else {
                             const notification = new Notification(`\${room.title}`, {
                                 icon: '${rootPath}/img/icon.png',
                                 body: `\${sender.displayName} : \${event.data.text?event.data.text:'(파일 또는 사진)'}`,
