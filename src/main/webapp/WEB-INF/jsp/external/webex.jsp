@@ -175,12 +175,57 @@
             word-break: break-all;
             white-space: pre-wrap;
         }
+        .messages_list > span * {
+            text-align: left;
+        }
         .messages_list > span > .link {
             text-decoration: underline;
         }
         .messages_list > span.me {
             margin-right: 50px;
             margin-left: auto;
+        }
+        .messages_list > span.thread {
+            margin-right: auto;
+            margin-left: 100px;
+        }
+        .messages_list > span.me.thread {
+            margin-right: 100px;
+            margin-left: auto;
+        }
+        .messages_list > span.me.thread:not(.messages_list > span.me + span) {
+            margin-right: 100px;
+            margin-left: 50px;
+            max-width: none;
+            width: calc(100% - 150px);
+        }
+        .messages_list > span.thread::after {
+            content: '';
+            position: absolute;
+            border-left: 4px solid var(--default-color-1of10);
+            left: -77px;
+            top:0;
+            bottom:0;
+        }
+        .messages_list > span.thread:not([style])::after {
+            content: '';
+            top: -40px;
+        }
+        .messages_list > span.me.thread::after {
+            left: -27px;
+        }
+        .messages_list > span.me + span.me.thread::after {
+            right: -77px;
+            left: unset;
+        }
+        .messages_list .spark-contact {
+            font-size: 0.8em;
+            opacity: 0.7;
+        }
+        .messages_list .messageQuote {
+            text-align: left;
+            border-left: 4px solid var(--default-color-1of10);
+            padding-left: 10px;
         }
         .messages_list > span > img {
             position: absolute;
@@ -315,8 +360,12 @@
     <script type="text/javascript" src="${rootPath}/js/util/default.js"></script>
     <script type="text/javascript" src="${rootPath}/js/util/net.js"></script>
     <script type="text/javascript" src="${rootPath}/js/lib/webex-bundle.js"></script>
-    <script type="module">
-        import mime from '/js/json/mime.json' assert { type: 'json' };
+    <!--<script type="text/javascript" type="module">-->
+    <script type="text/javascript">
+        /*
+        import mime from '/js/json/mime.json' assert { type: 'json' };*/
+
+        const mime = {};
 
         const WEBEX_ACCESS_TOKEN = '${access_token}';
         const data = {
@@ -363,9 +412,11 @@
                     li.addEventListener('click', () => {
                         beforeMessage = null;
                         message_top_reached = false;
-                        document.querySelector('.room_title').innerHTML = room.title;
+                        render_temp.thread_stack = [];
                         listUpMessages(room.id);
+
                         room.unchecked = undefined;
+                        document.querySelector('.room_title').innerHTML = room.title;
                         render.rooms(render_temp.presented_filter);
                     });
 
@@ -395,14 +446,25 @@
 
                 args.forEach(one_message);
 
+                for(let index = render_temp.thread_stack.length - 1;index > -1;index--){
+                    let thread = render_temp.thread_stack[index];
+                    let parent = document.querySelector(`[data-messageId=\${thread.key}]`);
+                    if(parent) {
+                        parent.after(thread.el);
+                        render_temp.thread_stack.splice(index, 1);
+                    }
+                }
+
                 function one_message(arg, index){
                     let owner = document.createElement('span');
                     let text = document.createElement('span');
                     let avatar = document.createElement('img');
 
+                    text.setAttribute('data-messageId', arg.id);
+
                     if(arg.personId === tokenHolder.id) text.classList.add('me');
 
-                    if(arg.text) text.innerHTML = renderLinkInText(arg.markdown || arg.text);
+                    if(arg.text) text.innerHTML = renderLinkInText(arg.html ||arg.markdown || arg.text);
 
                     if(arg.files){
                         arg.files.forEach(link => {
@@ -446,6 +508,11 @@
                         })
                     }
 
+                    if(arg.parentId) {
+                        text.classList.add('thread');
+                        return addProfileInfo(true);
+                    }
+
                     let now_timestamp;
                     let next_timestamp;
 
@@ -458,7 +525,7 @@
 
                     addProfileInfo();
 
-                    function addProfileInfo(){
+                    function addProfileInfo(ignoreSeparator = false){
 
                         let person = data.peoples[arg.personId];
                         if(person){
@@ -494,7 +561,9 @@
                         text.appendChild(owner);
                         text.appendChild(avatar);
 
-                        final(true);
+                        final(true, ignoreSeparator);
+
+                        if(ignoreSeparator) return;
 
                         now_timestamp = Math.floor(now_timestamp / 1440);
                         next_timestamp = Math.floor(next_timestamp / 1440);
@@ -513,10 +582,14 @@
                         }
                     }
 
-                    function final(marginTop = false){
+                    function final(marginTop = false, isThread = false){
                         text.tabIndex = -1;
                         if(!marginTop) text.style.marginTop = 0;
-                        if(reverse){
+                        if(isThread){
+                            let parent = document.querySelector(`[data-messageId=\${arg.parentId}]`);
+                            if(parent)  parent.after(text);
+                            else render_temp.thread_stack.push({key: arg.parentId, el: text});
+                        }else if(reverse){
                             messages_list.appendChild(text);
                         }else{
                             messages_list.prepend(text);
@@ -532,6 +605,7 @@
             presented_filter: 'all',
             name_color: {},
             lazy_load_info_queue: {},
+            thread_stack: [],
         }
 
 
@@ -613,60 +687,68 @@
         function listenToMessages() {
 
             //creating the websocket listener with 'messages' resource...
-            webex.messages.listen().then(() => {
+            webex.messages.listen().then(e => {
 
+                webex.messages.on('deleted', (event) => {
+                    //삭제 이벤트 시 대응 방안
+                    const del_data = event.data;
+                    document.querySelector(`[data-messageid=\${del_data.id}]`).remove();
+                    for(let i in data.messages[del_data.roomId]) if(data.messages[del_data.roomId][i].id === del_data.id) {data.messages[del_data.roomId].splice(i, 1);break;}
+                });
                 //...and 'created' event
                 webex.messages.on('created', (event) => {
 
-                    //getting the details of the message sender to update the UI
+                    webex.messages.get(event.data.id).then(res => {
 
-                    if(data.peoples[event.actorId]){
-                        display_message(data.peoples[event.actorId]);
-                    }else{
-                        webex.people.get(event.actorId).then(sender => {
-                            data.peoples[event.actorId] = sender;
-                            display_message(sender);
-                        }).catch(error_handler);
-                    }
+                        //getting the details of the message sender to update the UI
 
-
-                    async function display_message(sender){
-                        if(data.messages[event.data.roomId]) data.messages[event.data.roomId].unshift(event.data);
-
-                        let room = data.rooms.find(room => event.data.roomId === room.id);
-
-                        if(room) {
-                            room.lastActivity = event.data.created;
-                        }else {
-                            room = await webex.rooms.get(event.data.roomId);
-                            data.rooms.push(room);
+                        if(data.peoples[res.personId]){
+                            display_message(data.peoples[res.personId]);
+                        }else{
+                            webex.people.get(res.personId).then(sender => {
+                                data.peoples[res.personId] = sender;
+                                display_message(sender);
+                            }).catch(error_handler);
                         }
 
-                        if(data.messages.now_presented === event.data.roomId) {
-                            render.messages(event.data, true);
-                        } else {
-                            if(room.unchecked){
-                                room.unchecked++;
+                        async function display_message(sender){
+                            if(data.messages[res.roomId]) data.messages[res.roomId].unshift(res);
+
+                            let room = data.rooms.find(room => res.roomId === room.id);
+
+                            if(room) {
+                                room.lastActivity = res.created;
+                            }else {
+                                room = await webex.rooms.get(res.roomId);
+                                data.rooms.push(room);
+                            }
+
+                            if(data.messages.now_presented === res.roomId) {
+                                render.messages(res, true);
                             } else {
-                                room.unchecked = 1;
+                                if(room.unchecked){
+                                    room.unchecked++;
+                                } else {
+                                    room.unchecked = 1;
+                                }
+                            }
+
+                            render.rooms(render_temp.presented_filter);
+
+                            if (Notification.permission !== 'granted') {
+                                toast(`\${sender.displayName}님 이 보낸 메시지: \${res.text?res.text:'(파일 또는 사진)'} - \${room.title}`);
+                            } else {
+                                const notification = new Notification(`\${room.title}`, {
+                                    icon: '${rootPath}/img/icon.png',
+                                    body: `\${sender.displayName} : \${res.text?res.text:'(파일 또는 사진)'}`,
+                                });
+
+                                notification.onclick = function () {
+                                    window.focus();
+                                };
                             }
                         }
-
-                        render.rooms(render_temp.presented_filter);
-
-                        if (Notification.permission !== 'granted') {
-                            toast(`\${sender.displayName}님 이 보낸 메시지: \${event.data.text?event.data.text:'(파일 또는 사진)'} - \${room.title}`);
-                        } else {
-                            const notification = new Notification(`\${room.title}`, {
-                                icon: '${rootPath}/img/icon.png',
-                                body: `\${sender.displayName} : \${event.data.text?event.data.text:'(파일 또는 사진)'}`,
-                            });
-
-                            notification.onclick = function () {
-                                window.focus();
-                            };
-                        }
-                    }
+                    }).catch(error_handler);
                 });
 
             }).catch(error_handler);
