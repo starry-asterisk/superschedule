@@ -1,0 +1,368 @@
+
+*:not(.custom-scrollbar) {
+    -ms-overflow-style: none;  /* Internet Explorer 10+ */
+    scrollbar-width: none; /* Firefox */
+}
+:not(.custom-scrollbar)::-webkit-scrollbar {
+    display: none;  /* Safari and Chrome */
+}
+.custom-scrollbar {
+    display: flex;
+    position: absolute;
+    right: 0;
+    width: 8px;
+    min-height: 15px;
+    padding: 2px;
+    overflow: auto;
+    z-index: 2;
+    transition: width ease 0.2s;
+}
+.custom-scrollbar:hover,
+.custom-scrollbar.active {
+    width: 12px;
+}
+.custom-scrollbar::after {
+    content: '';
+    flex:1;
+    background: var(--default-color-1of10);
+    border-radius: 2px;
+    cursor: pointer;
+}
+.custom-scrollbar:hover::after,
+.custom-scrollbar.active::after {
+    background: var(--default-color-half);
+}
+
+main {
+    display: flex;
+    flex-direction: row;
+    height: calc(100vh - 132px);
+    border: 1px solid grey;
+}
+.sticky_menu {
+    position: sticky;
+    top:0;
+    z-index: 1;
+    background: linear-gradient(180deg, var(--bg-color) 65%, transparent 100%);
+}
+input[type=radio]{
+    vertical-align: middle;
+    appearance: none;
+    padding: 5px 0;
+}
+input[type=radio]::after{
+    content: attr(label);
+    line-height: 40px;
+    padding: 5px 10px;
+    border-radius: 20px;
+    color: var(--font-default-color);
+}
+input[type=radio]:hover::after{
+    background-color: var(--default-color-1of10);
+    opacity: 0.8;
+    cursor: pointer;
+}
+input[type=radio]:active::after{
+    background-color: var(--default-color-1of10);
+    opacity: 0.6;
+}
+input[type=radio]:checked::after{
+    background-color: var(--default-color-1of10);
+}
+.rooms_list_wrap {
+    position: relative;
+    flex: 1;
+    max-width: 20rem;
+    border-right: 1px solid grey;
+    height: 100%;
+    overflow-y: scroll;
+}
+ul.rooms_list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+ul.rooms_list > li{
+    display: flex;
+    position: relative;
+    font-size: 12px;
+    text-align: left;
+    padding: 10px;
+    overflow: hidden;
+}
+ul.rooms_list > li:hover {
+    background-color: rgba(0,0,0,0.1);
+    cursor: pointer;
+}
+ul.rooms_list > li > span.title{
+    flex: 1;
+    overflow: hidden;
+    text-align: left;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+ul.rooms_list > li > span.title[data-count]::after{
+    content: attr(data-count);
+    margin-left: 5px;
+    color: white;
+    background: var(--red);
+    padding: 0px 5px;
+    border-radius: 10px;
+}
+ul.rooms_list > li > span.timestamp{
+    color: grey;
+    padding-left: 10px;
+}
+div.room_detail {
+    display: flex;
+    flex-direction: column;
+    flex: 2;
+}
+.messages_list_wrap{
+    position: relative;
+    height: 100%;
+    overflow-y: scroll;
+}
+.room_title {
+    height: 50px;
+    padding-left: 30px;
+    line-height: 50px;
+    text-align: left;
+    font-size: 1.3em;
+    font-weight: 600;
+    border-bottom: 1px solid grey;
+    background-color: var(--bg-color);
+}
+.messages_list{
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    overflow-x: hidden;
+    margin: 0;
+}
+.messages_list > p {
+    display: flex;
+    height: 17px;
+    margin: 0;
+    color: var(--red);
+    line-height: 17px;
+}
+.messages_list > p::before,
+.messages_list > p::after{
+    content: '';
+    flex: 1;
+    margin: 8px 5px;
+    height: 1px;
+    background-color: var(--red);
+}
+.messages_list > span {
+    position: relative;
+    margin-top: 40px;
+    margin-left: 50px;
+    margin-right: auto;
+    max-width: 80%;
+    padding: 10px;
+    text-align: left;
+    word-break: break-all;
+    white-space: pre-wrap;
+}
+.messages_list > span * {
+    text-align: left;
+}
+.messages_list > span pre {
+    white-space: pre-line;
+}
+.messages_list > span > .link {
+    text-decoration: underline;
+}
+.messages_list > span.me {
+    margin-right: 50px;
+    margin-left: auto;
+}
+.messages_list > span.thread {
+    margin-right: auto;
+    margin-left: 100px;
+}
+.messages_list > span.me.thread {
+    margin-right: 100px;
+    margin-left: auto;
+}
+.messages_list > span.me.thread:not(.messages_list > span.me + span) {
+    margin-right: 100px;
+    margin-left: 50px;
+    max-width: none;
+    width: calc(100% - 150px);
+}
+.messages_list > span.thread::after {
+    content: '';
+    position: absolute;
+    border-left: 4px solid var(--default-color-1of10);
+    left: -77px;
+    top:0;
+    bottom:0;
+}
+.messages_list > span.thread:not([style])::after {
+    content: '';
+    top: -40px;
+}
+.messages_list > span.me.thread::after {
+    left: -27px;
+}
+.messages_list > span.me + span.me.thread::after {
+    right: -77px;
+    left: unset;
+}
+.messages_list .spark-contact {
+    font-size: 0.8em;
+    opacity: 0.7;
+}
+.messages_list .messageQuote {
+    position: relative;
+    text-align: left;
+    border-left: 4px solid var(--default-color-1of10);
+    padding: 10px;
+    margin-bottom: 8px;
+    font-style: italic;
+}
+.messages_list p {
+    margin-bottom: 0;
+}
+.messages_list .messageQuote::before,
+.messages_list .messageQuote::after{
+    content: '"';
+    position: absolute;
+    display: block;
+    line-height: 21px;
+}
+.messages_list .messageQuote::after {
+    top: 36px;
+    left: 2px;
+}
+.messages_list .messageQuote::before {
+    bottom: 11px;
+    right: 2px;
+}
+.messages_list > span > img.avatar {
+    position: absolute;
+    width: 40px;
+    height: 40px;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 20px;
+    bottom: calc(100% - 15px);
+    right: calc(100% + 5px);
+}
+.messages_list > span > img.avatar::after {
+    content: attr(alt);
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 40px;
+    height: 40px;
+    background-color: var(--bg-color2);
+    color: var(--default-color);
+    font-weight: 600;
+    line-height: 40px;
+    text-align: center;
+}
+.messages_list > span.me > img {
+    right: auto;
+    left: calc(100% + 5px);
+}
+.messages_list > span img.content_img {
+    display: block;
+    position: relative;
+    width: auto;
+    height: auto;
+    right: auto;
+    left: auto;
+    bottom: auto;
+    border-radius: 5px;
+    margin-top: 10px;
+    max-width: 450px;
+}
+.messages_list > span img.content_img.full_screen {
+    z-index: 9999;
+    position: fixed;
+    max-width: 50%;
+    max-height: 100%;
+    margin: auto;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    border-radius: 0;
+    box-shadow: 0 0 0 10000px rgb(0 0 0 / 50%);
+}
+
+.messages_list > span > .content_file {
+    display: block;
+    padding: 11px;
+    border-radius: 3px;
+    margin-top: 10px;
+    text-align: left;
+    background: var(--default-color-1of10);
+}
+.messages_list > span > .content_file > img.mime {
+    width: 2em;
+    margin-right: 10px;
+}
+.messages_list > span > span {
+    position: absolute;
+    color: var(--font-default-color);
+    font-weight: 600;
+    white-space: nowrap;
+    bottom: 100%;
+    margin-bottom: 5px;
+    left: 0;
+    right: auto;
+    text-align: left;
+    padding: 0 10px;
+}
+.messages_list > span:not(.me) > span::before {
+    content: attr(data-name);
+}
+.messages_list > span.me > span::after {
+    content: attr(data-name);
+}
+.messages_list > span.me > span {
+    left: auto;
+    right: 0;
+    text-align: right;
+}
+.messages_list > span > span > span {
+    color: var(--font-minor-color);
+    font-weight: 100;
+    margin: 0 5px;
+}
+.message_form {
+    padding: 10px;
+    min-height: 70px;
+    max-height: 40%;
+    display: flex;
+    border-top: 1px solid grey;
+}
+.message_form > .message_input {
+    word-break: break-all;
+    text-align: left;
+    max-height: 100%;
+    min-height: 50px;
+    padding: 10px;
+    line-height: 30px;
+    overflow-y: auto;
+    flex: 1;
+}
+.message_form > .message_submit {
+    margin-top: auto;
+    margin-left: 10px;
+    position: relative;
+    width: 40px;
+    height: 40px;
+    border: 20px;
+}
+.message_form > .message_submit::after {
+    content: '\F6C0';
+    font-family: bootstrap-icons;
+    font-weight: 600;
+}
