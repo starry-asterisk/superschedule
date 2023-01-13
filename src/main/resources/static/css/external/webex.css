@@ -90,7 +90,8 @@ ul.rooms_list > li{
     padding: 10px;
     overflow: hidden;
 }
-ul.rooms_list > li:hover {
+ul.rooms_list > li:hover,
+ul.rooms_list > li.selected{
     background-color: rgba(0,0,0,0.1);
     cursor: pointer;
 }

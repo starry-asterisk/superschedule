@@ -65,6 +65,7 @@ const render = {
             timestamp.innerHTML = getDateStr(new Date(room.lastActivity));
             li.appendChild(timestamp);
 
+            if(data.messages.now_presented === room.id) li.classList.add('selected');
             rooms_list.appendChild(li);
         }
     },
